@@ -37,6 +37,7 @@ read_sdo <- function(x) {
       raw_data2 <- raw_data2 %>%
         dplyr::mutate(MDC = MDC_string[n_index])%>% 
         dplyr::filter(!is.na(type))
+      
       return(add_row(raw_data1,raw_data2))
     }
   
