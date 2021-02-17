@@ -36,49 +36,10 @@ read_sdo <- function(x, y, year) {
                                               if_else(id_row < MDC_class_start_row[4], MDC_class[3], MDC_class[4])))) %>% 
     dplyr::filter(!is.na(type)) %>% 
     dplyr::mutate(MDC_class = stringr::str_remove_all(string = MDC_class, pattern = "\\(|\\)|Segue ")) %>%
-    dplyr::mutate(Year = year)
+    dplyr::mutate(Year = year) %>%
+    
   return(raw_data)
-  
-  # MDC_raw <- raw_data %>%
-  #   dplyr::select(code1) 
-  # 
-  # MDC <- MDC_raw%>% 
-  #   dplyr::filter(base::nchar(code1) > 20 & base::nchar(code1) < 195) 
-  # 
-  # MDC_string <- base::as.character(MDC$code1)
-  # # get the index position outside the for
-  # 
-  # if (length(MDC_string) == 2) {
-  #   
-  #   inds <- function(x) which(MDC_raw == x)
-  #   row_indexes <- purrr::map_int(MDC_string,inds)
-  #   
-  #   
-  #   n <- dim(raw_data)[1]
-  #   n_index <- length(row_indexes)
-  #   
-  #   raw_data1 <- raw_data %>%
-  #     dplyr::slice(1 : row_indexes[2]) %>%
-  #     dplyr::mutate(MDC = MDC_string[1]) %>% 
-  #     dplyr::filter(!is.na(type))
-  #   
-  #     raw_data2 <- raw_data %>%
-  #       dplyr::slice(row_indexes[n_index] : n)
-  #     raw_data2 <- raw_data2 %>%
-  #       dplyr::mutate(MDC = MDC_string[n_index])%>% 
-  #       dplyr::filter(!is.na(type))
-  #     
-  #     return(add_row(raw_data1,raw_data2))
-  #   }
-  # 
-  # 
-  # else{
-  # raw_data <- raw_data %>%
-  #   dplyr::mutate(MDC = MDC_string)
-  # 
-  # raw_data %>% 
-  #   dplyr::filter(!is.na(type)) %>% view()
-  # }
+
 }
 
 # inside r project work with relative path instead of absolute
@@ -88,7 +49,7 @@ raw_sheets <- readxl::excel_sheets(file_path)[65:86]
 
 # as example
 # raw_data <- readxl::read_xlsx(path = file_path,
-#                               sheet = raw_sheets[2], skip = 3)
+#                              sheet = raw_sheets[2], skip = 3)
 # examples
 # cleaned_data <- read_sdo(x = raw_sheets[2], y = file_path, year = "2019")
 # cleaned_data2 <- read_sdo(x = raw_sheets[21], y = file_path, year = "2019")
@@ -129,6 +90,25 @@ list_c <- as.list(as.character(total_grid$Var3))
 all_cleaned_datas <- pmap(list(list_a, list_b, list_c), read_sdo)
 
 merged_data <- dplyr::bind_rows(all_cleaned_datas) %>%
-  dplyr::mutate(id_row = NULL) %>% view()
+  dplyr::mutate(id_row = NULL) %>%
+  dplyr::mutate(Attività = "Acuti - Regime ordinario")
 
+extracted_table <- merged_data %>% 
+  group_by(MDC_class, Year) %>%
+  filter(Year == 2016) %>%
+  dplyr::mutate(MDC_class = stringr::str_remove_all(string = MDC_class, pattern = "\\(|\\)|MDC ")) %>%
+  summarise(DIMISSIONI =sum(DIMISSIONI)) 
+  
+view(extracted_table)
+  
+extracted_table <- extracted_table %>% 
+  rename(DIMISSIONI = "sum(DIMISSIONI)") %>% view()
+
+test = left_join(x = extracted_table, y = tomatch, by = "MDC_class") %>%view()
+
+if(all(test$DIMISSIONI.x%%test$DIMISSIONI.y == 0, na.rm = TRUE )) 
+
+df1 <- tibble(x = 1:3)
+df2 <- tibble(x = c(1, 1, 2), y = c("first", "second", "third"))
+df1 %>% left_join(df2)
 

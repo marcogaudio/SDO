@@ -13,7 +13,7 @@ test_mdc <- function(year, data, matching_table){
     dplyr::mutate(MDC_class = stringr::str_remove_all(string = MDC_class, pattern = "\\(|\\)|MDC ")) %>%
     select(MDC_class, DIMISSIONI, Year) 
   
-  test_table = left_join(x = extracted_table, y = table_to_match, by = "MDC_class") %>% view()
+  test_table = left_join(x = extracted_table, y = table_to_match, by = "MDC_class") 
   test = test_table$DIMISSIONI.x %% test_table$DIMISSIONI.y
   
   # returns TRUE if the all the reminders are 0, FALSE otherwise.
