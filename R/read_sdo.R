@@ -127,4 +127,8 @@ list_c <- as.list(as.character(total_grid$Var3))
 
 
 all_cleaned_datas <- pmap(list(list_a, list_b, list_c), read_sdo)
-view(all_cleaned_datas[[88]])
+
+merged_data <- dplyr::bind_rows(all_cleaned_datas) %>%
+  dplyr::mutate(id_row = NULL) %>% view()
+
+
