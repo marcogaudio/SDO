@@ -93,22 +93,3 @@ merged_data <- dplyr::bind_rows(all_cleaned_datas) %>%
   dplyr::mutate(id_row = NULL) %>%
   dplyr::mutate(Attività = "Acuti - Regime ordinario")
 
-extracted_table <- merged_data %>% 
-  group_by(MDC_class, Year) %>%
-  filter(Year == 2016) %>%
-  dplyr::mutate(MDC_class = stringr::str_remove_all(string = MDC_class, pattern = "\\(|\\)|MDC ")) %>%
-  summarise(DIMISSIONI =sum(DIMISSIONI)) 
-  
-view(extracted_table)
-  
-extracted_table <- extracted_table %>% 
-  rename(DIMISSIONI = "sum(DIMISSIONI)") %>% view()
-
-test = left_join(x = extracted_table, y = tomatch, by = "MDC_class") %>%view()
-
-if(all(test$DIMISSIONI.x%%test$DIMISSIONI.y == 0, na.rm = TRUE )) 
-
-df1 <- tibble(x = 1:3)
-df2 <- tibble(x = c(1, 1, 2), y = c("first", "second", "third"))
-df1 %>% left_join(df2)
-

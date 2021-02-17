@@ -12,7 +12,7 @@ read_sdo_check <- function(x, y, year) {
   raw_data <- raw_data %>% 
     tidyr::drop_na() %>%
     dplyr::mutate(Year = year)%>% 
-    slice(-n()) 
+    dplyr::slice(-n()) 
   
     
     return(raw_data)

@@ -10,14 +10,14 @@ read_sdo_stat <- function(x, y, year){
   
   raw_data <- raw_data %>%  tidyr::drop_na() %>% 
     dplyr::mutate(Year = year) %>%
-    rename(SOGLIA = paste0("Soglia ", year))
+    dplyr::rename(SOGLIA = paste0("Soglia ", year))
   return(raw_data)
 }
 
 files_names = list.files(path = "./data/", pattern = ".xlsx",
                          full.names = TRUE)
 
-all_raw_sheets <- map(files_names, excel_sheets)
+all_raw_sheets <- purrr::map(files_names, excel_sheets)
 
 sheets_name_2016 <- c(all_raw_sheets[[1]][49:65])   
 sheets_name_2017 <- c(all_raw_sheets[[2]][87:103]) 
@@ -43,7 +43,7 @@ list_b <- as.list(as.character(total_grid$Var2))
 list_c <- as.list(as.character(total_grid$Var3))
 
 
-all_cleaned_datas_2_7 <- pmap(list(list_a, list_b, list_c), read_sdo_stat)
+all_cleaned_datas_2_7 <- purrr::pmap(list(list_a, list_b, list_c), read_sdo_stat)
 merged_data_2_7 <- dplyr::bind_rows(all_cleaned_datas_2_7) %>%
   view()
 
