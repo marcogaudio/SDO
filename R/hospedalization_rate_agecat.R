@@ -1,5 +1,4 @@
 # read tables: 5.12, 5.14, 5.16, 5.18, 5.20 (they are similar)
-# find a way to add a column with ATTIVITA'
 
 hosp_reader_agecat <- function(x, y, year){
   
@@ -57,30 +56,45 @@ hosp_reader_agecat <- function(x, y, year){
 files_names = list.files(path = "./data/", pattern = ".xlsx",
                          full.names = TRUE)
 
-sheet_names = list("Tav_5.12", "Tav_5.14", "Tav_5.16",
-                       "Tav_5.18", "Tav_5.20")
 
 Years <- c("2016", "2017", "2018", "2019")
 
-first_grid  <- expand.grid(sheet_names, files_names[1], Years[1])
-second_grid <- expand.grid(sheet_names, files_names[2], Years[2])
-third_grid  <- expand.grid(sheet_names, files_names[3], Years[3])
-fourth_grid <- expand.grid(sheet_names, files_names[4], Years[4])
 
-total_grid <- dplyr::bind_rows(first_grid,
-                               second_grid,
-                               third_grid,
-                               fourth_grid)
+sheet_names = rep(list("Tav_5.12"), 4)
 
-# function pmap takes on a list of lists.
-
-list_a <- as.list(as.character(total_grid$Var1))
-list_b <- as.list(as.character(total_grid$Var2))
-list_c <- as.list(as.character(total_grid$Var3))
+hosp_rate_5.12 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agecat) %>%
+  dplyr::bind_rows() %>%
+  dplyr::mutate(Attività = "Acuti - Regime ordinario") 
 
 
-hospedalization_rate_agecat <-purrr::pmap(list(list_a, list_b, list_c), hosp_reader_agecat) %>%
-  dplyr::bind_rows() %>% view()
+sheet_names = rep(list("Tav_5.14"), 4)
 
+hosp_rate_5.14 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agecat) %>%
+  dplyr::bind_rows() %>%
+  dplyr::mutate(Attività = "Acuti - Regime diurno") 
+
+sheet_names = rep(list("Tav_5.16"), 4)
+
+hosp_rate_5.16 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agecat) %>%
+  dplyr::bind_rows() %>%
+  dplyr::mutate(Attività = "Riabilitazione - Regime ordinario")
+
+
+sheet_names = rep(list("Tav_5.18"), 4)
+
+hosp_rate_5.18 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agecat) %>%
+  dplyr::bind_rows() %>%
+  dplyr::mutate(Attività = "Riabilitazione - Regime diurno")     
+  
+  
+sheet_names = rep(list("Tav_5.20"), 4)
+
+hosp_rate_5.20 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agecat) %>%
+  dplyr::bind_rows() %>%
+  dplyr::mutate(Attività = "Lungodegenza")  
+
+HR_agecat <- dplyr::bind_rows(hosp_rate_5.12, hosp_rate_5.14, hosp_rate_5.16,
+                              hosp_rate_5.18, hosp_rate_5.20)
+view(HR_agecat)
 
 

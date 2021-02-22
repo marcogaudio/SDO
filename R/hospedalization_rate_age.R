@@ -42,7 +42,7 @@ sheet_names = rep(list("Tav_5.17"), 4)
 
 hosp_rate_5.17 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_age) %>%
   dplyr::bind_rows() %>%
-  dplyr::mutate(Attività = "Riabilitazione - Regime diurno") %>%    
+  dplyr::mutate(Attività = "Riabilitazione - Regime diurno")     
   
 
 sheet_names = rep(list("Tav_5.19"), 4)
@@ -52,3 +52,6 @@ hosp_rate_5.19 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader
   dplyr::mutate(Attività = "Lungodegenza")  
   
 
+HR_age <- dplyr::bind_rows(hosp_rate_5.11, hosp_rate_5.13, hosp_rate_5.15,
+                           hosp_rate_5.17, hosp_rate_5.19)
+view(HR_age)
