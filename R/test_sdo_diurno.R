@@ -16,8 +16,10 @@ matching_tables_2.2.11 <-
 
 cleaned_2.12 <- dplyr::left_join(x = merged_data_2.12, y = merged_data, 
                                  by = c("DRG", "code1", "type", "Year"), all.y = FALSE) %>% 
-  dplyr::select(DRG:Attività.x, MDC_class) %>%
-  dplyr::rename(DIMISSIONI = "Dimissioni", Attività = "Attività.x")
+  dplyr::select(DRG:Attività.x, MDC_class, Sheet.x) %>%
+  dplyr::rename(DIMISSIONI = "Dimissioni",
+                Attività = "Attività.x",
+                Sheet = "Sheet.x")
 
 # there are some NA values in MDC_class, after having identify them, add the corresponding class.
 
@@ -26,8 +28,7 @@ SDO_diurno <- cleaned_2.12 %>%
                               "MDC 15 - Malattie e disturbi del periodo neonatale",
                               MDC_class)) %>%
   dplyr::mutate(MDC_class = if_else(is.na(MDC_class),"12 - Malattie e disturbi dell'apparato riproduttivo maschile",
-                             MDC_class)) %>%
-  view()
+                             MDC_class)) 
 
 
 purrr::map(Years, test_mdc, data = SDO_diurno, matching_table = matching_tables_2.2.11)
