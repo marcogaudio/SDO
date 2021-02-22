@@ -14,7 +14,8 @@ read_sdo_diurno <- function(x, y, year) {
   raw_data <- raw_data %>% 
     tidyr::drop_na() %>%
     dplyr::mutate(Year = year) %>%
-    dplyr::mutate(Attività = "Acuti - Regime diurno")
+    dplyr::mutate(Attività = "Acuti - Regime diurno") %>%
+    dplyr::mutate(Sheet = x)
   
   return(raw_data)
   

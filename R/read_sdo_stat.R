@@ -10,7 +10,8 @@ read_sdo_stat <- function(x, y, year){
   raw_data <- raw_data %>%  
     tidyr::drop_na() %>% 
     dplyr::mutate(Year = year) %>%
-    dplyr::rename(SOGLIA = paste0("Soglia ", year))
+    dplyr::rename(SOGLIA = paste0("Soglia ", year)) %>%
+    dplyr::mutate(Sheet = x)
   return(raw_data)
 }
 
@@ -55,5 +56,6 @@ merged_data_2_7 <- dplyr::bind_rows(all_cleaned_datas_2_7) %>%
 SDO_ordinario <- dplyr::left_join(x = merged_data, y = merged_data_2_7, 
                                  by = c("DRG", "Year", "type", "code1")) %>%
   dplyr::select(-"Degenza media") %>% # there is two time
+  tidyr::unite(Sheet, Sheet.x, Sheet.y, remove = TRUE, sep = "/") %>%
   view()
 

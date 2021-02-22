@@ -35,7 +35,8 @@ read_sdo <- function(x, y, year) {
                                               if_else(id_row < MDC_class_start_row[4], MDC_class[3], MDC_class[4])))) %>% 
     dplyr::filter(!is.na(type)) %>% 
     dplyr::mutate(MDC_class = stringr::str_remove_all(string = MDC_class, pattern = "\\(|\\)|Segue ")) %>%
-    dplyr::mutate(Year = year) %>%
+    dplyr::mutate(Year = year) %>% 
+    dplyr::mutate(Sheet = x)
     
   return(raw_data)
 
@@ -80,4 +81,3 @@ all_cleaned_datas <- pmap(list(list_a, list_b, list_c), read_sdo)
 merged_data <- dplyr::bind_rows(all_cleaned_datas) %>%
   dplyr::mutate(id_row = NULL) %>%
   dplyr::mutate(Attività = "Acuti - Regime ordinario")
-
