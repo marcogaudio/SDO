@@ -7,7 +7,8 @@ read_sdo_stat <- function(x, y, year){
   
   raw_data <- readxl::read_xlsx(path = y, sheet = x, skip = 3)
   
-  raw_data <- raw_data %>%  tidyr::drop_na() %>% 
+  raw_data <- raw_data %>%  
+    tidyr::drop_na() %>% 
     dplyr::mutate(Year = year) %>%
     dplyr::rename(SOGLIA = paste0("Soglia ", year))
   return(raw_data)
@@ -51,7 +52,8 @@ merged_data_2_7 <- dplyr::bind_rows(all_cleaned_datas_2_7) %>%
 
 
 # join tables 2.2.6 with tables 2.2.7
-SDO_complete <- dplyr::left_join(x = merged_data, y = merged_data_2_7, 
+SDO_ordinario <- dplyr::left_join(x = merged_data, y = merged_data_2_7, 
                                  by = c("DRG", "Year", "type", "code1")) %>%
+  dplyr::select(-"Degenza media") %>% # there is two time
   view()
 
