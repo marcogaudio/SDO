@@ -1,4 +1,5 @@
 # read tables: 5.11, 5.13, 5.15, 5.17, 5.19 (they are similar)
+# find a way to add a column with ATTIVITA'
 
 hosp_reader_age <- function(x, y, year){
   
