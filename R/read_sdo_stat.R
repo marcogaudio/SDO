@@ -1,8 +1,7 @@
-library(tidyverse)
+# create a function to read from table 2.2.7 to table 2.2.7(17)
 
-# cambiare nome colonna soglia 2019/2018/2017/2016?
-y <- "./data/C_17_tavole_34_2_0_file.xlsx" 
-x <- readxl::excel_sheets(file_path)[87]
+library(tidyverse)
+library(readxl)
 
 read_sdo_stat <- function(x, y, year){
   
@@ -44,7 +43,15 @@ list_c <- as.list(as.character(total_grid$Var3))
 
 
 all_cleaned_datas_2_7 <- purrr::pmap(list(list_a, list_b, list_c), read_sdo_stat)
-merged_data_2_7 <- dplyr::bind_rows(all_cleaned_datas_2_7) %>%
-  view()
 
+merged_data_2_7 <- dplyr::bind_rows(all_cleaned_datas_2_7) %>%
+  dplyr::rename(code1 = "DRG",
+                type = "Tipo DRG",
+                DRG = "Descrizione") 
+
+
+# join tables 2.2.6 with tables 2.2.7
+SDO_complete <- dplyr::left_join(x = merged_data, y = merged_data_2_7, 
+                                 by = c("DRG", "Year", "type", "code1")) %>%
+  view()
 
