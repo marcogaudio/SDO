@@ -2,7 +2,6 @@
 # delete row starting with "Il valore soglia, specifico per ciascun DRG"
 # regex
 
-# recall to change the file name in read_sdo()
 library(tidyverse)
 library(readxl)
 
@@ -42,24 +41,13 @@ read_sdo <- function(x, y, year) {
 
 }
 
-# inside r project work with relative path instead of absolute
-
-file_path <- "./data/C_17_tavole_34_2_0_file.xlsx" 
-raw_sheets <- readxl::excel_sheets(file_path)[65:86]
-
-# as example
-# raw_data <- readxl::read_xlsx(path = file_path,
-#                              sheet = raw_sheets[2], skip = 3)
-# examples
-# cleaned_data <- read_sdo(x = raw_sheets[2], y = file_path, year = "2019")
-# cleaned_data2 <- read_sdo(x = raw_sheets[21], y = file_path, year = "2019")
-
-
 # get all the .xlsx files in the data folder.
+
 files_names = list.files(path = "./data/", pattern = ".xlsx",
                          full.names = TRUE)
 
 # get the sheets name of all the 4 files
+
 all_raw_sheets <- map(files_names, excel_sheets)
 
 
@@ -67,7 +55,6 @@ sheets_name_2016 <- c(all_raw_sheets[[1]][27:48])
 sheets_name_2017 <- c(all_raw_sheets[[2]][65:86]) 
 sheets_name_2018 <- c(all_raw_sheets[[3]][65:86])  
 sheets_name_2019 <- c(all_raw_sheets[[4]][65:86])  
-
 
 Years <- c("2016", "2017", "2018", "2019")
 
@@ -82,6 +69,7 @@ total_grid <- dplyr::bind_rows(first_grid,
                                fourth_grid)
 
 # function pmap takes on a list of lists.
+
 list_a <- as.list(as.character(total_grid$Var1))
 list_b <- as.list(as.character(total_grid$Var2))
 list_c <- as.list(as.character(total_grid$Var3))
