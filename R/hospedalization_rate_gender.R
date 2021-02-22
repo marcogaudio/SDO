@@ -4,7 +4,7 @@
 
 hosp_reader_gender <- function(x, y, year){
   
-  raw_data <- readxl::read_xlsx(path = files_names[1],
+  raw_data <- readxl::read_xlsx(path = y,
                                 sheet = x,
                                 skip = 3) 
   raw_data1 <- raw_data %>% 
@@ -65,9 +65,10 @@ files_names = list.files(path = "./data/", pattern = ".xlsx",
 
 sheet_names = rep(list("Tav_5.1"), 4)
 
-hospedalization_rate_5.1 <- purrr::pmap(list(sheet_names, files_names, Years), 
+HR_gender <- purrr::pmap(list(sheet_names, files_names, Years), 
                                     hosp_reader_gender) %>%
   dplyr::bind_rows()
+view(HR_gender)
 
 
 
