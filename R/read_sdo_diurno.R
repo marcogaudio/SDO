@@ -48,13 +48,11 @@ list_b <- as.list(as.character(total_grid$Var2))
 list_c <- as.list(as.character(total_grid$Var3))
 
 
-all_cleaned_datas <- pmap(list(list_a, list_b, list_c), read_sdo_diurno)
+all_cleaned_datas <- purrr::pmap(list(list_a, list_b, list_c), read_sdo_diurno)
 
 merged_data_2.12 <- dplyr::bind_rows(all_cleaned_datas) %>% 
   view()
 
 
-# functions names as table numbers???
-# multiple scripts?
-# syntax ok?
+
 
