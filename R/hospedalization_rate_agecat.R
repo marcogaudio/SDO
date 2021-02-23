@@ -9,8 +9,7 @@ hosp_reader_5.10 <- function(x, y, year) {
                                 skip = 4) 
   raw_data <- raw_data %>%
     select(where(~!all(is.na(.x)))) %>%
-    tidyr::drop_na() %>%
-    dplyr::slice(-n()) 
+    tidyr::drop_na() 
   
   columns <- c("Categoria età",
                "Acuti - Regime ordinario",
