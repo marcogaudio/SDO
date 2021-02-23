@@ -1,6 +1,5 @@
 # read tables: 5.11, 5.13, 5.15, 5.17, 5.19 (they are similar)
 
-
 hosp_reader_age <- function(x, y, year){
   
   raw_data <- readxl::read_xlsx(path = y, sheet = x,

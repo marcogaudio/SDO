@@ -1,4 +1,4 @@
-
+# function to read tables 5.1
 # Tavola 5.1 - Tassi di ospedalizzazione per regione, tipo attività,
 # regime di ricovero e genere (per 1.000 abitanti) 
 
@@ -65,11 +65,11 @@ files_names = list.files(path = "./data/", pattern = ".xlsx",
 
 sheet_names = rep(list("Tav_5.1"), 4)
 
+Years <- c("2016", "2017", "2018", "2019")
+
 HR_gender <- purrr::pmap(list(sheet_names, files_names, Years), 
                                     hosp_reader_gender) %>%
   dplyr::bind_rows()
 view(HR_gender)
-
-
 
 
