@@ -83,11 +83,12 @@ list_b <- as.list(as.character(total_grid$Var2))
 list_c <- as.list(as.character(total_grid$Var3))
 list_d <- as.list(as.character(total_grid$Regioni))
 
-region_datas <- pmap(list(list_a, list_b, list_c, list_d), read_sdo_region)
+region_datas <- purrr::pmap(list(list_a, list_b, list_c, list_d), read_sdo_region)
 
-SDO_ordinario_regioni <- dplyr::bind_rows(region_datas) %>% view()
+SDO_ordinario_regioni <- dplyr::bind_rows(region_datas) %>%
   dplyr::mutate(id_row = NULL) %>%
-  dplyr::mutate(Attività = "Acuti - Regime ordinario")
+  dplyr::mutate(Attività = "Acuti - Regime ordinario") %>%
+  view()
 
 
 
