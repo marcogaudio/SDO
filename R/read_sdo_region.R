@@ -38,8 +38,6 @@ read_sdo_region <- function(x, y, year, region){
   
   MDC_names <- c(MDC_names, rep(tail(MDC_class, n = 1), 10))
   
-  m <- tail(MDC_class_start_row, n = 1)
-  
   raw_data <- raw_data %>% dplyr::mutate(MDC_class = MDC_names) %>%
     dplyr::filter(!is.na(type)) %>% 
     dplyr::mutate(Year = year) %>% 
