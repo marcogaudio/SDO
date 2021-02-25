@@ -93,8 +93,8 @@ hosp_rate_5.20 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader
   dplyr::bind_rows() %>%
   dplyr::mutate(Attività = "Lungodegenza")  
 
-HR_agecat <- dplyr::bind_rows(hosp_rate_5.12, hosp_rate_5.14, hosp_rate_5.16,
+HR_agecat_gen <- dplyr::bind_rows(hosp_rate_5.12, hosp_rate_5.14, hosp_rate_5.16,
                               hosp_rate_5.18, hosp_rate_5.20)
-view(HR_agecat)
+view(HR_agecat_gen)
 
 
