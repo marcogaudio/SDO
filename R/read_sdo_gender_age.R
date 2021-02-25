@@ -26,55 +26,74 @@ files_names = list.files(path = "./data/", pattern = ".xlsx",
 
 Years <- c("2016", "2017", "2018", "2019")
 
-# Tables 6.7
+# Use the function sdo_autom() to automate previous code.
 
-sheet_names = rep(list("Tav_6.7"),4)
+table_list <- list("Tav_6.7","Tav_6.8","Tav_6.9", "Tav_6.10", "Tav_6.11")
 
-sdo_AeG_ordinario <- purrr::pmap(list(sheet_names, files_names, Years),
-                                 read_sdo_gender_age) %>%
+activity_list <- list("Acuti - Regime ordinario", "Acuti - Regime diurno",
+                      "Riabilitazione - Regime ordinario", 
+                      "Riabilitazione - Regime diurno",
+                      "Lungodegenza")
+
+sdo_age_gender <- purrr::pmap(list(table_list, activity_list), sdo_autom, 
+                              function_name = read_sdo_gender_age) %>%
   dplyr::bind_rows() %>%
-  dplyr::mutate(Attività = "Acuti - Regime ordinario")
+  view()
 
-# Tables 6.8
-
-sheet_names = rep(list("Tav_6.8"),4)
-
-sdo_AeG_diurno <- purrr::pmap(list(sheet_names, files_names, Years),
-                                 read_sdo_gender_age) %>%
-  dplyr::bind_rows() %>%
-  dplyr::mutate(Attività = "Acuti - Regime diurno")
-
-# Tables 6.9
-
-sheet_names = rep(list("Tav_6.9"),4)
-
-sdo_AeG_riab_ord <- purrr::pmap(list(sheet_names, files_names, Years),
-                              read_sdo_gender_age) %>%
-  dplyr::bind_rows() %>%
-  dplyr::mutate(Attività = "Riabilitazione - Regime ordinario")
-
-# Tables 6.10
-
-sheet_names = rep(list("Tav_6.10"),4)
-
-sdo_AeG_riab_diurno <- purrr::pmap(list(sheet_names, files_names, Years),
-                                read_sdo_gender_age) %>%
-  dplyr::bind_rows() %>%
-  dplyr::mutate(Attività = "Riabilitazione - Regime diurno")
-
-# Tables 6.11
-
-sheet_names = rep(list("Tav_6.11"),4)
-
-sdo_AeG_lungodegenza <- purrr::pmap(list(sheet_names, files_names, Years),
-                                read_sdo_gender_age) %>%
-  dplyr::bind_rows() %>%
-  dplyr::mutate(Attività = "Lungodegenza")
-
+# # Tables 6.7
+# 
+# sheet_names = rep(list("Tav_6.7"),4)
+# 
+# sdo_AeG_ordinario <- purrr::pmap(list(sheet_names, files_names, Years),
+#                                  read_sdo_gender_age) %>%
+#   dplyr::bind_rows() %>%
+#   dplyr::mutate(Attività = "Acuti - Regime ordinario")
+# 
+# # Tables 6.8
+# 
+# sheet_names = rep(list("Tav_6.8"),4)
+# 
+# sdo_AeG_diurno <- purrr::pmap(list(sheet_names, files_names, Years),
+#                                  read_sdo_gender_age) %>%
+#   dplyr::bind_rows() %>%
+#   dplyr::mutate(Attività = "Acuti - Regime diurno")
+# 
+# # Tables 6.9
+# 
+# sheet_names = rep(list("Tav_6.9"),4)
+# 
+# sdo_AeG_riab_ord <- purrr::pmap(list(sheet_names, files_names, Years),
+#                               read_sdo_gender_age) %>%
+#   dplyr::bind_rows() %>%
+#   dplyr::mutate(Attività = "Riabilitazione - Regime ordinario")
+# 
+# # Tables 6.10
+# 
+# sheet_names = rep(list("Tav_6.10"),4)
+# 
+# sdo_AeG_riab_diurno <- purrr::pmap(list(sheet_names, files_names, Years),
+#                                 read_sdo_gender_age) %>%
+#   dplyr::bind_rows() %>%
+#   dplyr::mutate(Attività = "Riabilitazione - Regime diurno")
+# 
+# # Tables 6.11
+# 
+# sheet_names = rep(list("Tav_6.11"),4)
+# 
+# sdo_AeG_lungodegenza <- purrr::pmap(list(sheet_names, files_names, Years),
+#                                 read_sdo_gender_age) %>%
+#   dplyr::bind_rows() %>%
+#   dplyr::mutate(Attività = "Lungodegenza")
+# 
 sdo_age_gender <- dplyr::bind_rows(sdo_AeG_ordinario,
                             sdo_AeG_diurno,
                             sdo_AeG_riab_ord,
                             sdo_AeG_riab_diurno,
                             sdo_AeG_lungodegenza)
 view(sdo_age_gender)
+
+
+
+
+
 
