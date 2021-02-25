@@ -59,42 +59,54 @@ files_names = list.files(path = "./data/", pattern = ".xlsx",
 
 Years <- c("2016", "2017", "2018", "2019")
 
+# use the function sdo_autom() to automate previous code.
 
-sheet_names = rep(list("Tav_5.12"), 4)
+table_list <- list("Tav_5.12","Tav_5.14","Tav_5.16", "Tav_5.18", "Tav_5.20")
 
-hosp_rate_5.12 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agegen) %>%
+activity_list <- list("Acuti - Regime ordinario", "Acuti - Regime diurno",
+                      "Riabilitazione - Regime ordinario", 
+                      "Riabilitazione - Regime diurno",
+                      "Lungodegenza")
+
+HR_agecat_gen <- purrr::pmap(list(table_list, activity_list), sdo_autom, 
+                              function_name = hosp_reader_agegen ) %>%
   dplyr::bind_rows() %>%
-  dplyr::mutate(Attività = "Acuti - Regime ordinario") 
+  view()
 
 
-sheet_names = rep(list("Tav_5.14"), 4)
-
-hosp_rate_5.14 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agegen) %>%
-  dplyr::bind_rows() %>%
-  dplyr::mutate(Attività = "Acuti - Regime diurno") 
-
-sheet_names = rep(list("Tav_5.16"), 4)
-
-hosp_rate_5.16 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agegen) %>%
-  dplyr::bind_rows() %>%
-  dplyr::mutate(Attività = "Riabilitazione - Regime ordinario")
-
-
-sheet_names = rep(list("Tav_5.18"), 4)
-
-hosp_rate_5.18 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agegen) %>%
-  dplyr::bind_rows() %>%
-  dplyr::mutate(Attività = "Riabilitazione - Regime diurno")     
-  
-  
-sheet_names = rep(list("Tav_5.20"), 4)
-
-hosp_rate_5.20 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agegen) %>%
-  dplyr::bind_rows() %>%
-  dplyr::mutate(Attività = "Lungodegenza")  
-
-HR_agecat_gen <- dplyr::bind_rows(hosp_rate_5.12, hosp_rate_5.14, hosp_rate_5.16,
-                              hosp_rate_5.18, hosp_rate_5.20)
-view(HR_agecat_gen)
-
-
+# sheet_names = rep(list("Tav_5.12"), 4)
+# 
+# hosp_rate_5.12 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agegen) %>%
+#   dplyr::bind_rows() %>%
+#   dplyr::mutate(Attività = "Acuti - Regime ordinario") 
+# 
+# 
+# sheet_names = rep(list("Tav_5.14"), 4)
+# 
+# hosp_rate_5.14 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agegen) %>%
+#   dplyr::bind_rows() %>%
+#   dplyr::mutate(Attività = "Acuti - Regime diurno") 
+# 
+# sheet_names = rep(list("Tav_5.16"), 4)
+# 
+# hosp_rate_5.16 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agegen) %>%
+#   dplyr::bind_rows() %>%
+#   dplyr::mutate(Attività = "Riabilitazione - Regime ordinario")
+# 
+# 
+# sheet_names = rep(list("Tav_5.18"), 4)
+# 
+# hosp_rate_5.18 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agegen) %>%
+#   dplyr::bind_rows() %>%
+#   dplyr::mutate(Attività = "Riabilitazione - Regime diurno")     
+#   
+#   
+# sheet_names = rep(list("Tav_5.20"), 4)
+# 
+# hosp_rate_5.20 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agegen) %>%
+#   dplyr::bind_rows() %>%
+#   dplyr::mutate(Attività = "Lungodegenza")  
+# 
+# HR_agecat_gen_old <- dplyr::bind_rows(hosp_rate_5.12, hosp_rate_5.14, hosp_rate_5.16,
+#                               hosp_rate_5.18, hosp_rate_5.20)
+# view(HR_agecat_gen)
