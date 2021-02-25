@@ -75,6 +75,8 @@ HR_age <- purrr::pmap(list(table_list, activity_list), sdo_autom,
 #   dplyr::mutate(Attività = "Lungodegenza")  
 #   
 # 
-# HR_age <- dplyr::bind_rows(hosp_rate_5.11, hosp_rate_5.13, hosp_rate_5.15,
-#                            hosp_rate_5.17, hosp_rate_5.19)
-# view(HR_age)
+HR_age_old <- dplyr::bind_rows(hosp_rate_5.11, hosp_rate_5.13, hosp_rate_5.15,
+                           hosp_rate_5.17, hosp_rate_5.19)
+
+
+
