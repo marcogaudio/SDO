@@ -2,6 +2,7 @@
 # delete row starting with "Il valore soglia, specifico per ciascun DRG"
 # regex
 
+# function to read from table 2.2.6 to table 2.2.6(22) (Acuti regime ordinario per DRG)
 library(tidyverse)
 library(readxl)
 
@@ -17,8 +18,6 @@ read_sdo <- function(x, y, year) {
     dplyr::mutate(id_row = 1:n()) %>% 
     dplyr::filter(!is.na(code1)) 
   
-  raw_data %>%
-    dplyr::select(code1, type, id_row)
   
   MDC_class <- raw_data %>%
     dplyr::select(code1, type, id_row) %>%
