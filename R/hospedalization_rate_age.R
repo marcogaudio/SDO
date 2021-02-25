@@ -21,7 +21,7 @@ Years <- c("2016", "2017", "2018", "2019")
 sdo_autom <- function(table, activity, function_name){
   
   list_sheets <- rep(list(table),4)
-  sdo_table <-purrr::pmap(list(list_sheets, files_names, Years),
+  sdo_table <- purrr::pmap(list(list_sheets, files_names, Years),
                           function_name) %>%
     dplyr::bind_rows() %>%
     dplyr::mutate(Attività = activity)
