@@ -1,5 +1,5 @@
 # function to get table "2.2.5" for each of the four years.
-
+# Acuti - regime ordinario, dimissioni totali per MDC
 read_sdo_check <- function(x, y, year) {
   
   raw_data <- readxl::read_xlsx(path = y,
