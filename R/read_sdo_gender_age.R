@@ -85,13 +85,21 @@ sdo_age_gender <- purrr::pmap(list(table_list, activity_list), sdo_autom,
 #   dplyr::bind_rows() %>%
 #   dplyr::mutate(Attività = "Lungodegenza")
 # 
-sdo_age_gender <- dplyr::bind_rows(sdo_AeG_ordinario,
-                            sdo_AeG_diurno,
-                            sdo_AeG_riab_ord,
-                            sdo_AeG_riab_diurno,
-                            sdo_AeG_lungodegenza)
-view(sdo_age_gender)
+# sdo_age_gender_old <- dplyr::bind_rows(sdo_AeG_ordinario,
+#                             sdo_AeG_diurno,
+#                             sdo_AeG_riab_ord,
+#                             sdo_AeG_riab_diurno,
+#                             sdo_AeG_lungodegenza)
 
+#perform a check to see if the function works well.
+
+sdo_age_gender_old %>% 
+  filter(Year == "2016", Attività == "Lungodegenza") %>%
+  summarise(sum(MASCHI))
+
+sdo_age_gender %>% 
+  filter(Year == "2016", Attività == "Lungodegenza") %>%
+  summarise(sum(MASCHI))
 
 
 
