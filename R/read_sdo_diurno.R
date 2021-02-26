@@ -61,7 +61,7 @@ Years <- list("2016", "2017", "2018", "2019")
 
 all_raw_sheets <- as.character(readxl::excel_sheets(path = files_names[[1]]))
 
-sheet_names <- all_rawss[str_detect(all_rawss, "Tav_2.2.12")]
+sheet_names <- all_raw_sheets[str_detect(all_raw_sheets, "Tav_2.2.12")]
 
 grid_list <- pmap(list(files_names, Years), sdo_grid) %>%
   bind_rows()
