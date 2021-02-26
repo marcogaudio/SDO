@@ -21,14 +21,18 @@ read_sdo_diurno <- function(x, y, year) {
   
 }
 
-# get the sheets name of all the 4 files
+# previous code.
+
+# # get the sheets name of all the 4 files
 # all_raw_sheets <- map(files_names, excel_sheets)
+# files_names <- list.files(path = "./data/", pattern = ".xlsx",
+#                                   full.names = TRUE)
 # 
 # 
-# sheets_name_2016 <- c(all_raw_sheets[[1]][73:89])   
-# sheets_name_2017 <- c(all_raw_sheets[[2]][111:127]) 
-# sheets_name_2018 <- c(all_raw_sheets[[3]][111:127])  
-# sheets_name_2019 <- c(all_raw_sheets[[4]][111:127])  
+# sheets_name_2016 <- c(all_raw_sheets[[1]][73:89])
+# sheets_name_2017 <- c(all_raw_sheets[[2]][111:127])
+# sheets_name_2018 <- c(all_raw_sheets[[3]][111:127])
+# sheets_name_2019 <- c(all_raw_sheets[[4]][111:127])
 # 
 # 
 # Years <- c("2016", "2017", "2018", "2019")
@@ -42,7 +46,9 @@ read_sdo_diurno <- function(x, y, year) {
 #                                second_grid,
 #                                third_grid,
 #                                fourth_grid)
-
+# list_a <- as.list(as.character(total_grid$Var1))
+# list_b <- as.list(as.character(total_grid$Var2))
+# list_c <- as.list(as.character(total_grid$Var3))
 
 # use function sdo_grid() to automate stuff.
 files_names <- as.list(list.files(path = "./data/", pattern = ".xlsx",
@@ -68,9 +74,6 @@ list_c <- as.list(as.character(grid_list$Var3))
 
 all_cleaned_datas <- purrr::pmap(list(list_a, list_b, list_c), read_sdo_diurno)
 
-merged_data_2.12 <- dplyr::bind_rows(all_cleaned_datas) %>% 
-  view()
+merged_data_2.12 <- dplyr::bind_rows(all_cleaned_datas) 
 
-merged_data_2.12_new <- dplyr::bind_rows(all_cleaned_datas)
 
-identical(merged_data_2.12, merged_data_2.12_new)
