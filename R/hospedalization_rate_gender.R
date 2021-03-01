@@ -25,8 +25,7 @@ hosp_reader_gender <- function(x, y, year){
                     FEMMINE = second_col) %>%
       dplyr::select(`REGIONE DI RESIDENZA`, MASCHI, FEMMINE) %>%
       dplyr::mutate(Attività = activity) %>% 
-      tidyr::drop_na() %>%
-      dplyr::slice(-n()) 
+      tidyr::drop_na() 
     
   }
   
