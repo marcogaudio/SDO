@@ -10,20 +10,20 @@ test_HR_5.10 <- function(year, population, attività,
   # checking table.
   
   result <- checking_table %>% 
-    dplyr::filter(Year == year , checking_table[,1] == "TOTALE") %>%
+    dplyr::filter(ANNO == year , checking_table[,1] == "TOTALE") %>%
     dplyr::select(attività) %>% 
     as.numeric() %>%
     round(digits = 2)
   
   Female <- sdo_table %>% 
-    filter(Year == year, 
-           Attività == attività) %>%
+    filter(ANNO == year, 
+           ATTIVITÀ == attività) %>%
     select(FEMMINE) %>%
     pull() %>%
     sum()
   Male <- sdo_table %>% 
-    filter(Year == year, 
-           Attività == attività) %>%
+    filter(ANNO == year, 
+           ATTIVITÀ == attività) %>%
     select(MASCHI) %>%
     pull() %>%
     sum()
@@ -38,7 +38,7 @@ test_HR_5.10 <- function(year, population, attività,
   return(c(result, HR_test_rate, difference))
 }
 
-# pop2001 <- 56993742 # source: istat
+pop2001 <- 56993742 # source: istat
 # pop2011 <- 59433744	
 # pop2010 <- 60340328
 pop2019 <- 59816673

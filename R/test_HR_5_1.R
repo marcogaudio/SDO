@@ -7,22 +7,22 @@ test_HR_5.1 <- function(year, male_pop, female_pop,
   # checking table.
   
   result <- checking_table %>% 
-    dplyr::filter(Year == year , checking_table[,1] == "ITALIA",
-                  Attività == attività) %>%
+    dplyr::filter(ANNO == year , checking_table[,1] == "ITALIA",
+                  ATTIVITÀ == attività) %>%
     dplyr::select(MASCHI, FEMMINE) %>% 
     as.numeric() %>%
     round(digits = 2)
   
   Female <- sdo_table %>% 
-    filter(Year == year, 
-           Attività == attività) %>%
+    filter(ANNO == year, 
+           ATTIVITÀ == attività) %>%
     select(FEMMINE) %>%
     pull() %>%
     sum()
   
   Male <- sdo_table %>% 
-    filter(Year == year, 
-           Attività == attività) %>%
+    filter(ANNO == year, 
+           ATTIVITÀ == attività) %>%
     select(MASCHI) %>%
     pull() %>%
     sum()
@@ -86,3 +86,4 @@ purrr::pmap(list(Years, pop_list_m, pop_list_f), test_HR_5.1,
 purrr::pmap(list(Years, pop_list_m, pop_list_f), test_HR_5.1, 
             sdo_table = sdo_age_gender, checking_table = HR_gender,
             attività = "Lungodegenza")
+
