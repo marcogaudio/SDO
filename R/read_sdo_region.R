@@ -6,20 +6,20 @@ read_sdo_region <- function(x, y, year, region){
   raw_data <- readxl::read_xlsx(path = y, sheet = x, skip = 2)
   
   raw_data <- raw_data %>% 
-    dplyr::rename(code1 = "...1",
-                  type = "...2") %>% 
-    dplyr::filter(!is.na(code1)) %>%
+    dplyr::rename(CODICE = "...1",
+                  TIPO = "...2") %>% 
+    dplyr::filter(!is.na(CODICE)) %>%
     dplyr::mutate(id_row = 1:n()) %>%
     dplyr::slice(-n()) 
   
   MDC_class <- raw_data %>%
-    dplyr::select(code1, type, id_row) %>%
-    dplyr::filter(is.na(type)) %>%
-    dplyr::pull(code1)
+    dplyr::select(CODICE, TIPO, id_row) %>%
+    dplyr::filter(is.na(TIPO)) %>%
+    dplyr::pull(CODICE)
   
   MDC_class_start_row <- raw_data %>%
-    dplyr::select(code1, type, id_row) %>%
-    dplyr::filter(is.na(type)) %>%
+    dplyr::select(CODICE, TIPO, id_row) %>%
+    dplyr::filter(is.na(TIPO)) %>%
     dplyr::pull(id_row)
   # function to get the MDC classes names
   MDC_name <- function(start_id_row, mdc_class){
@@ -38,11 +38,11 @@ read_sdo_region <- function(x, y, year, region){
   
   MDC_names <- c(MDC_names, rep(tail(MDC_class, n = 1), 10))
   
-  raw_data <- raw_data %>% dplyr::mutate(MDC_class = MDC_names) %>%
-    dplyr::filter(!is.na(type)) %>% 
-    dplyr::mutate(Year = year) %>% 
-    dplyr::mutate(Sheet = x) %>%
-    dplyr::mutate(Regione = region)
+  raw_data <- raw_data %>% dplyr::mutate(CLASSE_MDC = MDC_names) %>%
+    dplyr::filter(!is.na(TIPO)) %>% 
+    dplyr::mutate(ANNO = year) %>% 
+    dplyr::mutate(TAVOLA = x) %>%
+    dplyr::mutate(REGIONE = region)
   
   
   
@@ -96,7 +96,7 @@ region_datas <- purrr::pmap(list(list_a, list_b, list_c, list_d), read_sdo_regio
 
 SDO_ordinario_regioni <- dplyr::bind_rows(region_datas) %>%
   dplyr::mutate(id_row = NULL) %>%
-  dplyr::mutate(Attività = "Acuti - Regime ordinario") %>%
+  dplyr::mutate(ATTIVITÀ = "Acuti - Regime ordinario") %>%
   view()
 
 

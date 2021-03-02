@@ -15,7 +15,7 @@ read_sdo_gender_age <- function(x, y, year){
     dplyr::select(1:3) %>%
     tidyr::drop_na() %>%
     dplyr::slice(-n()) %>%
-    dplyr::mutate(Year = year, Sheet = x)
+    dplyr::mutate(ANNO = year, TAVOLA = x)
   
 }
 
@@ -93,13 +93,13 @@ sdo_age_gender <- purrr::pmap(list(table_list, activity_list), sdo_autom,
 
 #perform a check to see if the function works well.
 
-sdo_age_gender_old %>% 
-  filter(Year == "2016", Attività == "Lungodegenza") %>%
-  summarise(sum(MASCHI))
-
-sdo_age_gender %>% 
-  filter(Year == "2016", Attività == "Lungodegenza") %>%
-  summarise(sum(MASCHI))
+# sdo_age_gender_old %>% 
+#   filter(Year == "2016", ATTIVITÀ == "Lungodegenza") %>%
+#   summarise(sum(MASCHI))
+# 
+# sdo_age_gender %>% 
+#   filter(Year == "2016", ATTIVITÀ == "Lungodegenza") %>%
+#   summarise(sum(MASCHI))
 
 
 
