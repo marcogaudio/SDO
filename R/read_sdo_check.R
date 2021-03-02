@@ -7,11 +7,11 @@ read_sdo_check <- function(x, y, year) {
   names(raw_data)
   
   raw_data <- raw_data %>%
-    dplyr::rename(MDC_class = "MDC")
+    dplyr::rename(CLASSE_MDC = "MDC")
   
   raw_data <- raw_data %>% 
     tidyr::drop_na() %>%
-    dplyr::mutate(Year = year)%>% 
+    dplyr::mutate(ANNO = year)%>% 
     dplyr::slice(-n()) 
   
     
@@ -29,6 +29,6 @@ Years <- list("2016", "2017", "2018", "2019")
 matching_tables <- 
   purrr::pmap(list(sheets_names, files_names, Years), read_sdo_check) %>%
   dplyr::bind_rows() %>%
-  dplyr::mutate(Attività = "Acuti - Regime ordinario") 
+  dplyr::mutate(ATTIVITÀ = "Acuti - Regime ordinario") 
 
 

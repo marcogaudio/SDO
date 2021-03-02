@@ -13,29 +13,29 @@ read_sdo <- function(x, y, year) {
   names(raw_data)
   
   raw_data <- raw_data %>%
-    dplyr::rename(code1 = "...1",
-                  type = "...2") %>%
+    dplyr::rename(CODICE = "...1",
+                  TIPO = "...2") %>%
     dplyr::mutate(id_row = 1:n()) %>% 
-    dplyr::filter(!is.na(code1)) 
+    dplyr::filter(!is.na(CODICE)) 
   
   
   MDC_class <- raw_data %>%
-    dplyr::select(code1, type, id_row) %>%
-    dplyr::filter(is.na(type)) %>%
-    dplyr::pull(code1)
+    dplyr::select(CODICE, TIPO, id_row) %>%
+    dplyr::filter(is.na(TIPO)) %>%
+    dplyr::pull(CODICE)
   MDC_class_start_row <- raw_data %>%
-    dplyr::select(code1, type, id_row) %>%
-    dplyr::filter(is.na(type)) %>%
+    dplyr::select(CODICE, TIPO, id_row) %>%
+    dplyr::filter(is.na(TIPO)) %>%
     dplyr::pull(id_row)
   
   raw_data <- raw_data %>%
-    dplyr::mutate(MDC_class = if_else(id_row < MDC_class_start_row[2], MDC_class[1],
+    dplyr::mutate(CLASSE_MDC = if_else(id_row < MDC_class_start_row[2], MDC_class[1],
                                       if_else(id_row < MDC_class_start_row[3], MDC_class[2],
                                               if_else(id_row < MDC_class_start_row[4], MDC_class[3], MDC_class[4])))) %>% 
-    dplyr::filter(!is.na(type)) %>% 
-    dplyr::mutate(MDC_class = stringr::str_remove_all(string = MDC_class, pattern = "\\(|\\)|Segue ")) %>%
-    dplyr::mutate(Year = year) %>% 
-    dplyr::mutate(Sheet = x)
+    dplyr::filter(!is.na(TIPO)) %>% 
+    dplyr::mutate(CLASSE_MDC = stringr::str_remove_all(string = CLASSE_MDC, pattern = "\\(|\\)|Segue ")) %>%
+    dplyr::mutate(ANNO = year) %>% 
+    dplyr::mutate(TAVOLA = x)
     
   return(raw_data)
 
@@ -102,4 +102,4 @@ all_cleaned_datas <- pmap(list(list_a, list_b, list_c), read_sdo)
 
 merged_data <- dplyr::bind_rows(all_cleaned_datas) %>%
   dplyr::mutate(id_row = NULL) %>%
-  dplyr::mutate(Attività = "Acuti - Regime ordinario")
+  dplyr::mutate(ATTIVITÀ = "Acuti - Regime ordinario")
