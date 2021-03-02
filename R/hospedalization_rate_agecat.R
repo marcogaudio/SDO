@@ -21,7 +21,7 @@ hosp_reader_5.10 <- function(x, y, year) {
   colnames(raw_data) <- columns 
   
   raw_data <- raw_data %>% 
-    dplyr::mutate(Year = year, Sheet = x)
+    dplyr::mutate(ANNO = year, TAVOLA = x)
   
 }
 

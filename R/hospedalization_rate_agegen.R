@@ -48,7 +48,7 @@ hosp_reader_agegen <- function(x, y, year){
   
   all_data1 <- all_data1 %>%
     dplyr::bind_rows() %>%
-    dplyr::mutate(Year = year)
+    dplyr::mutate(ANNO = year)
   
 }
 
