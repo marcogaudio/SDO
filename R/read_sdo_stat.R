@@ -9,9 +9,9 @@ read_sdo_stat <- function(x, y, year){
   
   raw_data <- raw_data %>%  
     tidyr::drop_na() %>% 
-    dplyr::mutate(Year = year) %>%
+    dplyr::mutate(ANNO = year) %>%
     dplyr::rename(SOGLIA = paste0("Soglia ", year)) %>%
-    dplyr::mutate(Sheet = x)
+    dplyr::mutate(TAVOLA = x)
   return(raw_data)
 }
 
@@ -65,15 +65,15 @@ list_c <- as.list(as.character(grid_list$Var3))
 all_cleaned_datas_2_7 <- purrr::pmap(list(list_a, list_b, list_c), read_sdo_stat)
 
 merged_data_2_7 <- dplyr::bind_rows(all_cleaned_datas_2_7) %>%
-  dplyr::rename(code1 = "DRG",
-                type = "Tipo DRG",
+  dplyr::rename(CODICE = "DRG",
+                TIPO = "Tipo DRG",
                 DRG = "Descrizione") 
 
 
 # join tables 2.2.6 with tables 2.2.7
 SDO_ordinario <- dplyr::left_join(x = merged_data, y = merged_data_2_7, 
-                                 by = c("DRG", "Year", "type", "code1")) %>%
+                                 by = c("DRG", "ANNO", "TIPO", "CODICE")) %>%
   dplyr::select(-"Degenza media") %>% # there is two time
-  tidyr::unite(Sheet, Sheet.x, Sheet.y, remove = TRUE, sep = "/") %>%
+  tidyr::unite(TAVOLA, TAVOLA.x, TAVOLA.y, remove = TRUE, sep = "/") %>%
   view()
 

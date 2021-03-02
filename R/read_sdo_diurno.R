@@ -7,15 +7,15 @@ read_sdo_diurno <- function(x, y, year) {
                                 sheet = x, skip = 3) 
   
   raw_data <- raw_data %>%
-    dplyr::rename(type  = "Tipo DRG",
-                  code1 = "DRG",
+    dplyr::rename(TIPO  = "Tipo DRG",
+                  CODICE = "DRG",
                   DRG = "Descrizione")
   
   raw_data <- raw_data %>% 
     tidyr::drop_na() %>%
-    dplyr::mutate(Year = year) %>%
-    dplyr::mutate(Attività = "Acuti - Regime diurno") %>%
-    dplyr::mutate(Sheet = x)
+    dplyr::mutate(ANNO = year) %>%
+    dplyr::mutate(ATTIVITÀ = "Acuti - Regime diurno") %>%
+    dplyr::mutate(TAVOLA = x)
   
   return(raw_data)
   
