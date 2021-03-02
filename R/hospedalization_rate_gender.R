@@ -24,7 +24,7 @@ hosp_reader_gender <- function(x, y, year){
       dplyr::rename(MASCHI = first_col,
                     FEMMINE = second_col) %>%
       dplyr::select(`REGIONE DI RESIDENZA`, MASCHI, FEMMINE) %>%
-      dplyr::mutate(Attività = activity) %>% 
+      dplyr::mutate(ATTIVITÀ = activity) %>% 
       tidyr::drop_na() 
     
   }
@@ -37,7 +37,8 @@ hosp_reader_gender <- function(x, y, year){
   list_sdo <- purrr::pmap(list(index, activity_list), raw_reader, data = raw_data)
   
   output_data <- dplyr::bind_rows(list_sdo) %>% 
-    dplyr::mutate(Year = year)
+    dplyr::mutate(ANNO = year) %>%
+    dplyr::mutate(TAVOLA = "Tav_5.1")
   
   # 
   # raw_data2 <- raw_data %>% 

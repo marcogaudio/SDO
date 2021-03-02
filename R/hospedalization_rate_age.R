@@ -9,8 +9,8 @@ hosp_reader_age <- function(x, y, year){
     dplyr::filter(!is.na(`REGIONE DI RESIDENZA`)) %>% 
     tidyr::drop_na() %>% 
     dplyr::slice(-n()) %>% 
-    dplyr::mutate(Year = year) %>%
-    dplyr::mutate(Sheet = x) 
+    dplyr::mutate(ANNO = year) %>%
+    dplyr::mutate(TAVOLA = x) 
   
 }
 
@@ -24,7 +24,7 @@ sdo_autom <- function(table, activity, function_name){
   sdo_table <- purrr::pmap(list(list_sheets, files_names, Years),
                           function_name) %>%
     dplyr::bind_rows() %>%
-    dplyr::mutate(Attività = activity)
+    dplyr::mutate(ATTIVITÀ = activity)
   
 }
 

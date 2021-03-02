@@ -16,8 +16,8 @@ sheets_names <- rep(list("Tav_2.3.6"), 4)
 SDO_ordinario_riab <- 
   purrr::pmap(list(sheets_names, files_names, Years), read_sdo_check) %>%
   dplyr::bind_rows() %>%
-  dplyr::mutate(Attività = "Riabilitazione - Regime ordinario") %>%
-  dplyr::mutate(Sheet = "Tav_2.3.6")
+  dplyr::mutate(ATTIVITÀ = "Riabilitazione - Regime ordinario") %>%
+  dplyr::mutate(TAVOLA = "Tav_2.3.6")
 
 
 #Riabilitazione - regime diurno
@@ -27,8 +27,8 @@ sheets_names <- rep(list("Tav_2.3.7"), 4)
 SDO_diurno_riab <- 
   purrr::pmap(list(sheets_names, files_names, Years), read_sdo_check) %>%
   dplyr::bind_rows() %>%
-  dplyr::mutate(Attività = "Riabilitazione - Regime diurno") %>%
-  dplyr::mutate(Sheet = "Tav_2.3.7")
+  dplyr::mutate(ATTIVITÀ = "Riabilitazione - Regime diurno") %>%
+  dplyr::mutate(TAVOLA = "Tav_2.3.7")
 
 
 #Lungodegenza
@@ -38,6 +38,6 @@ sheets_names <- rep(list("Tav_2.3.8"), 4)
 SDO_lungodegenza <- 
   purrr::pmap(list(sheets_names, files_names, Years), read_sdo_check) %>%
   dplyr::bind_rows() %>%
-  dplyr::mutate(Attività = "Lungodegenza") %>%
-  dplyr::mutate(Sheet = "Tav_2.3.8")
+  dplyr::mutate(ATTIVITÀ = "Lungodegenza") %>%
+  dplyr::mutate(TAVOLA = "Tav_2.3.8")
 
