@@ -9,7 +9,7 @@ hosp_reader_age <- function(x, y, year){
   raw_data <- raw_data %>% 
     dplyr::filter(!is.na(`REGIONE DI RESIDENZA`)) %>% 
     tidyr::drop_na() %>% 
-    dplyr::slice(-n()) %>% 
+   
     dplyr::mutate(ANNO = year) %>%
     dplyr::mutate(TAVOLA = x) 
   
