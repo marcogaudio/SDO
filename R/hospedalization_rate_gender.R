@@ -40,48 +40,6 @@ hosp_reader_gender <- function(x, y, year){
     dplyr::mutate(ANNO = year) %>%
     dplyr::mutate(TAVOLA = "Tav_5.1")
   
-  # 
-  # raw_data2 <- raw_data %>% 
-  #   dplyr::rename(MASCHI = "...4",
-  #                 FEMMINE = "...5") %>%
-  #   dplyr::select(`REGIONE DI RESIDENZA`, MASCHI, FEMMINE) %>%
-  #   dplyr::mutate(Attività = "Acuti - Regime diurno") %>% 
-  #   select(where(~!all(is.na(.x)))) %>%
-  #   tidyr::drop_na() %>%
-  #   dplyr::slice(-n()) 
-  # 
-  # raw_data3 <- raw_data %>% 
-  #   dplyr::rename(MASCHI = "RIABILITAZIONE",
-  #                 FEMMINE = "...8") %>%
-  #   dplyr::select(`REGIONE DI RESIDENZA`, MASCHI, FEMMINE) %>%
-  #   dplyr::mutate(Attività = "Riabilitazione - Regime ordinario") %>% 
-  #   select(where(~!all(is.na(.x)))) %>%
-  #   tidyr::drop_na() %>%
-  #   dplyr::slice(-n()) 
-  # 
-  # raw_data4 <- raw_data %>% 
-  #   dplyr::rename(MASCHI = "...9",
-  #                 FEMMINE = "...10") %>%
-  #   dplyr::select(`REGIONE DI RESIDENZA`, MASCHI, FEMMINE) %>%
-  #   dplyr::mutate(Attività = "Riabilitazione - Regime diurno") %>% 
-  #   select(where(~!all(is.na(.x)))) %>%
-  #   tidyr::drop_na() %>%
-  #   dplyr::slice(-n()) 
-  # 
-  # raw_data5 <- raw_data %>% 
-  #   dplyr::rename(MASCHI = "LUNGODEGENZA",
-  #                 FEMMINE = "...13") %>%
-  #   dplyr::select(`REGIONE DI RESIDENZA`, MASCHI, FEMMINE) %>%
-  #   dplyr::mutate(Attività = "Lungodegenza") %>% 
-  #   select(where(~!all(is.na(.x)))) %>%
-  #   tidyr::drop_na() %>%
-  #   dplyr::slice(-n()) 
-  # 
-  # raw_data <- dplyr::bind_rows(raw_data1, raw_data2,
-  #                              raw_data3, raw_data4, 
-  #                              raw_data5) %>% 
-  #   dplyr::mutate(Year = year)
-  
   return(output_data)
 }
 
