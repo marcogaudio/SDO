@@ -7,8 +7,7 @@ hosp_reader_agegen <- function(x, y, year){
                                 skip = 3) 
   
   raw_data <- raw_data %>% select(where(~!all(is.na(.)))) %>% 
-    drop_na() %>% 
-    slice(-n()) 
+    drop_na() 
   
   name <- names(raw_data)
   
@@ -75,39 +74,3 @@ HR_agecat_gen <- purrr::pmap(list(table_list, activity_list), sdo_autom,
   view()
 
 
-# sheet_names = rep(list("Tav_5.12"), 4)
-# 
-# hosp_rate_5.12 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agegen) %>%
-#   dplyr::bind_rows() %>%
-#   dplyr::mutate(Attività = "Acuti - Regime ordinario") 
-# 
-# 
-# sheet_names = rep(list("Tav_5.14"), 4)
-# 
-# hosp_rate_5.14 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agegen) %>%
-#   dplyr::bind_rows() %>%
-#   dplyr::mutate(Attività = "Acuti - Regime diurno") 
-# 
-# sheet_names = rep(list("Tav_5.16"), 4)
-# 
-# hosp_rate_5.16 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agegen) %>%
-#   dplyr::bind_rows() %>%
-#   dplyr::mutate(Attività = "Riabilitazione - Regime ordinario")
-# 
-# 
-# sheet_names = rep(list("Tav_5.18"), 4)
-# 
-# hosp_rate_5.18 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agegen) %>%
-#   dplyr::bind_rows() %>%
-#   dplyr::mutate(Attività = "Riabilitazione - Regime diurno")     
-#   
-#   
-# sheet_names = rep(list("Tav_5.20"), 4)
-# 
-# hosp_rate_5.20 <- purrr::pmap(list(sheet_names, files_names, Years), hosp_reader_agegen) %>%
-#   dplyr::bind_rows() %>%
-#   dplyr::mutate(Attività = "Lungodegenza")  
-# 
-# HR_agecat_gen_old <- dplyr::bind_rows(hosp_rate_5.12, hosp_rate_5.14, hosp_rate_5.16,
-#                               hosp_rate_5.18, hosp_rate_5.20)
-# view(HR_agecat_gen)
