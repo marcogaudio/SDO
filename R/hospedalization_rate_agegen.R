@@ -1,5 +1,6 @@
 # read tables: 5.12, 5.14, 5.16, 5.18, 5.20 (they are similar)
-
+# Tasso di ospedalizzazione per fasce di età e genere 
+# (per 1.000 abitanti) Attività per Acuti in Regime ordinario 
 hosp_reader_agegen <- function(x, y, year){
   
   raw_data <- readxl::read_xlsx(path = y, sheet = x,
