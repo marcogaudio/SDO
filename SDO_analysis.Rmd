@@ -1,0 +1,818 @@
+---
+title: "SDO analysis"
+author: "Marco Gaudio"
+date: "2/3/2021"
+output:
+  html_document:
+    code_folding: show
+    highlight: tango
+    keep_md: no
+    number_sections: yes
+    theme: united
+    toc: yes
+    toc_float: yes
+  word_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+  github_document:
+    toc: yes
+---
+
+```{r, include=FALSE}
+options(scipen=999)
+knitr::opts_chunk$set(echo = TRUE, 
+                      include = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = FALSE)
+library(tidymodels)
+library(tidyverse)
+library(palmerpenguins)
+library(kableExtra)
+library(DT)
+```
+
+
+The aim of this document is to analyze the datas related to the italian *Schede Dimissioni Ospedaliere* (SDO), in the period 2016 - 2019. 
+The data are provided by the [**Italian Ministry of Health**](http://www.salute.gov.it/portale/temi/p2_6.jsp?lingua=italiano&id=1237&area=ricoveriOspedalieri&menu=vuotolink).
+
+The document is composed by 3 sections: 
+
+* **section 1** provides an analysis for each of the 5 activities (Acuti Regime ordinario;       Acuti Regime diurno, Riabilitazione Regime ordinario; Riabilitazione Regime diurno;        Lungodegenza) and considering the differences in the period studied. 
+
+* **section 2** analyses the hospitalization rates in Italy in the period 2016-2019, considering different region, gender and age category.
+
+* **section 3** provides a comparison between  hospitalization rates in Italy and hospitalization rates in UK.
+
+
+```{r}
+# construct a summary table
+summary_ordinario <- matching_tables %>% 
+  group_by(ANNO) %>%
+  summarise(DIMISSIONI = sum(DIMISSIONI)) %>%
+  mutate("VARIAZIONE %" = round((DIMISSIONI / lag(DIMISSIONI) -1) * 100, digits = 3)) %>%
+  mutate(`ATTIVITÀ` = "Acuti - Regime ordinario")
+
+summary_diurno <- matching_tables_2.2.11 %>% 
+  group_by(ANNO) %>%
+  summarise(DIMISSIONI = sum(DIMISSIONI)) %>%
+  mutate("VARIAZIONE %" = round((DIMISSIONI / lag(DIMISSIONI) -1) * 100, digits = 3)) %>%
+  mutate(`ATTIVITÀ` = "Acuti - Regime diurno")
+
+summary_riab_ord <- SDO_ordinario_riab %>%
+  group_by(ANNO) %>%
+  summarise(DIMISSIONI = sum(DIMISSIONI)) %>%
+  mutate("VARIAZIONE %" = round((DIMISSIONI / lag(DIMISSIONI) -1) * 100, digits = 3)) %>%
+  mutate(`ATTIVITÀ` = "Riabilitazione - Regime ordinario")
+
+summary_riab_diurno <- SDO_diurno_riab %>%
+  group_by(ANNO) %>%
+  summarise(DIMISSIONI = sum(DIMISSIONI)) %>%
+  mutate("VARIAZIONE %" = round((DIMISSIONI / lag(DIMISSIONI) -1) * 100, digits = 3)) %>%
+  mutate(`ATTIVITÀ` = "Riabilitazione - Regime diurno")
+
+summary_lungodegenza <- SDO_lungodegenza %>%
+  group_by(ANNO) %>%
+  summarise(DIMISSIONI = sum(DIMISSIONI)) %>%
+  mutate("VARIAZIONE %" = round((DIMISSIONI / lag(DIMISSIONI) -1) * 100, digits = 3)) %>%
+  mutate(`ATTIVITÀ` = "Riabilitazione - Regime diurno")
+
+summary_tab <- dplyr::bind_rows(summary_ordinario,
+                                summary_diurno,
+                                summary_riab_ord,
+                                summary_riab_diurno,
+                                summary_lungodegenza)
+
+```
+
+The following graph shows the total number of hospital discharges divided by activity for the 4 years of analysis.
+
+```{r, echo=FALSE, include=TRUE}
+
+  p <- ggplot(summary_tab, aes(x = ANNO, y = DIMISSIONI, fill = `ATTIVITÀ`)) + 
+  geom_bar(stat = "identity") +
+  labs(title = 'TOTAL DISCHARGES IN ITALY') 
+p
+```
+
+Table 1. provides the total number of discharges for all the activities and its percentage variation through the period of analysis. As shown here, the total number of hospital discharges is decreased from 2016 to 2019. In particular, from 2018 to 2019 the number has dropped from 8.356.874 to 8.522.456, with a decreased of 1.733%.
+
+```{r, echo=FALSE, include=TRUE}
+
+summary_tab %>% 
+  dplyr::group_by(ANNO) %>%
+  dplyr::summarise(DIMISSIONI = sum(DIMISSIONI)) %>%
+  dplyr::mutate("VARIAZIONE %" = round((DIMISSIONI / lag(DIMISSIONI) -1) * 100,
+                                        digits = 3)) %>%
+DT::datatable( options = list(
+    lengthChange = FALSE,
+    paging = FALSE,
+    searching = FALSE
+    
+  ),
+    caption = 'Table 1.')
+
+```
+
+
+
+# ATTIVITÀ
+
+## Acuti - Regime ordinario.
+the following section is aimed to analyze the discharge in *Acuti - Regime ordinario*, from 2016 to 2019 in Italy.
+
+### DIMISSIONI
+
+Table 1.1 provides a summary of the hospedalization discharges in *"Acuti - Regime ordinario"* and the variation from year to year.
+
+```{r, echo=FALSE, include=TRUE}
+summary_ordinario <- matching_tables %>% 
+  dplyr::group_by(ANNO) %>%
+  dplyr::summarise(DIMISSIONI = sum(DIMISSIONI)) %>%
+  dplyr::mutate("VARIAZIONE %" = round((DIMISSIONI / lag(DIMISSIONI) -1) * 100, digits = 3))
+
+summary_ordinario %>% 
+  DT::datatable( options = list(
+    lengthChange = FALSE,
+    paging = FALSE,
+    searching = FALSE
+    
+  ),
+    caption = 'Table 1.1')
+
+
+
+```
+
+This bar chart shows the hospital discharges by [MDC](#glossario) for each year of the analysis.
+```{r, echo=FALSE, include=TRUE}
+
+SDO_ordinario %>%
+  dplyr::group_by(CLASSE_MDC, ANNO) %>%
+  dplyr::summarise(DIMISSIONI = sum(DIMISSIONI)) %>%
+  dplyr::mutate(CLASSE_MDC = gsub("-.*", " ", CLASSE_MDC)) %>%
+  ggplot(.) +
+  geom_bar(
+    mapping = aes(y = DIMISSIONI,
+                  x = CLASSE_MDC,
+                  fill = ANNO),
+    position = "dodge",
+    width = .5,
+           stat = "identity", 
+           color = "black") + 
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) + 
+  labs(title = "HOSPITAL DISCHARGES BY MDC",
+              subtitle = "Acuti - Regime ordinario")
+
+  
+```
+
+As shown from the bar chart, over the 4 years of analysis, the MDC class with the greatest number of dicharges for the activity *Acuti - Regime ordinario* is the **MDC 05 - Malattie e disturbi dell'apparato cardiocircolatorio**, followed by **MDC 08 - Malattie e disturbi del sistema muscolo-scheletrico e del tessuto connettivo** and **MDC 04 - Malattie e disturbi dell'apparato respiratorio**.  
+
+
+
+The following table provides a summary of the discharges for each MDC class and for each year.
+
+```{r, echo=FALSE, include=TRUE}
+#overall discharges for acuti - regime ordinario for the 4 years
+overall_ordinario <- matching_tables %>%
+  dplyr::select(CLASSE_MDC, DIMISSIONI, ANNO)
+
+overall_ordinario %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+    caption = 'Table 1.2')
+```
+
+### PERCENTUALE GIORNI DIMISSIONI PER MDC.
+
+Days before discharge in 2019 for MDC in percentage.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+percentage_tab <- function(year){
+  perc <- SDO_ordinario %>%
+  filter(ANNO == year) %>%
+  mutate(percentage_dim1gg = `% DIMISSIONI DI 1 GIORNO`/100,
+         percentage_dim2gg = `% DIMISSIONI DI 2-3 GIORNI`/100,
+         percentage_dim4gg = `% DIMISSIONI TRA 4 GIORNI E VALORE SOGLIA`/100,
+         percentage_dimooltre = `% DIMISSIONI OLTRE VALORE SOGLIA`/100) 
+# compute the percentage for the whole MDC
+
+dimissioni <- as.matrix(perc$DIMISSIONI, ncol = 1)  
+percent_oneday <-  as.matrix(perc$percentage_dim1gg, nrow = 1) 
+percent_twoday <- as.matrix(perc$percentage_dim2gg, nrow = 1)
+percent_fourday <- as.matrix(perc$percentage_dim4gg, nrow = 1)
+percentbeyond <- as.matrix(perc$percentage_dimooltre, nrow = 1)
+
+dimissioni_1 <- round((t(percent_oneday) %*% dimissioni )/ sum(perc$DIMISSIONI), digits = 3)
+dimissioni_2 <- round((t(percent_twoday) %*% dimissioni )/ sum(perc$DIMISSIONI), digits = 3)
+dimissioni_4 <- round((t(percent_fourday) %*% dimissioni )/ sum(perc$DIMISSIONI), digits = 3)
+dimissioni_oltre <- round((t(percentbeyond) %*% dimissioni )/ sum(perc$DIMISSIONI), 
+                          digits = 3)
+return(c(dimissioni_1,dimissioni_2, dimissioni_4, dimissioni_oltre))
+}
+perc <- SDO_ordinario %>%
+  filter(ANNO == "2019") %>%
+  mutate(percentage_dim1gg = `% DIMISSIONI DI 1 GIORNO`/100,
+         percentage_dim2gg = `% DIMISSIONI DI 2-3 GIORNI`/100,
+         percentage_dim4gg = `% DIMISSIONI TRA 4 GIORNI E VALORE SOGLIA`/100,
+         percentage_dimooltre = `% DIMISSIONI OLTRE VALORE SOGLIA`/100) 
+# compute the percentage for the whole MDC
+
+dimissioni <- as.matrix(perc$DIMISSIONI, ncol = 1)  
+percent_oneday <-  as.matrix(perc$percentage_dim1gg, nrow = 1) 
+percent_twoday <- as.matrix(perc$percentage_dim2gg, nrow = 1)
+percent_fourday <- as.matrix(perc$percentage_dim4gg, nrow = 1)
+percentbeyond <- as.matrix(perc$percentage_dimooltre, nrow = 1)
+
+dimissioni_1 <- round((t(percent_oneday) %*% dimissioni )/ sum(perc$DIMISSIONI), digits = 3)
+dimissioni_2 <- round((t(percent_twoday) %*% dimissioni )/ sum(perc$DIMISSIONI), digits = 3)
+dimissioni_4 <- round((t(percent_fourday) %*% dimissioni )/ sum(perc$DIMISSIONI), digits = 3)
+dimissioni_oltre <- round((t(percentbeyond) %*% dimissioni )/ sum(perc$DIMISSIONI), 
+                          digits = 3)
+
+#PROVA
+# degenza_tot_gg <- SDO_ordinario %>%
+#   dplyr::filter(ANNO == "2019",
+#          CLASSE_MDC == "MDC 01 - Malattie e disturbi del sistema nervoso") %>%
+#   dplyr::summarise(sum(DIMISSIONI)) %>%
+#   dplyr::pull() %>%
+#   as.numeric()
+# 
+# dimissioni_1*degenza_tot_gg+
+# dimissioni_2*degenza_tot_gg+
+# dimissioni_4*degenza_tot_gg+
+# dimissioni_oltre*degenza_tot_gg
+
+mycols <- c("% DIMISSIONI DI 1 GIORNO",                 
+            "% DIMISSIONI DI 2-3 GIORNI",              
+            "% DIMISSIONI TRA 4 GIORNI E VALORE SOGLIA",
+            "% DIMISSIONI OLTRE VALORE SOGLIA")
+
+prop_table <- function(year){
+  discharges_prop <- percentage_tab(year)
+tabella_plot <- tidyr::tibble(class = mycols,
+                       proportion = discharges_prop) %>%
+  dplyr::arrange(-proportion) %>%
+  dplyr::mutate(Per_cumsum = cumsum(proportion)) %>%
+  dplyr::mutate(ANNO = year)
+
+}
+Years <- c("2016", "2017", "2018", "2019")
+
+summary_list <- purrr::map(Years, prop_table)
+
+summary_prop <- dplyr::bind_rows(summary_list) 
+
+discharges_2019 <- percentage_tab("2019")
+tabella_plot_2019 <- tibble(class = mycols,
+                       proportion = discharges_2019) %>%
+  arrange(-proportion) %>%
+  mutate(Per_cumsum = cumsum(proportion))
+
+# ggplot(tabella_plot, aes(x = "", y = proportion, fill = class)) +
+#   geom_bar(width = 1, stat = "identity", color = "white") +
+#   geom_col() +
+#   geom_text(aes(y = Per_cumsum - proportion/2, label = proportion*100), color = "white")+ 
+#   coord_polar("y", start = 0)+
+#   theme_void()
+
+ggplot(data = summary_prop, aes(x=1, y=proportion, fill=class)) +
+  geom_col() +
+  geom_text(aes(label = proportion*100), position = position_stack(vjust = 0.5))+
+  coord_polar(theta = "y") + 
+  theme_void() +
+  labs(title = "% DIMISSIONI PER GIORNO",
+       fill = "") +
+  facet_wrap(~ANNO)
+
+
+
+```
+
+
+
+
+
+
+The bar chart below shows the distribution of discharges in *Acuti - Regime ordinario* per age category, for each year of analysis.
+
+```{r, echo=FALSE, include=TRUE}
+
+sdo_age_gender2 <- sdo_age_gender %>%
+  dplyr::filter(`ATTIVITÀ` == "Acuti - Regime ordinario") %>%
+  dplyr::mutate_at(vars(`Categoria età`), factor)
+
+sdo_age_gender2$`Categoria età` <- factor(sdo_age_gender2$`Categoria età`,
+                                          c("Meno di 1 anno",
+                                            "Da 1 a 4 anni",
+                                            "Da 5 a 9 anni",
+                                            "Da 10 a 14 anni",
+                                            "Da 15 a 19 anni",
+                                            "Da 20 a 24 anni",
+                                            "Da 25 a 29 anni", 
+                                            "Da 30 a 34 anni", 
+                                            "Da 35 a 39 anni",
+                                            "Da 40 a 44 anni",
+                                            "Da 45 a 49 anni", 
+                                            "Da 50 a 54 anni", 
+                                            "Da 55 a 59 anni", 
+                                            "Da 60 a 64 anni", 
+                                            "Da 65 a 69 anni", 
+                                            "Da 70 a 74 anni",
+                                            "75 anni e oltre"))
+sdo_age_gender2 %>%
+  dplyr::select(`Categoria età`, MASCHI, FEMMINE, ANNO) %>%
+  dplyr::mutate(DIMISSIONI_TOT = MASCHI + FEMMINE) %>%
+  dplyr::select(`Categoria età`, DIMISSIONI_TOT, ANNO) %>%
+ 
+  ggplot(., aes(x = `Categoria età`,y = DIMISSIONI_TOT, fill = ANNO)) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5))
+
+  
+  
+
+
+
+
+```
+
+
+
+
+### GIORNATE DI DEGENZA {.tabset}
+
+The following graph shows the [*Giorni di Degenza*](#glossario) for each MDC and over the years of analysis.
+```{r, echo=FALSE, include=TRUE}
+SDO_ordinario %>%
+  dplyr::group_by(CLASSE_MDC, ANNO) %>%
+  dplyr::summarise(GIORNI_DEGENZA = sum(`GIORNI DI DEGENZA`)) %>%
+  dplyr::mutate(CLASSE_MDC = gsub("-.*", " ", CLASSE_MDC)) %>%
+  ggplot(.) +
+  geom_bar(
+    mapping = aes(y = GIORNI_DEGENZA,
+                  x = CLASSE_MDC,
+                  fill = ANNO),
+    position = "dodge",
+    width = .5,
+           stat = "identity", 
+           color = "black") + 
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) + 
+  labs(title = "GIORNI DI DEGENZA",
+              subtitle = "Acuti - Regime ordinario")
+
+
+```
+
+
+Table 1.3 provides a summary for *Giorni di Degenza* by MDC for each year.
+
+```{r, echo=FALSE, include=TRUE}
+overall_ordinario_degenza <- matching_tables %>%
+  dplyr::select(CLASSE_MDC, `GIORNATE DI DEGENZA`, ANNO)
+
+overall_ordinario_degenza %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 1.3"
+                )
+
+```
+
+The following graph shows the Mean value for *Giorni di Degenza* for each MDC.
+
+#### 2019 {-}
+```{r, echo=FALSE, include=TRUE}
+sum_deg <- SDO_ordinario %>%
+  dplyr::filter(ANNO == "2019") %>%
+  dplyr::group_by(CLASSE_MDC, ANNO) %>% 
+  dplyr::mutate(CLASSE_MDC = gsub("-.*", " ", CLASSE_MDC)) %>%
+  dplyr::mutate_at(vars(ANNO, CLASSE_MDC), factor) %>%
+  dplyr::summarise(MAX_DEGENZA = max(`Degenza massima`),
+            MIN_DEGENZA = min(`Degenza minima`),
+            MEAN_DEGENZA = round(mean(`DEGENZA MEDIA (giorni)`), digits = 3))
+
+ggplot(data = sum_deg, mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
+                                                             MEAN_DEGENZA), 
+                                     y = MEAN_DEGENZA)) +
+ geom_histogram(stat = "identity") + 
+  coord_flip() + 
+   theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) +  
+  labs(title = "DEGENZA E MEDIA PER OGNI MDC",
+              subtitle = "Acuti - Regime ordinario",
+       x = "CLASSE MDC",
+       y = "GIORNI DI DEGENZA") 
+  
+
+
+```
+
+#### 2018 {-}
+```{r, echo=FALSE, include=TRUE}
+sum_deg <- SDO_ordinario %>%
+  dplyr::filter(ANNO == "2018") %>%
+  dplyr::group_by(CLASSE_MDC, ANNO) %>% 
+  dplyr::mutate(CLASSE_MDC = gsub("-.*", " ", CLASSE_MDC)) %>%
+  dplyr::mutate_at(vars(ANNO, CLASSE_MDC), factor) %>%
+  dplyr::summarise(MAX_DEGENZA = max(`Degenza massima`),
+            MIN_DEGENZA = min(`Degenza minima`),
+            MEAN_DEGENZA = round(mean(`DEGENZA MEDIA (giorni)`), digits = 3))
+
+ggplot(data = sum_deg, mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
+                                                             MEAN_DEGENZA), 
+                                     y = MEAN_DEGENZA)) +
+ geom_histogram(stat = "identity") + 
+  coord_flip() + 
+   theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) +  
+  labs(title = "DEGENZA E MEDIA PER OGNI MDC",
+              subtitle = "Acuti - Regime ordinario",
+       x = "CLASSE MDC",
+       y = "GIORNI DI DEGENZA") 
+  
+
+
+```
+
+#### 2017 {-}
+```{r, echo=FALSE, include=TRUE}
+sum_deg <- SDO_ordinario %>%
+  dplyr::filter(ANNO == "2017") %>%
+  dplyr::group_by(CLASSE_MDC, ANNO) %>% 
+  dplyr::mutate(CLASSE_MDC = gsub("-.*", " ", CLASSE_MDC)) %>%
+  dplyr::mutate_at(vars(ANNO, CLASSE_MDC), factor) %>%
+  dplyr::summarise(MAX_DEGENZA = max(`Degenza massima`),
+            MIN_DEGENZA = min(`Degenza minima`),
+            MEAN_DEGENZA = round(mean(`DEGENZA MEDIA (giorni)`), digits = 3))
+
+ggplot(data = sum_deg, mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
+                                                             MEAN_DEGENZA), 
+                                     y = MEAN_DEGENZA)) +
+ geom_histogram(stat = "identity") + 
+  coord_flip() + 
+   theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) +  
+  labs(title = "DEGENZA E MEDIA PER OGNI MDC",
+              subtitle = "Acuti - Regime ordinario",
+       x = "CLASSE MDC",
+       y = "GIORNI DI DEGENZA") 
+  
+
+
+```
+
+#### 2016 {-}
+```{r, echo=FALSE, include=TRUE}
+sum_deg <- SDO_ordinario %>%
+  dplyr::filter(ANNO == "2016") %>%
+  dplyr::group_by(CLASSE_MDC, ANNO) %>% 
+  dplyr::mutate(CLASSE_MDC = gsub("-.*", " ", CLASSE_MDC)) %>%
+  dplyr::mutate_at(vars(ANNO, CLASSE_MDC), factor) %>%
+  dplyr::summarise(MAX_DEGENZA = max(`Degenza massima`),
+            MIN_DEGENZA = min(`Degenza minima`),
+            MEAN_DEGENZA = round(mean(`DEGENZA MEDIA (giorni)`), digits = 3))
+
+ggplot(data = sum_deg, mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
+                                                             MEAN_DEGENZA), 
+                                     y = MEAN_DEGENZA)) +
+ geom_histogram(stat = "identity") + 
+  coord_flip() + 
+   theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) +  
+  labs(title = "DEGENZA E MEDIA PER OGNI MDC",
+              subtitle = "Acuti - Regime ordinario",
+       x = "CLASSE MDC",
+       y = "GIORNI DI DEGENZA") 
+  
+
+
+```
+
+### {-}
+
+Table 1.3 provides a summary of Max, Min and Mean values for *"Giorni di Degenza"* for each MDC.
+```{r, echo=FALSE, include=TRUE}
+
+SDO_ordinario %>%
+  dplyr::group_by(CLASSE_MDC, ANNO) %>% 
+  dplyr::mutate(CLASSE_MDC = gsub("-.*", " ", CLASSE_MDC)) %>%
+  dplyr::mutate_at(vars(ANNO, CLASSE_MDC), factor) %>%
+  dplyr::summarise(MAX_DEGENZA = max(`Degenza massima`),
+            MIN_DEGENZA = min(`Degenza minima`),
+            MEAN_DEGENZA = round(mean(`DEGENZA MEDIA (giorni)`), digits = 3)) %>%
+  DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+    caption = 'Table 1.3'
+    
+  )
+
+```
+
+
+
+## Acuti - Regime diurno.
+
+### DIMISSIONI
+
+Table 2.1 provides a summary of the hospedalization discharges in *"Acuti - Regime diurno"* and the variation from year to year.
+
+
+```{r, echo=FALSE, include=TRUE}
+summary_diurno <- matching_tables_2.2.11 %>% 
+  dplyr::group_by(ANNO) %>%
+  dplyr::summarise(DIMISSIONI = sum(DIMISSIONI)) %>%
+  dplyr::mutate("VARIAZIONE %" = round((DIMISSIONI / lag(DIMISSIONI) -1) * 100, digits = 3))
+
+summary_diurno %>% 
+  DT::datatable( options = list(
+    lengthChange = FALSE,
+    paging = FALSE,
+    searching = FALSE
+    
+  ),
+    caption = 'Table 2.1')
+
+
+
+```
+
+
+This bar chart shows the hospital discharges by MDC for each year of the analysis.
+```{r, echo=FALSE, include=TRUE}
+
+SDO_diurno %>%
+  dplyr::group_by(CLASSE_MDC, ANNO) %>%
+  dplyr::summarise(DIMISSIONI = sum(DIMISSIONI)) %>%
+  dplyr::mutate(CLASSE_MDC = gsub("-.*", " ", CLASSE_MDC)) %>%
+  ggplot(.) +
+  geom_bar(
+    mapping = aes(y = DIMISSIONI,
+                  x = CLASSE_MDC,
+                  fill = ANNO),
+    position = "dodge",
+    width = .5,
+           stat = "identity", 
+           color = "black") + 
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) + 
+  labs(title = "HOSPITAL DISCHARGES BY MDC",
+              subtitle = "Acuti - Regime diurno")
+
+  
+```
+
+
+In the case of *Acuti - Regime diurno*, over the 4 years of analysis, the MDC class with the greatest number of dicharges is the **MDC 08 - Malattie e disturbi del sistema muscolo-scheletrico e del tessuto connettivo**, followed by **MDC 17 - Malattie e disturbi mieloproliferativi e neoplasie scarsamente differenziate** and **MDC 13 -Malattie e disturbi dell'apparato riproduttivo femminile**.  
+
+
+The following table provides a summary of the discharges for each MDC class and for each year.
+
+```{r, echo=FALSE, include=TRUE}
+#overall discharges for acuti - regime diurno for the 4 years
+overall_diurno <- matching_tables_2.2.11 %>%
+  dplyr::select(CLASSE_MDC, DIMISSIONI, ANNO)
+
+overall_diurno %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+    caption = 'Table 2.2')
+```
+
+The bar chart below shows the distribution of discharges in *Acuti - Regime diurno* per age category, for each year of analysis.
+
+```{r, echo=FALSE, include=TRUE}
+
+sdo_age_gender2 <- sdo_age_gender %>%
+  dplyr::filter(`ATTIVITÀ` == "Acuti - Regime diurno") %>%
+  dplyr::mutate_at(vars(`Categoria età`), factor)
+
+sdo_age_gender2$`Categoria età` <- factor(sdo_age_gender2$`Categoria età`,
+                                          c("Meno di 1 anno",
+                                            "Da 1 a 4 anni",
+                                            "Da 5 a 9 anni",
+                                            "Da 10 a 14 anni",
+                                            "Da 15 a 19 anni",
+                                            "Da 20 a 24 anni",
+                                            "Da 25 a 29 anni", 
+                                            "Da 30 a 34 anni", 
+                                            "Da 35 a 39 anni",
+                                            "Da 40 a 44 anni",
+                                            "Da 45 a 49 anni", 
+                                            "Da 50 a 54 anni", 
+                                            "Da 55 a 59 anni", 
+                                            "Da 60 a 64 anni", 
+                                            "Da 65 a 69 anni", 
+                                            "Da 70 a 74 anni",
+                                            "75 anni e oltre"))
+sdo_age_gender2 %>%
+  dplyr::select(`Categoria età`, MASCHI, FEMMINE, ANNO) %>%
+  dplyr::mutate(DIMISSIONI_TOT = MASCHI + FEMMINE) %>%
+  dplyr::select(`Categoria età`, DIMISSIONI_TOT, ANNO) %>%
+ 
+  ggplot(., aes(x = `Categoria età`,y = DIMISSIONI_TOT, fill = ANNO)) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5))
+
+  
+  
+
+
+
+
+```
+
+### ACCESSI {.tabset}
+
+The following graph shows the [*Accessi*](#glossario) for each MDC and over the years of analysis.
+```{r, echo=FALSE, include=TRUE}
+SDO_diurno %>%
+  dplyr::group_by(CLASSE_MDC, ANNO) %>%
+  dplyr::summarise(Accessi = sum(Accessi)) %>%
+  dplyr::mutate(CLASSE_MDC = gsub("-.*", " ", CLASSE_MDC)) %>%
+  ggplot(.) +
+  geom_bar(
+    mapping = aes(y = Accessi,
+                  x = CLASSE_MDC,
+                  fill = ANNO),
+    position = "dodge",
+    width = .5,
+           stat = "identity", 
+           color = "black") + 
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) + 
+  labs(title = "Accessi",
+              subtitle = "Acuti - Regime diurno")
+
+
+```
+
+
+
+#### 2019 {-}
+```{r, echo=FALSE, include=TRUE}
+sum_accessi <- SDO_diurno %>%
+  dplyr::filter(ANNO == "2019") %>%
+  dplyr::group_by(CLASSE_MDC, ANNO) %>% 
+  dplyr::mutate(CLASSE_MDC = gsub("-.*", " ", CLASSE_MDC)) %>%
+  dplyr::mutate_at(vars(ANNO, CLASSE_MDC), factor) %>%
+  dplyr::summarise(MAX_accessi = max(`N. max. Accessi.`),
+            MIN_accessi = min(`N. min. Accessi`),
+            MEAN_accessi = round(mean(`N. medio Accessi`), digits = 3))
+
+ggplot(data = sum_accessi, mapping = aes(x =    forcats::fct_reorder(CLASSE_MDC,                                                               MEAN_accessi), 
+      y = MEAN_accessi)) +
+ geom_histogram(stat = "identity") + 
+  coord_flip() + 
+   theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) +  
+  labs(title = "ACCESSI MEDI PER OGNI MDC",
+              subtitle = "Acuti - Regime diurno",
+       x = "CLASSE MDC",
+       y = "Accessi") 
+  
+
+```
+
+#### 2018 {-}
+```{r, echo=FALSE, include=TRUE}
+sum_accessi <- SDO_diurno %>%
+  dplyr::filter(ANNO == "2018") %>%
+  dplyr::group_by(CLASSE_MDC, ANNO) %>% 
+  dplyr::mutate(CLASSE_MDC = gsub("-.*", " ", CLASSE_MDC)) %>%
+  dplyr::mutate_at(vars(ANNO, CLASSE_MDC), factor) %>%
+  dplyr::summarise(MAX_accessi = max(`N. max. Accessi.`),
+            MIN_accessi = min(`N. min. Accessi`),
+            MEAN_accessi = round(mean(`N. medio Accessi`), digits = 3))
+
+ggplot(data = sum_accessi, mapping = aes(x =    forcats::fct_reorder(CLASSE_MDC,                                                               MEAN_accessi), 
+      y = MEAN_accessi)) +
+ geom_histogram(stat = "identity") + 
+  coord_flip() + 
+   theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) +  
+  labs(title = "ACCESSI MEDI PER OGNI MDC",
+              subtitle = "Acuti - Regime diurno",
+       x = "CLASSE MDC",
+       y = "Accessi") 
+  
+
+```
+
+
+#### 2017 {-}
+```{r, echo=FALSE, include=TRUE}
+sum_accessi <- SDO_diurno %>%
+  dplyr::filter(ANNO == "2017") %>%
+  dplyr::group_by(CLASSE_MDC, ANNO) %>% 
+  dplyr::mutate(CLASSE_MDC = gsub("-.*", " ", CLASSE_MDC)) %>%
+  dplyr::mutate_at(vars(ANNO, CLASSE_MDC), factor) %>%
+  dplyr::summarise(MAX_accessi = max(`N. max. Accessi.`),
+            MIN_accessi = min(`N. min. Accessi`),
+            MEAN_accessi = round(mean(`N. medio Accessi`), digits = 3))
+
+ggplot(data = sum_accessi, mapping = aes(x =    forcats::fct_reorder(CLASSE_MDC,                                                               MEAN_accessi), 
+      y = MEAN_accessi)) +
+ geom_histogram(stat = "identity") + 
+  coord_flip() + 
+   theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) +  
+  labs(title = "ACCESSI MEDI PER OGNI MDC",
+              subtitle = "Acuti - Regime diurno",
+       x = "CLASSE MDC",
+       y = "Accessi") 
+  
+
+```
+
+
+#### 2016 {-}
+```{r, echo=FALSE, include=TRUE}
+sum_accessi <- SDO_diurno %>%
+  dplyr::filter(ANNO == "2016") %>%
+  dplyr::group_by(CLASSE_MDC, ANNO) %>% 
+  dplyr::mutate(CLASSE_MDC = gsub("-.*", " ", CLASSE_MDC)) %>%
+  dplyr::mutate_at(vars(ANNO, CLASSE_MDC), factor) %>%
+  dplyr::summarise(MAX_accessi = max(`N. max. Accessi.`),
+            MIN_accessi = min(`N. min. Accessi`),
+            MEAN_accessi = round(mean(`N. medio Accessi`), digits = 3))
+
+ggplot(data = sum_accessi, mapping = aes(x =    forcats::fct_reorder(CLASSE_MDC,                                                               MEAN_accessi), 
+      y = MEAN_accessi)) +
+ geom_histogram(stat = "identity") + 
+  coord_flip() + 
+   theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) +  
+  labs(title = "ACCESSI MEDI PER OGNI MDC",
+              subtitle = "Acuti - Regime diurno",
+       x = "CLASSE MDC",
+       y = "Accessi") 
+  
+
+
+```
+
+
+
+### {-}
+
+Table 2.3 provides a summary of Max, Min and Mean values for *"Accessi"* for each MDC.
+```{r, echo=FALSE, include=TRUE}
+
+SDO_diurno %>%
+  dplyr::group_by(CLASSE_MDC, ANNO) %>% 
+  dplyr::mutate(CLASSE_MDC = gsub("-.*", " ", CLASSE_MDC)) %>%
+  dplyr::mutate_at(vars(ANNO, CLASSE_MDC), factor) %>%
+  dplyr::summarise(MAX_accessi = max(`N. max. Accessi.`),
+            MIN_accessi = min(`N. min. Accessi`),
+            MEAN_accessi = round(mean(`N. medio Accessi`), digits = 3)) %>% 
+  DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+    caption = 'Table 2.3'
+    
+  )
+```
+\pagebreak
+
+# GLOSSARIO {-}
+
+**MDC**: MAJOR DIAGNOSTIC CATEGORY (MDC)
+Categoria diagnostica principale: il sistema DRG prevede un livello superiore di raggruppamento basato su un criterio di rilevanza clinica (anatomico o eziologico): in base alla diagnosi principale riportata nella Scheda di Dimissione Ospedaliera viene assegnata la categoria MDC; successivamente, viene attribuito uno specifico DRG fra quelli appartenenti alla MDC selezionata. 
+
+**Giorno di Degenza**: Periodo di 24 ore durante il quale un posto letto è occupato.  
+
+**Accessi**: Presenza in ospedale senza pernottamento, per l’erogazione di prestazioni in regime di day hospital.
