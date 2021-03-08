@@ -33,3 +33,5 @@ SDO_diurno <- cleaned_2.12 %>%
 
 purrr::map(Years, test_mdc, data = SDO_diurno, matching_table = matching_tables_2.2.11)
 # for all of the 4 years, the result is TRUE.
+
+SDO_diurno[1409,]$CLASSE_MDC <- "MDC 12 - Malattie e disturbi dell'apparato riproduttivo maschile"
