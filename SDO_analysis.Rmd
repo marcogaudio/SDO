@@ -41,7 +41,7 @@ The document is composed by 3 sections:
 
 * **section 1** provides an analysis for each of the 5 activities (Acuti Regime ordinario;       Acuti Regime diurno, Riabilitazione Regime ordinario; Riabilitazione Regime diurno;        Lungodegenza) and considering the differences in the period studied. 
 
-* **section 2** analyses the hospitalization rates in Italy in the period 2016-2019, considering different region, gender and age category.
+* **section 2** analyses the hospitalization rates, first providing an overview for Italy as a whole, and then analysing the rates for each of the 5 activities in in the period 2016-2019, considering different region, gender and age category.
 
 * **section 3** provides a comparison between  hospitalization rates in Italy and hospitalization rates in UK.
 
@@ -86,17 +86,20 @@ summary_tab <- dplyr::bind_rows(summary_ordinario,
 
 ```
 
+
+### An overview of hospitalization discharges in Italy {-}
 The following graph shows the total number of hospital discharges divided by activity for the 4 years of analysis.
 
 ```{r, echo=FALSE, include=TRUE}
 
   p <- ggplot(summary_tab, aes(x = ANNO, y = DIMISSIONI, fill = `ATTIVITÀ`)) + 
   geom_bar(stat = "identity") +
-  labs(title = 'TOTAL DISCHARGES IN ITALY') 
+  labs(title = "DIMISSIONI TOTALI PER ATTIVITÀ",
+  subtitle = "Italia")
 p
 ```
 
-Table 1. provides the total number of discharges for all the activities and its percentage variation through the period of analysis. As shown here, the total number of hospital discharges is decreased from 2016 to 2019. In particular, from 2018 to 2019 the number has dropped from 8.522.456 to 8.356.874, with a decrease of 1.733%.
+Table 1.1.1 shows the total number of discharges for all the activities and its percentage variation through the period of analysis. As shown here, the total number of hospital discharges is decreased from 2016 to 2019. In particular, from 2018 to 2019 the number has dropped from 8.522.456 to 8.356.874, with a decrease of 1.733%.
 
 ```{r, echo=FALSE, include=TRUE}
 
@@ -111,7 +114,7 @@ DT::datatable( options = list(
     searching = FALSE
     
   ),
-    caption = 'Table 1.')
+    caption = 'Table 1.1.1')
 
 ```
 
@@ -124,7 +127,7 @@ the following section is aimed to analyze the discharge in *Acuti - Regime ordin
 
 ### DIMISSIONI
 
-Table 1.1 provides a summary of the hospedalization discharges in *"Acuti - Regime ordinario"* and the variation from year to year.
+Table 1.1.2 provides a summary of the hospedalization discharges in *"Acuti - Regime ordinario"* and the variation from year to year.
 
 ```{r, echo=FALSE, include=TRUE}
 summary_ordinario <- matching_tables %>% 
@@ -139,7 +142,7 @@ summary_ordinario %>%
     searching = FALSE
     
   ),
-    caption = 'Table 1.1')
+    caption = 'Table 1.1.2')
 
 
 
@@ -164,7 +167,7 @@ SDO_ordinario %>%
   theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
                                     vjust = 0.5)) + 
-  labs(title = "HOSPITAL DISCHARGES BY MDC",
+  labs(title = "DIMISSIONI PER MDC",
               subtitle = "Acuti - Regime ordinario")
 
   
@@ -186,12 +189,12 @@ overall_ordinario %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-    caption = 'Table 1.2')
+    caption = 'Table 1.1.3')
 ```
 
 ### PERCENTUALE GIORNI DIMISSIONI PER MDC.
 
-Days before discharge in 2019 for MDC in percentage.
+Thwe following pie charts show the percentage of days before discharge per the 4 years analysed.
 
 
 ```{r, echo=FALSE, include=TRUE}
@@ -238,18 +241,6 @@ dimissioni_4 <- round((t(percent_fourday) %*% dimissioni )/ sum(perc$DIMISSIONI)
 dimissioni_oltre <- round((t(percentbeyond) %*% dimissioni )/ sum(perc$DIMISSIONI), 
                           digits = 3)
 
-#PROVA
-# degenza_tot_gg <- SDO_ordinario %>%
-#   dplyr::filter(ANNO == "2019",
-#          CLASSE_MDC == "MDC 01 - Malattie e disturbi del sistema nervoso") %>%
-#   dplyr::summarise(sum(DIMISSIONI)) %>%
-#   dplyr::pull() %>%
-#   as.numeric()
-# 
-# dimissioni_1*degenza_tot_gg+
-# dimissioni_2*degenza_tot_gg+
-# dimissioni_4*degenza_tot_gg+
-# dimissioni_oltre*degenza_tot_gg
 
 mycols <- c("% DIMISSIONI DI 1 GIORNO",                 
             "% DIMISSIONI DI 2-3 GIORNI",              
@@ -277,12 +268,6 @@ tabella_plot_2019 <- tibble(class = mycols,
   arrange(-proportion) %>%
   mutate(Per_cumsum = cumsum(proportion))
 
-# ggplot(tabella_plot, aes(x = "", y = proportion, fill = class)) +
-#   geom_bar(width = 1, stat = "identity", color = "white") +
-#   geom_col() +
-#   geom_text(aes(y = Per_cumsum - proportion/2, label = proportion*100), color = "white")+ 
-#   coord_polar("y", start = 0)+
-#   theme_void()
 
 ggplot(data = summary_prop, aes(x=1, y=proportion, fill=class)) +
   geom_col() +
@@ -290,6 +275,7 @@ ggplot(data = summary_prop, aes(x=1, y=proportion, fill=class)) +
   coord_polar(theta = "y") + 
   theme_void() +
   labs(title = "% DIMISSIONI PER GIORNO",
+       subtitle = "Acuti - Regime ordinario",
        fill = "") +
   facet_wrap(~ANNO)
 
@@ -377,7 +363,7 @@ SDO_ordinario %>%
 ```
 
 
-Table 1.3 provides a summary for *Giorni di Degenza* by MDC for each year.
+Table 1.1.4 provides a summary for *Giorni di Degenza* by MDC for each year.
 
 ```{r, echo=FALSE, include=TRUE}
 overall_ordinario_degenza <- matching_tables %>%
@@ -388,7 +374,7 @@ overall_ordinario_degenza %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-                caption = "Table 1.3"
+                caption = "Table 1.1.4"
                 )
 
 ```
@@ -409,7 +395,7 @@ sum_deg <- SDO_ordinario %>%
 ggplot(data = sum_deg, mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                                              MEAN_DEGENZA), 
                                      y = MEAN_DEGENZA)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -425,6 +411,7 @@ ggplot(data = sum_deg, mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
 
 #### 2018 {-}
 ```{r, echo=FALSE, include=TRUE}
+
 sum_deg <- SDO_ordinario %>%
   dplyr::filter(ANNO == "2018") %>%
   dplyr::group_by(CLASSE_MDC, ANNO) %>% 
@@ -437,7 +424,7 @@ sum_deg <- SDO_ordinario %>%
 ggplot(data = sum_deg, mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                                              MEAN_DEGENZA), 
                                      y = MEAN_DEGENZA)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -465,7 +452,7 @@ sum_deg <- SDO_ordinario %>%
 ggplot(data = sum_deg, mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                                              MEAN_DEGENZA), 
                                      y = MEAN_DEGENZA)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -494,7 +481,7 @@ sum_deg <- SDO_ordinario %>%
 ggplot(data = sum_deg, mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                                              MEAN_DEGENZA), 
                                      y = MEAN_DEGENZA)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -510,7 +497,7 @@ ggplot(data = sum_deg, mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
 
 ### {-}
 
-Table 1.3 provides a summary of Max, Min and Mean values for *"Giorni di Degenza"* for each MDC.
+Table 1.1.5 provides a summary of Max, Min and Mean values for *"Giorni di Degenza"* for each MDC.
 ```{r, echo=FALSE, include=TRUE}
 
 SDO_ordinario %>%
@@ -525,7 +512,7 @@ SDO_ordinario %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-    caption = 'Table 1.3'
+    caption = 'Table 1.1.5'
     
   )
 
@@ -537,7 +524,7 @@ SDO_ordinario %>%
 
 ### DIMISSIONI
 
-Table 2.1 provides a summary of the hospedalization discharges in *"Acuti - Regime diurno"* and the variation from year to year.
+Table 1.2.1 provides a summary of the hospedalization discharges in *"Acuti - Regime diurno"* and the variation from year to year.
 
 
 ```{r, echo=FALSE, include=TRUE}
@@ -553,7 +540,7 @@ summary_diurno %>%
     searching = FALSE
     
   ),
-    caption = 'Table 2.1')
+    caption = 'Table 1.2.1')
 
 
 
@@ -579,7 +566,7 @@ SDO_diurno %>%
   theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
                                     vjust = 0.5)) + 
-  labs(title = "HOSPITAL DISCHARGES BY MDC",
+  labs(title = "DIMISSIONI PER MDC",
               subtitle = "Acuti - Regime diurno")
 
   
@@ -601,7 +588,7 @@ overall_diurno %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-    caption = 'Table 2.2')
+    caption = 'Table 1.2.2')
 ```
 
 The bar chart below shows the distribution of discharges in *Acuti - Regime diurno* per age category, for each year of analysis.
@@ -669,13 +656,13 @@ SDO_diurno %>%
   theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
                                     vjust = 0.5)) + 
-  labs(title = "Accessi",
+  labs(title = "ACCESSI",
               subtitle = "Acuti - Regime diurno")
 
 
 ```
 
-
+These bar charts shows the mean for the variable *Accessi* by each MDC and for the 4 years of analysis.
 
 #### 2019 {-}
 ```{r, echo=FALSE, include=TRUE}
@@ -690,7 +677,7 @@ sum_accessi <- SDO_diurno %>%
 
 ggplot(data = sum_accessi, mapping = aes(x =    forcats::fct_reorder(CLASSE_MDC,                                                               MEAN_accessi), 
       y = MEAN_accessi)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -717,7 +704,7 @@ sum_accessi <- SDO_diurno %>%
 
 ggplot(data = sum_accessi, mapping = aes(x =    forcats::fct_reorder(CLASSE_MDC,                                                               MEAN_accessi), 
       y = MEAN_accessi)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -745,7 +732,7 @@ sum_accessi <- SDO_diurno %>%
 
 ggplot(data = sum_accessi, mapping = aes(x =    forcats::fct_reorder(CLASSE_MDC,                                                               MEAN_accessi), 
       y = MEAN_accessi)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -772,7 +759,7 @@ sum_accessi <- SDO_diurno %>%
 
 ggplot(data = sum_accessi, mapping = aes(x =    forcats::fct_reorder(CLASSE_MDC,                                                               MEAN_accessi), 
       y = MEAN_accessi)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -791,7 +778,7 @@ ggplot(data = sum_accessi, mapping = aes(x =    forcats::fct_reorder(CLASSE_MDC,
 
 ### {-}
 
-Table 2.3 provides a summary of Max, Min and Mean values for *"Accessi"* for each MDC.
+Table 1.2.3 provides a summary of Max, Min and Mean values for *"Accessi"* for each MDC.
 ```{r, echo=FALSE, include=TRUE}
 
 SDO_diurno %>%
@@ -806,7 +793,7 @@ SDO_diurno %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-    caption = 'Table 2.3'
+    caption = 'Table 1.2.3'
     
   )
 ```
@@ -816,7 +803,7 @@ SDO_diurno %>%
 
 ### DIMISSIONI
 
-Table 3.1 provides a summary of the hospedalization discharges in *"Riabilitazione - Regime ordinario"* and the variation from year to year.
+Table 1.3.1 provides a summary of the hospedalization discharges in *"Riabilitazione - Regime ordinario"* and the variation from year to year.
 
 ```{r, echo=FALSE, include=TRUE}
 summary_ordinario_riab <- SDO_ordinario_riab %>% 
@@ -831,7 +818,7 @@ summary_ordinario_riab %>%
     searching = FALSE
     
   ),
-    caption = 'Table 3.1')
+    caption = 'Table 1.3.1')
 
 
 
@@ -859,13 +846,72 @@ SDO_ordinario_riab %>%
   theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
                                     vjust = 0.5)) + 
-  labs(title = "HOSPITAL DISCHARGES BY MDC",
+  labs(title = "DIMISSIONI PER MDC",
               subtitle = "Riabilitazione - Regime ordinario")
 
   
 ```
 
 There are just a few MDC classes with a considerable number of discharges in *Riabilitazione - Regime ordinario*. These are: **MDC 08 - Malattie e disturbi del sistema muscolo-scheletrico e del tessuto connettivo**; **MDC 01 - Malattie e disturbi del sistema nervoso**; **MDC 05 - Malattie e disturbi dell'apparato cardiocircolatorio**.
+
+
+Table 1.3.2 provides a summary of the discharges for each MDC class and for each year.
+
+```{r, echo=FALSE, include=TRUE}
+#overall discharges for acuti - regime diurno for the 4 years
+overall_riab_ord <- SDO_ordinario_riab %>%
+  dplyr::select(CLASSE_MDC, DIMISSIONI, ANNO)
+
+overall_riab_ord %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+    caption = 'Table 1.3.2')
+```
+
+
+The bar chart below shows the distribution of discharges in *Riabilitazione - Regime ordinario* per age category, for each year of analysis.
+
+```{r, echo=FALSE, include=TRUE}
+
+sdo_age_gender2 <- sdo_age_gender %>%
+  dplyr::filter(`ATTIVITÀ` == "Riabilitazione - Regime ordinario") %>%
+  dplyr::mutate_at(vars(`Categoria età`), factor)
+
+sdo_age_gender2$`Categoria età` <- factor(sdo_age_gender2$`Categoria età`,
+                                          c("Meno di 1 anno",
+                                            "Da 1 a 4 anni",
+                                            "Da 5 a 9 anni",
+                                            "Da 10 a 14 anni",
+                                            "Da 15 a 19 anni",
+                                            "Da 20 a 24 anni",
+                                            "Da 25 a 29 anni", 
+                                            "Da 30 a 34 anni", 
+                                            "Da 35 a 39 anni",
+                                            "Da 40 a 44 anni",
+                                            "Da 45 a 49 anni", 
+                                            "Da 50 a 54 anni", 
+                                            "Da 55 a 59 anni", 
+                                            "Da 60 a 64 anni", 
+                                            "Da 65 a 69 anni", 
+                                            "Da 70 a 74 anni",
+                                            "75 anni e oltre"))
+sdo_age_gender2 %>%
+  dplyr::select(`Categoria età`, MASCHI, FEMMINE, ANNO) %>%
+  dplyr::mutate(DIMISSIONI_TOT = MASCHI + FEMMINE) %>%
+  dplyr::select(`Categoria età`, DIMISSIONI_TOT, ANNO) %>%
+ 
+  ggplot(., aes(x = `Categoria età`,y = DIMISSIONI_TOT, fill = ANNO)) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5))
+
+  
+
+```
+
 
 ### GIORNATE DI DEGENZA {.tabset}
 
@@ -897,7 +943,7 @@ SDO_ordinario_riab %>%
 ```
 
 
-Table 3.2 provides a summary for *Giorni di Degenza* by MDC for each year.
+Table 1.3.3 provides a summary for *Giorni di Degenza* by MDC for each year.
 
 ```{r, echo=FALSE, include=TRUE}
 overall_ordinario_degenza_riab <- SDO_ordinario_riab %>%
@@ -908,7 +954,7 @@ overall_ordinario_degenza_riab %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-                caption = "Table 3.3"
+                caption = "Table 1.3.3"
                 )
 
 ```
@@ -930,7 +976,7 @@ SDO_ordinario_riab %>%
 ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC, 
                                               `DEGENZA MEDIA (giorni)`), 
                     y = `DEGENZA MEDIA (giorni)`)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -959,7 +1005,7 @@ SDO_ordinario_riab %>%
 ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC, 
                                               `DEGENZA MEDIA (giorni)`), 
                     y = `DEGENZA MEDIA (giorni)`)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -988,7 +1034,7 @@ SDO_ordinario_riab %>%
 ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC, 
                                               `DEGENZA MEDIA (giorni)`), 
                     y = `DEGENZA MEDIA (giorni)`)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -1018,7 +1064,7 @@ SDO_ordinario_riab %>%
 ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC, 
                                               `DEGENZA MEDIA (giorni)`), 
                     y = `DEGENZA MEDIA (giorni)`)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -1036,7 +1082,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
 
 ### {-}
 
-Table 3.3 provides a summary for the mean value for *"Giorni di Degenza"* for each MDC.
+Table 1.3.4 provides a summary for the mean value for *"Giorni di Degenza"* for each MDC.
 
 ```{r, echo=FALSE, include=TRUE}
 
@@ -1048,7 +1094,7 @@ SDO_ordinario_riab %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-    caption = 'Table 3.4'
+    caption = 'Table 1.3.4'
     
   )
   
@@ -1061,7 +1107,7 @@ SDO_ordinario_riab %>%
 
 ### DIMISSIONI
 
-Table 4.1 provides a summary of the hospedalization discharges in *"Riabilitazione - Regime diurno"* and the variation from year to year.
+Table 1.4.1 provides a summary of the hospedalization discharges in *"Riabilitazione - Regime diurno"* and the variation from year to year.
 
 ```{r, echo=FALSE, include=TRUE}
 summary_diurno_riab <- SDO_diurno_riab %>% 
@@ -1076,7 +1122,7 @@ summary_diurno_riab %>%
     searching = FALSE
     
   ),
-    caption = 'Table 4.1')
+    caption = 'Table 1.4.1')
 
 
 ```
@@ -1105,14 +1151,72 @@ SDO_diurno_riab %>%
   theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
                                     vjust = 0.5)) + 
-  labs(title = "HOSPITAL DISCHARGES BY MDC",
+  labs(title = "DIMISSIONI PER MDC",
               subtitle = "Riabilitazione - Regime diurno")
 
   
 ```
 
 In the case of activity *Riabilitazione - Regime diurno*, there are a few MDC with a considerable level of discharges: **MDC 01 - Malattie e disturbi del sistema nervoso**;
-**MDC 08 - Malattie e disturbi del sistema muscolo-scheletrico e del tessuto connettivo**; **MDC 23 - 23 - Fattori che influenzano lo stato di salute ed il ricorso ai servizi sanitari**.
+**MDC 08 - Malattie e disturbi del sistema muscolo-scheletrico e del tessuto connettivo**; **MDC 23 - Fattori che influenzano lo stato di salute ed il ricorso ai servizi sanitari**.
+
+The following table provides a summary of the discharges for each MDC class and for each year.
+
+```{r, echo=FALSE, include=TRUE}
+#overall discharges for acuti - regime diurno for the 4 years
+overall_diurno_riab <- SDO_diurno_riab %>%
+  dplyr::select(CLASSE_MDC, DIMISSIONI, ANNO)
+
+overall_diurno_riab %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+    caption = 'Table 1.4.2')
+```
+
+
+The bar chart below shows the distribution of discharges in *Riabilitazione - Regime diurno* per age category, for each year of analysis.
+
+```{r, echo=FALSE, include=TRUE}
+
+sdo_age_gender2 <- sdo_age_gender %>%
+  dplyr::filter(`ATTIVITÀ` == "Riabilitazione - Regime diurno") %>%
+  dplyr::mutate_at(vars(`Categoria età`), factor)
+
+sdo_age_gender2$`Categoria età` <- factor(sdo_age_gender2$`Categoria età`,
+                                          c("Meno di 1 anno",
+                                            "Da 1 a 4 anni",
+                                            "Da 5 a 9 anni",
+                                            "Da 10 a 14 anni",
+                                            "Da 15 a 19 anni",
+                                            "Da 20 a 24 anni",
+                                            "Da 25 a 29 anni", 
+                                            "Da 30 a 34 anni", 
+                                            "Da 35 a 39 anni",
+                                            "Da 40 a 44 anni",
+                                            "Da 45 a 49 anni", 
+                                            "Da 50 a 54 anni", 
+                                            "Da 55 a 59 anni", 
+                                            "Da 60 a 64 anni", 
+                                            "Da 65 a 69 anni", 
+                                            "Da 70 a 74 anni",
+                                            "75 anni e oltre"))
+sdo_age_gender2 %>%
+  dplyr::select(`Categoria età`, MASCHI, FEMMINE, ANNO) %>%
+  dplyr::mutate(DIMISSIONI_TOT = MASCHI + FEMMINE) %>%
+  dplyr::select(`Categoria età`, DIMISSIONI_TOT, ANNO) %>%
+ 
+  ggplot(., aes(x = `Categoria età`,y = DIMISSIONI_TOT, fill = ANNO)) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5))
+
+  
+
+```
+
 
 ### ACCESSI {.tabset}
 
@@ -1137,14 +1241,14 @@ SDO_diurno_riab %>%
   theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
                                     vjust = 0.5)) + 
-  labs(title = "Accessi",
+  labs(title = "ACCESSI",
               subtitle = "Riabilitazione - Regime diurno")
 
 
 ```
 
 
-Table 4.2 provides a summary for *Accessi* by MDC for each year.
+Table 1.4.3 provides a summary for *Accessi* by MDC for each year.
 
 ```{r, echo=FALSE, include=TRUE}
 overall_diurno_accessi_riab <- SDO_diurno_riab %>%
@@ -1155,7 +1259,7 @@ overall_diurno_accessi_riab %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-                caption = "Table 4.2"
+                caption = "Table 1.4.3"
                 )
 
 ```
@@ -1177,7 +1281,7 @@ SDO_diurno_riab %>%
 ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC, 
                                               `NUMERO MEDIO DI ACCESSI`), 
                     y = `NUMERO MEDIO DI ACCESSI`)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -1206,7 +1310,7 @@ SDO_diurno_riab %>%
 ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC, 
                                               `NUMERO MEDIO DI ACCESSI`), 
                     y = `NUMERO MEDIO DI ACCESSI`)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -1236,7 +1340,7 @@ SDO_diurno_riab %>%
 ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC, 
                                               `NUMERO MEDIO DI ACCESSI`), 
                     y = `NUMERO MEDIO DI ACCESSI`)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -1267,7 +1371,7 @@ SDO_diurno_riab %>%
 ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC, 
                                               `NUMERO MEDIO DI ACCESSI`), 
                     y = `NUMERO MEDIO DI ACCESSI`)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -1287,7 +1391,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
 ### {-}
 
 
-Table 4.3 provides a summary for the mean value for *Accessi* for each MDC.
+Table 1.4.4 provides a summary for the mean value for *Accessi* for each MDC.
 
 ```{r, echo=FALSE, include=TRUE}
 
@@ -1299,7 +1403,7 @@ SDO_diurno_riab %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-    caption = 'Table 4.3'
+    caption = 'Table 4.4'
     
   )
   
@@ -1312,7 +1416,7 @@ SDO_diurno_riab %>%
 
 ### DIMISSIONI
 
-Table 5.1 provides a summary of the hospedalization discharges in [*Lungodegenza*](#glossario) and the variation from year to year.
+Table 1.5.1 provides a summary of the hospedalization discharges in [*Lungodegenza*](#glossario) and the variation from year to year.
 
 ```{r, echo=FALSE, include=TRUE}
 summary_lungodeg <- SDO_lungodegenza %>% 
@@ -1355,13 +1459,69 @@ SDO_lungodegenza %>%
   theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
                                     vjust = 0.5)) + 
-  labs(title = "HOSPITAL DISCHARGES BY MDC",
+  labs(title = "DIMISSIONI PER MDC",
               subtitle = "Lungodegenza")
 
   
 ```
 
-As shown from the bar chart, over the 4 years of analysis, the MDC class with the greatest number of dicharges for the activity *Lungodegenza* are: **MDC 08 - Malattie e disturbi del sistema muscolo-scheletrico e del tessuto connettivo**; **MDC 01 - Malattie e disturbi del sistema nervoso**; **MDC 04 - 04 - Malattie e disturbi dell'apparato respiratorio**.
+As shown from the bar chart, over the 4 years of analysis, the MDC class with the greatest number of dicharges for the activity *Lungodegenza* are: **MDC 08 - Malattie e disturbi del sistema muscolo-scheletrico e del tessuto connettivo**; **MDC 01 - Malattie e disturbi del sistema nervoso**; **MDC 04 - Malattie e disturbi dell'apparato respiratorio**.
+
+The following table provides a summary of the discharges for each MDC class and for each year.
+
+```{r, echo=FALSE, include=TRUE}
+#overall discharges for acuti - regime diurno for the 4 years
+overall_lungod <- SDO_lungodegenza %>%
+  dplyr::select(CLASSE_MDC, DIMISSIONI, ANNO)
+
+overall_lungod %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+    caption = 'Table 1.5.2')
+```
+
+The bar chart below shows the distribution of discharges in *Lungodegenza* per age category, for each year of analysis.
+
+```{r, echo=FALSE, include=TRUE}
+
+sdo_age_gender2 <- sdo_age_gender %>%
+  dplyr::filter(`ATTIVITÀ` == "Lungodegenza") %>%
+  dplyr::mutate_at(vars(`Categoria età`), factor)
+
+sdo_age_gender2$`Categoria età` <- factor(sdo_age_gender2$`Categoria età`,
+                                          c("Meno di 1 anno",
+                                            "Da 1 a 4 anni",
+                                            "Da 5 a 9 anni",
+                                            "Da 10 a 14 anni",
+                                            "Da 15 a 19 anni",
+                                            "Da 20 a 24 anni",
+                                            "Da 25 a 29 anni", 
+                                            "Da 30 a 34 anni", 
+                                            "Da 35 a 39 anni",
+                                            "Da 40 a 44 anni",
+                                            "Da 45 a 49 anni", 
+                                            "Da 50 a 54 anni", 
+                                            "Da 55 a 59 anni", 
+                                            "Da 60 a 64 anni", 
+                                            "Da 65 a 69 anni", 
+                                            "Da 70 a 74 anni",
+                                            "75 anni e oltre"))
+sdo_age_gender2 %>%
+  dplyr::select(`Categoria età`, MASCHI, FEMMINE, ANNO) %>%
+  dplyr::mutate(DIMISSIONI_TOT = MASCHI + FEMMINE) %>%
+  dplyr::select(`Categoria età`, DIMISSIONI_TOT, ANNO) %>%
+ 
+  ggplot(., aes(x = `Categoria età`,y = DIMISSIONI_TOT, fill = ANNO)) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5))
+
+  
+
+```
 
 ### GIORNATE DI DEGENZA {.tabset}
 
@@ -1393,18 +1553,18 @@ SDO_lungodegenza %>%
 ```
 
 
-Table 5.2 provides a summary for *Giorni di Degenza* by MDC for each year.
+Table 1.5.3 provides a summary for *Giorni di Degenza* by MDC for each year.
 
 ```{r, echo=FALSE, include=TRUE}
 overall_lungod <- SDO_lungodegenza %>%
   dplyr::select(CLASSE_MDC, `GIORNATE DI DEGENZA`, ANNO)
 
-overall_lungod%>%
+overall_lungod %>%
   DT::datatable(extensions = 'Buttons', 
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-                caption = "Table 5.2"
+                caption = "Table 1.5.3"
                 )
 
 ```
@@ -1426,7 +1586,7 @@ SDO_lungodegenza %>%
 ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC, 
                                               `DEGENZA MEDIA (giorni)`), 
                     y = `DEGENZA MEDIA (giorni)`)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -1455,7 +1615,7 @@ SDO_lungodegenza %>%
 ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC, 
                                               `DEGENZA MEDIA (giorni)`), 
                     y = `DEGENZA MEDIA (giorni)`)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -1484,7 +1644,7 @@ SDO_lungodegenza %>%
 ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC, 
                                               `DEGENZA MEDIA (giorni)`), 
                     y = `DEGENZA MEDIA (giorni)`)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -1514,7 +1674,7 @@ SDO_lungodegenza %>%
 ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC, 
                                               `DEGENZA MEDIA (giorni)`), 
                     y = `DEGENZA MEDIA (giorni)`)) +
- geom_histogram(stat = "identity") + 
+ geom_bar(stat = "identity") + 
   coord_flip() + 
    theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
@@ -1532,7 +1692,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
 
 ### {-}
 
-Table 5.3 provides a summary for the mean value for *"Giorni di Degenza"* for each MDC.
+Table 1.5.4 provides a summary for the mean value for *"Giorni di Degenza"* for each MDC.
 
 ```{r, echo=FALSE, include=TRUE}
 
@@ -1544,13 +1704,1109 @@ SDO_lungodegenza %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-    caption = 'Table 5.3'
+    caption = 'Table 1.5.4'
     
   )
   
 
 
 ```
+
+
+
+# TASSI DI OSPEDALIZZAZIONE 
+
+## Overview in Italia
+
+### TASSO DI OSPEDALIZZAZIONE IN ITALIA PER ATTIVITÀ
+The following bar chart shows the evolution of the [*Tasso di ospedalizzazione*](#glossario) in Italy in the period of analysis.
+As shown by the graph, there has been a decrease in the hospitalization rates per 1000 inhabitants, in particular for the activity *"Acuti - Regime ordinario"* (from 101.624 in 2016 to 97.611 in 2019).
+```{r, echo=FALSE, include=TRUE}
+HR_summary_act <- HR_age %>%
+  dplyr::filter(`REGIONE DI RESIDENZA` == "ITALIA") %>%
+  dplyr::group_by(ANNO, `ATTIVITÀ`) %>%
+  dplyr::mutate(`ATTIVITÀ` = stringr::str_remove_all(string = `ATTIVITÀ`,
+                                                     pattern = "Regime")) %>%
+  dplyr::select(`Tasso complessivo`, ANNO, `ATTIVITÀ`) 
+
+  ggplot(data = HR_summary_act, 
+         mapping = aes(x = `ATTIVITÀ`, 
+                       y = `Tasso complessivo` ,
+                       fill = ANNO)) +
+  geom_bar(position = "dodge",
+           width = .5,
+           stat = "identity", 
+           color = "black") + 
+  coord_flip() +
+  theme(axis.text.x  = element_text(angle = 90, 
+                                     hjust = 1, 
+                                    vjust = 0.5)) + 
+   labs(title = "TASSO DI OSPEDALIZZAZIONE (per 1000 abitanti)",
+              subtitle = "ITALIA")
+  
+```
+
+Table 2.1.1 provides an overview on the Hospitalization rates (per 1000 inhabitants) in Italy during the period 2016-2019.
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_age %>%
+  dplyr::filter(`REGIONE DI RESIDENZA` == "ITALIA") %>%
+  dplyr::rename(`Tasso complessivo Italia` = "Tasso complessivo") %>%
+  dplyr::select(`ATTIVITÀ`, `Tasso complessivo Italia`, ANNO) %>%
+  dplyr::mutate_at(vars(`Tasso complessivo Italia`), funs(round), digits = 3) %>%
+  
+  DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 2.1"
+  )
+
+```
+
+### TASSI DI OSPEDALIZZAZIONE PER GENERE
+
+The graph below shows the hospitalization rates in Italy per gender and for the different activities. In this case, there has been a small reduction for both gender and for all the activities
+
+```{r, echo=FALSE, include=TRUE}
+gender_OR <- HR_gender %>%
+  dplyr::group_by(ANNO, `ATTIVITÀ`) 
+
+
+                                          
+# reshape the dataframe in order to plot.
+
+male <- gender_OR %>%
+  dplyr::select(1, 2, 4, 5) %>%
+  dplyr::rename(TASSO = "MASCHI") %>%
+  dplyr::mutate(GENERE = "MASCHI") 
+
+female <- gender_OR %>%
+  dplyr::select(1,3, 4, 5) %>%
+  dplyr::rename(TASSO = "FEMMINE") %>%
+  dplyr::mutate(GENERE = "FEMMINE") 
+
+
+Gend_HR_total <- dplyr::bind_rows(male, female) %>%
+  dplyr::mutate_at(vars(TASSO), as.numeric)
+
+Italy_HR <- Gend_HR_total %>%
+  dplyr::filter(`REGIONE DI RESIDENZA` == "ITALIA") %>%
+  dplyr::rename(tasso_it = "TASSO") %>%
+  dplyr::mutate(`ATTIVITÀ` = stringr::str_remove_all(string = `ATTIVITÀ`,
+                                                     pattern = "Regime")) 
+  
+  ggplot( data = Italy_HR, 
+          aes(x =`ATTIVITÀ`, y = tasso_it, fill = GENERE)) +
+  geom_bar(
+    stat = "identity",
+    position = "dodge"
+    ) +
+    coord_flip() +
+   theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) + 
+  labs(title = "TASSO DI OSPEDALIZZAZIONE (per genere, per 1000 abitanti)",
+              subtitle = "Italia") +
+    ylab(" ") + 
+  facet_wrap(~ANNO)
+  
+
+
+```
+
+Table 2.1.2 provides a summary for the data about hospitalization rates by gender in Italy.
+```{r, echo=FALSE, include=TRUE}
+
+Gend_HR_total %>%
+  dplyr::filter(`REGIONE DI RESIDENZA` == "ITALIA") %>%
+  dplyr::rename(tasso_it = "TASSO") %>%
+  dplyr::select(-1) %>%
+  dplyr::mutate_at(vars(tasso_it), round, digits = 3) %>%
+  dplyr::rename(`Tasso ospedalizzazione` = "tasso_it") %>%
+  
+  DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 2.1.2"
+  )
+
+
+```
+
+### TASSO DI OSPEDALIZZAZIONE PER CATEGORIA DI ETÀ ED ATTIVITÀ
+
+The following graph represents the evolution of the hospitalization rates by age category in Italy and for each activity.
+```{r, echo=FALSE, include=TRUE}
+
+convert_HR_age <- function(activity){
+  
+  HR_summary_it <- HR_age_cat %>%
+    dplyr::select(`Categoria età`, activity, ANNO) %>%
+    dplyr::rename(TASSO = activity) %>%
+    dplyr::mutate(`ATTIVITÀ` = activity) %>%
+    dplyr::slice(-n())
+  HR_summary_it$`Categoria età` <- factor(HR_summary_it$`Categoria età`,
+                                      c("Meno di 1 anno",
+                                        "Da 1 a 4 anni",
+                                        "Da 5 a 14 anni",
+                                        "Da 15 a 24 anni",
+                                        "Da 25 a 44 anni", 
+                                        "Da 45 a 64 anni", 
+                                        "Da 65 a 74 anni", 
+                                        "75 anni e oltre"))
+  return(HR_summary_it)
+}
+
+activity_list <- list("Acuti - Regime ordinario", "Acuti - Regime diurno",
+                      "Riabilitazione - Regime ordinario", 
+                      "Riabilitazione - Regime diurno",
+                      "Lungodegenza")
+
+list_HR_age <- purrr::pmap(list(activity_list), convert_HR_age)
+
+HR_age_it <- dplyr::bind_rows(list_HR_age) %>%
+  dplyr::filter(!is.na(`Categoria età`)) %>%
+  dplyr::group_by(ANNO, `ATTIVITÀ`) 
+
+  ggplot(data = HR_age_it, aes(x = `Categoria età`,
+                                   y = `TASSO`,
+                                   fill = `ATTIVITÀ`,
+                                   )) +
+  geom_bar(stat = "identity",
+           position = "dodge") +
+    theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) + 
+  labs(title = "TASSO DI OSPEDALIZZAZIONE (PER ETÀ, per 1000 abitanti)",
+              subtitle = "Italia") +
+    ylab(" ") + 
+  facet_wrap(~ANNO)
+  
+     
+
+```
+
+Table 2.1.3 provides the summary for the hospitalization rates in Italy by age category. 
+```{r, echo=FALSE, include=TRUE}
+
+HR_age_it <- dplyr::bind_rows(list_HR_age) %>%
+  dplyr::filter(!is.na(`Categoria età`)) %>%
+  dplyr::mutate_at(vars(TASSO), round, digits = 3)
+
+HR_age_it %>%
+  DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 2.1.3"
+  )
+
+```
+
+
+## Acuti - Regime ordinario
+
+Table 2.2.1 shows the hospitalization rates for the activity *Acuti - Regime ordinario* for the 4 years of analysis and the corresponding percentage variation.
+
+```{r, echo=FALSE, include=TRUE}
+HR_summary_act %>%
+  dplyr::filter(`ATTIVITÀ` == "Acuti -  ordinario") %>%
+  dplyr::mutate(`ATTIVITÀ` = "Acuti - Regime ordinario") %>%  
+  dplyr::rename(TASSO = "Tasso complessivo") %>%
+  ungroup() %>%
+  dplyr::mutate("VARIAZIONE %" = round((TASSO / lag(TASSO) -1) * 100, 
+                                       digits   = 3)) %>%
+  DT::datatable(
+    options = list(
+    lengthChange = FALSE,
+    paging = FALSE,
+    searching = FALSE
+    
+  ),
+    caption = 'Table 2.2.1')
+  
+
+```
+
+
+### TASSO PER CATEGORIE DI ETÀ
+As shown by the graph, through the years of analysis the hospitalization rates by age category remained stable for the activity *Acuti - Regime ordinario*.
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_summary <- HR_age_cat %>%
+  dplyr::filter(`Categoria età` != "TOTALE") %>%
+  dplyr::select(`Categoria età`, `Acuti - Regime ordinario`, ANNO) %>%
+  dplyr::group_by(ANNO) 
+  
+HR_summary$`Categoria età` <- factor(HR_summary$`Categoria età`,
+                                          c("Meno di 1 anno",
+                                            "Da 1 a 4 anni",
+                                            "Da 5 a 14 anni",
+                                            "Da 15 a 24 anni",
+                                            "Da 25 a 44 anni", 
+                                            "Da 45 a 64 anni", 
+                                            "Da 65 a 74 anni", 
+                                            "75 anni e oltre"))
+
+  ggplot(data = HR_summary,
+         aes(x = `Categoria età`, y = `Acuti - Regime ordinario`, fill = ANNO)) +
+  geom_bar( stat = "identity",
+            position = "dodge") +
+     theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) + 
+  labs(title = "TASSO DI OSPEDALIZZAZIONE (per età, per 1000 abitanti)",
+              subtitle = "Acuti - Regime ordinario") +
+    ylab(" ")
+
+
+```
+
+
+
+Table 2.2.2 represents the data for age category in *Acuti - Regime ordinario* for each year.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_summary %>%
+  dplyr::rename(`Tasso di ospedalizz. (per 1000 ab.)` = "Acuti - Regime ordinario") %>%
+  dplyr::mutate_at(vars(`Tasso di ospedalizz. (per 1000 ab.)`), round, digits = 3) %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 2.2.2"
+                )
+
+  
+
+```
+
+
+### TASSO PER REGIONE E SESSO
+
+The following graphs show the evolution of the hospitalization rate in Italy by region and gender in the period 2016-2019. The horizontal blue line displays the hospitalization rates in all Italy for the male gender, the red one for the female gender.
+
+```{r, echo=FALSE, include=TRUE}
+
+gender_OR <- HR_gender %>%
+  dplyr::filter(`ATTIVITÀ` == "Acuti - Regime ordinario") %>%
+  dplyr::group_by(ANNO) 
+
+gender_OR$`REGIONE DI RESIDENZA` <- rep(c("Pie", "VdA", "Lom", "Blz", "Trn", "Ven",
+                                      "FVG", "Lig", "EmR", "Tos", "Umb", "Mar",
+                                      "Laz", "Abr", "Mol", "Cam", "Pug", "Bas",
+                                      "Cal", "Sic", "Sar", "ITA"),4
+                                      )
+gender_OR$`REGIONE DI RESIDENZA` <- factor(gender_OR$`REGIONE DI RESIDENZA`,
+                                          c( "Pie", "VdA", "Lom", "Blz",
+                                             "Trn", "Ven", "FVG", "Lig", 
+                                             "EmR", "Tos", "Umb", "Mar",      
+                                             "Laz", "Abr", "Mol", "Cam", 
+                                             "Pug", "Bas","Cal", "Sic",
+                                             "Sar", "ITA")
+                                          )
+# reshape the dataframe in order to plot.
+
+male <- gender_OR %>%
+  dplyr::select(1, 2, 5) %>%
+  dplyr::rename(TASSO = "MASCHI") %>%
+  dplyr::mutate(GENERE = "MASCHI") 
+
+female <- gender_OR %>%
+  dplyr::select(1,3,5) %>%
+  dplyr::rename(TASSO = "FEMMINE") %>%
+  dplyr::mutate(GENERE = "FEMMINE") 
+
+
+Gend_HR_total <- dplyr::bind_rows(male, female) %>%
+  dplyr::mutate_at(vars(TASSO), as.numeric)
+
+Italy_HR <- Gend_HR_total %>%
+  dplyr::filter(`REGIONE DI RESIDENZA` == "ITA") %>%
+  dplyr::rename(tasso_it = "TASSO")
+
+Gend_HR_without_ita <- Gend_HR_total %>%
+  filter(`REGIONE DI RESIDENZA` != "ITA")
+
+
+p <- ggplot(data = Gend_HR_without_ita, aes( x = `REGIONE DI RESIDENZA`, 
+                                 y = TASSO,
+                                 fill = GENERE)) + 
+  geom_bar(stat = "identity",
+           position = "dodge") + 
+  geom_hline(data = Italy_HR %>% 
+               filter(GENERE == "MASCHI"), aes(yintercept = tasso_it), 
+             color = "blue") +
+  geom_hline(data = Italy_HR %>% 
+               filter(GENERE == "FEMMINE"), aes(yintercept = tasso_it), 
+             color = "red") +
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) +
+
+  facet_wrap(~ANNO) +
+  labs(
+    title = "Tasso di ospedalizzazione per regione e sesso (per 1000 abitanti)",
+    subtitle = "Acuti - Regime ordinario"
+  )
+p 
+
+
+```
+
+
+Table 2.2.3 shows the hospitalization rate for each region, by gender and year, for the activity *Acuti - Regime ordinario*.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_gender %>%
+  dplyr::filter(`ATTIVITÀ` == "Acuti - Regime ordinario") %>%
+  dplyr::group_by(ANNO)  %>%
+  dplyr::mutate_at(vars(MASCHI, FEMMINE), as.numeric) %>%
+  dplyr::mutate_at(vars(MASCHI, FEMMINE), round, digits = 3) %>% 
+  dplyr::rename(`Tasso osp. Maschi` = "MASCHI",
+                `Tasso osp. Femmine` = "FEMMINE") %>%
+  dplyr::select(1:3, 5) %>%
+  
+  DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 2.2.3"
+  )
+
+```
+
+
+## Acuti - Regime diurno
+
+Table 3.1.1 shows the hospitalization rates for the activity *Acuti - Regime diurno* for the 4 years of analysis and the corresponding percentage variation.
+
+```{r, echo=FALSE, include=TRUE}
+HR_summary_act %>%
+  dplyr::filter(`ATTIVITÀ` == "Acuti -  diurno") %>%
+  dplyr::mutate(`ATTIVITÀ` = "Acuti - Regime diurno") %>%  
+  dplyr::rename(TASSO = "Tasso complessivo") %>%
+  ungroup() %>%
+  dplyr::mutate("VARIAZIONE %" = round((TASSO / lag(TASSO) -1) * 100, 
+                                       digits   = 3)) %>%
+  DT::datatable(
+    options = list(
+    lengthChange = FALSE,
+    paging = FALSE,
+    searching = FALSE
+    
+  ),
+    caption = 'Table 3.1.1')
+  
+
+```
+
+### TASSO PER CATEGORIE DI ETÀ
+The graph below shows that through the years of analysis the hospitalization rates by age category is decreased for all the age categories for the activity *Acuti - Regime diurno*.
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_summary <- HR_age_cat %>%
+  dplyr::filter(`Categoria età` != "TOTALE") %>%
+  dplyr::select(`Categoria età`, `Acuti - Regime diurno`, ANNO) %>%
+  dplyr::group_by(ANNO) 
+  
+HR_summary$`Categoria età` <- factor(HR_summary$`Categoria età`,
+                                          c("Meno di 1 anno",
+                                            "Da 1 a 4 anni",
+                                            "Da 5 a 14 anni",
+                                            "Da 15 a 24 anni",
+                                            "Da 25 a 44 anni", 
+                                            "Da 45 a 64 anni", 
+                                            "Da 65 a 74 anni", 
+                                            "75 anni e oltre"))
+
+  ggplot(data = HR_summary,
+         aes(x = `Categoria età`, y = `Acuti - Regime diurno`, fill = ANNO)) +
+  geom_bar( stat = "identity",
+            position = "dodge") +
+     theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) + 
+  labs(title = "TASSO DI OSPEDALIZZAZIONE (per età, per 1000 abitanti)",
+              subtitle = "Acuti - Regime diurno") +
+    ylab(" ")
+
+
+```
+
+
+Table 3.1.2 represents the data for age category in *Acuti - Regime diurno* for each year.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_summary %>%
+  dplyr::rename(`Tasso di ospedalizz. (per 1000 ab.)` = "Acuti - Regime diurno") %>%
+  dplyr::mutate_at(vars(`Tasso di ospedalizz. (per 1000 ab.)`), round, digits = 3) %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 3.1.2"
+                )
+
+  
+
+```
+
+
+### TASSO PER REGIONE E SESSO
+
+The following graphs show the evolution of the hospitalization rate in Italy by region and gender in the period 2016-2019. The horizontal blue line displays the hospitalization rates in Italy for the male gender, the red one for the female gender.
+
+```{r, echo=FALSE, include=TRUE}
+
+gender_OR <- HR_gender %>%
+  dplyr::filter(`ATTIVITÀ` == "Acuti - Regime diurno") %>%
+  dplyr::group_by(ANNO) 
+
+gender_OR$`REGIONE DI RESIDENZA` <- rep(c("Pie", "VdA", "Lom", "Blz", "Trn", "Ven",
+                                      "FVG", "Lig", "EmR", "Tos", "Umb", "Mar",
+                                      "Laz", "Abr", "Mol", "Cam", "Pug", "Bas",
+                                      "Cal", "Sic", "Sar", "ITA"),4
+                                      )
+gender_OR$`REGIONE DI RESIDENZA` <- factor(gender_OR$`REGIONE DI RESIDENZA`,
+                                          c( "Pie", "VdA", "Lom", "Blz",
+                                             "Trn", "Ven", "FVG", "Lig", 
+                                             "EmR", "Tos", "Umb", "Mar",      
+                                             "Laz", "Abr", "Mol", "Cam", 
+                                             "Pug", "Bas","Cal", "Sic",
+                                             "Sar", "ITA")
+                                          )
+# reshape the dataframe in order to plot.
+
+male <- gender_OR %>%
+  dplyr::select(1, 2, 5) %>%
+  dplyr::rename(TASSO = "MASCHI") %>%
+  dplyr::mutate(GENERE = "MASCHI") 
+
+female <- gender_OR %>%
+  dplyr::select(1,3,5) %>%
+  dplyr::rename(TASSO = "FEMMINE") %>%
+  dplyr::mutate(GENERE = "FEMMINE") 
+
+
+Gend_HR_total <- dplyr::bind_rows(male, female) %>%
+  dplyr::mutate_at(vars(TASSO), as.numeric)
+
+Italy_HR <- Gend_HR_total %>%
+  dplyr::filter(`REGIONE DI RESIDENZA` == "ITA") %>%
+  dplyr::rename(tasso_it = "TASSO")
+
+Gend_HR_without_ita <- Gend_HR_total %>%
+  filter(`REGIONE DI RESIDENZA` != "ITA")
+
+
+p <- ggplot(data = Gend_HR_without_ita, aes( x = `REGIONE DI RESIDENZA`, 
+                                 y = TASSO,
+                                 fill = GENERE)) + 
+  geom_bar(stat = "identity",
+           position = "dodge") + 
+  geom_hline(data = Italy_HR %>% 
+               filter(GENERE == "MASCHI"), aes(yintercept = tasso_it), 
+             color = "blue") +
+  geom_hline(data = Italy_HR %>% 
+               filter(GENERE == "FEMMINE"), aes(yintercept = tasso_it), 
+             color = "red") +
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) +
+
+  facet_wrap(~ANNO) +
+  labs(
+    title = "Tasso di ospedalizzazione per regione e sesso (per 1000 abitanti)",
+    subtitle = "Acuti - Regime diurno"
+  )
+p 
+
+
+```
+
+
+Table 3.1.3 shows the hospitalization rate for each region, by gender and year, for the activity *Acuti - Regime diurno*.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_gender %>%
+  dplyr::filter(`ATTIVITÀ` == "Acuti - Regime diurno") %>%
+  dplyr::group_by(ANNO)  %>%
+  dplyr::mutate_at(vars(MASCHI, FEMMINE), as.numeric) %>%
+  dplyr::mutate_at(vars(MASCHI, FEMMINE), round, digits = 3) %>% 
+  dplyr::rename(`Tasso osp. Maschi` = "MASCHI",
+                `Tasso osp. Femmine` = "FEMMINE") %>%
+  dplyr::select(1:3, 5) %>%
+  
+  DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 3.1.3"
+  )
+
+```
+
+
+
+
+
+## Riabilitazione - Regime ordinario
+
+Table 4.1.1 shows the hospitalization rates for the activity *Riabilitazione - Regime ordinario* for the 4 years of analysis and the corresponding percentage variation.
+
+```{r, echo=FALSE, include=TRUE}
+HR_summary_act %>%
+  dplyr::filter(`ATTIVITÀ` == "Riabilitazione -  ordinario") %>%
+  dplyr::mutate(`ATTIVITÀ` = "Riabilitazione - Regime ordinario") %>%  
+  dplyr::rename(TASSO = "Tasso complessivo") %>%
+  ungroup() %>%
+  dplyr::mutate("VARIAZIONE %" = round((TASSO / lag(TASSO) -1) * 100, 
+                                       digits   = 3)) %>%
+  DT::datatable(
+    options = list(
+    lengthChange = FALSE,
+    paging = FALSE,
+    searching = FALSE
+    
+  ),
+    caption = 'Table 4.1.1')
+  
+
+```
+
+### TASSO PER CATEGORIE DI ETÀ
+As shown by the graph, through the years of analysis the hospitalization rates remained stable for some of the age categories, while decreased for others, in particular for the categories: *"Da 65 a 74 anni"* and *"75 anni e oltre"* for the activity *Riabilitazione - Regime ordinario*.
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_summary <- HR_age_cat %>%
+  dplyr::filter(`Categoria età` != "TOTALE") %>%
+  dplyr::select(`Categoria età`, `Riabilitazione - Regime ordinario`, ANNO) %>%
+  dplyr::group_by(ANNO) 
+  
+HR_summary$`Categoria età` <- factor(HR_summary$`Categoria età`,
+                                          c("Meno di 1 anno",
+                                            "Da 1 a 4 anni",
+                                            "Da 5 a 14 anni",
+                                            "Da 15 a 24 anni",
+                                            "Da 25 a 44 anni", 
+                                            "Da 45 a 64 anni", 
+                                            "Da 65 a 74 anni", 
+                                            "75 anni e oltre"))
+
+  ggplot(data = HR_summary,
+         aes(x = `Categoria età`, 
+             y = `Riabilitazione - Regime ordinario`,
+             fill = ANNO)) +
+  geom_bar( stat = "identity",
+            position = "dodge") +
+     theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) + 
+  labs(title = "TASSO DI OSPEDALIZZAZIONE (per età, per 1000 abitanti)",
+              subtitle = "Riabilitazione - Regime ordinario") +
+    ylab(" ")
+
+
+```
+
+
+Table 4.1.2 represents the data for age category in *Riabilitazione - Regime ordinario* for each year.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_summary %>%
+  dplyr::rename(`Tasso di ospedalizz. (per 1000 ab.)` = "Riabilitazione - Regime ordinario") %>%
+  dplyr::mutate_at(vars(`Tasso di ospedalizz. (per 1000 ab.)`), round, digits = 3) %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 4.1.2"
+                )
+
+  
+
+```
+
+
+### TASSO PER REGIONE E SESSO
+
+The following graphs show the evolution of the hospitalization rate in Italy by region and gender in the period 2016-2019. The horizontal blue line displays the hospitalization rates in Italy for the male gender, the red one for the female gender.
+
+```{r, echo=FALSE, include=TRUE}
+
+gender_OR <- HR_gender %>%
+  dplyr::filter(`ATTIVITÀ` == "Riabilitazione - Regime ordinario") %>%
+  dplyr::group_by(ANNO) 
+
+gender_OR$`REGIONE DI RESIDENZA` <- rep(c("Pie", "VdA", "Lom", "Blz", "Trn", "Ven",
+                                      "FVG", "Lig", "EmR", "Tos", "Umb", "Mar",
+                                      "Laz", "Abr", "Mol", "Cam", "Pug", "Bas",
+                                      "Cal", "Sic", "Sar", "ITA"),4
+                                      )
+gender_OR$`REGIONE DI RESIDENZA` <- factor(gender_OR$`REGIONE DI RESIDENZA`,
+                                          c( "Pie", "VdA", "Lom", "Blz",
+                                             "Trn", "Ven", "FVG", "Lig", 
+                                             "EmR", "Tos", "Umb", "Mar",      
+                                             "Laz", "Abr", "Mol", "Cam", 
+                                             "Pug", "Bas","Cal", "Sic",
+                                             "Sar", "ITA")
+                                          )
+# reshape the dataframe in order to plot.
+
+male <- gender_OR %>%
+  dplyr::select(1, 2, 5) %>%
+  dplyr::rename(TASSO = "MASCHI") %>%
+  dplyr::mutate(GENERE = "MASCHI") 
+
+female <- gender_OR %>%
+  dplyr::select(1,3,5) %>%
+  dplyr::rename(TASSO = "FEMMINE") %>%
+  dplyr::mutate(GENERE = "FEMMINE") 
+
+
+Gend_HR_total <- dplyr::bind_rows(male, female) %>%
+  dplyr::mutate_at(vars(TASSO), as.numeric)
+
+Italy_HR <- Gend_HR_total %>%
+  dplyr::filter(`REGIONE DI RESIDENZA` == "ITA") %>%
+  dplyr::rename(tasso_it = "TASSO")
+
+Gend_HR_without_ita <- Gend_HR_total %>%
+  filter(`REGIONE DI RESIDENZA` != "ITA")
+
+
+p <- ggplot(data = Gend_HR_without_ita, aes( x = `REGIONE DI RESIDENZA`, 
+                                 y = TASSO,
+                                 fill = GENERE)) + 
+  geom_bar(stat = "identity",
+           position = "dodge") + 
+  geom_hline(data = Italy_HR %>% 
+               filter(GENERE == "MASCHI"), aes(yintercept = tasso_it), 
+             color = "blue") +
+  geom_hline(data = Italy_HR %>% 
+               filter(GENERE == "FEMMINE"), aes(yintercept = tasso_it), 
+             color = "red") +
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) +
+
+  facet_wrap(~ANNO) +
+  labs(
+    title = "Tasso di ospedalizzazione per regione e sesso (per 1000 abitanti)",
+    subtitle = "Riabilitazione - Regime ordinario"
+  )
+p 
+
+
+```
+
+
+Table 4.1.3 shows the hospitalization rate for each region, by gender and year, for the activity *Riabilitazione - Regime ordinario*.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_gender %>%
+  dplyr::filter(`ATTIVITÀ` == "Riabilitazione - Regime ordinario") %>%
+  dplyr::group_by(ANNO)  %>%
+  dplyr::mutate_at(vars(MASCHI, FEMMINE), as.numeric) %>%
+  dplyr::mutate_at(vars(MASCHI, FEMMINE), round, digits = 3) %>% 
+  dplyr::rename(`Tasso osp. Maschi` = "MASCHI",
+                `Tasso osp. Femmine` = "FEMMINE") %>%
+  dplyr::select(1:3, 5) %>%
+  
+  DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 4.1.3"
+  )
+
+```
+
+
+## Riabilitazione - Regime diurno
+
+Table 5.1.1 shows the hospitalization rates for the activity *Riabilitazione - Regime diurno* for the 4 years of analysis and the corresponding percentage variation.
+
+```{r, echo=FALSE, include=TRUE}
+HR_summary_act %>%
+  dplyr::filter(`ATTIVITÀ` == "Riabilitazione -  diurno") %>%
+  dplyr::mutate(`ATTIVITÀ` = "Riabilitazione - Regime diurno") %>%  
+  dplyr::rename(TASSO = "Tasso complessivo") %>%
+  ungroup() %>%
+  dplyr::mutate("VARIAZIONE %" = round((TASSO / lag(TASSO) -1) * 100, 
+                                       digits   = 3)) %>%
+  DT::datatable(
+    options = list(
+    lengthChange = FALSE,
+    paging = FALSE,
+    searching = FALSE
+    
+  ),
+    caption = 'Table 5.1.1')
+  
+
+```
+
+### TASSO PER CATEGORIE DI ETÀ
+As shown by the graph, through the years of analysis the hospitalization rates is increased for some of the age categories (*"Da 1 a 4 anni"* and *"Da 5 a 14 anni"*) and is decreased for some others (*"Da 45 a 64 anni"*; *"Da 65 a 74 anni"* and *"75 anni e oltre"* ) remained stable for the activity *Riabilitazione - Regime diurno*.
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_summary <- HR_age_cat %>%
+  dplyr::filter(`Categoria età` != "TOTALE") %>%
+  dplyr::select(`Categoria età`, `Riabilitazione - Regime diurno`, ANNO) %>%
+  dplyr::group_by(ANNO) 
+  
+HR_summary$`Categoria età` <- factor(HR_summary$`Categoria età`,
+                                          c("Meno di 1 anno",
+                                            "Da 1 a 4 anni",
+                                            "Da 5 a 14 anni",
+                                            "Da 15 a 24 anni",
+                                            "Da 25 a 44 anni", 
+                                            "Da 45 a 64 anni", 
+                                            "Da 65 a 74 anni", 
+                                            "75 anni e oltre"))
+
+  ggplot(data = HR_summary,
+         aes(x = `Categoria età`, 
+             y = `Riabilitazione - Regime diurno`,
+             fill = ANNO)) +
+  geom_bar( stat = "identity",
+            position = "dodge") +
+     theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) + 
+  labs(title = "TASSO DI OSPEDALIZZAZIONE (per età, per 1000 abitanti)",
+              subtitle = "Riabilitazione - Regime diurno") +
+    ylab(" ")
+
+
+```
+
+
+Table 5.1.2 represents the data for age category in *Riabilitazione - Regime diurno* for each year.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_summary %>%
+  dplyr::rename(`Tasso di ospedalizz. (per 1000 ab.)` = "Riabilitazione - Regime diurno") %>%
+  dplyr::mutate_at(vars(`Tasso di ospedalizz. (per 1000 ab.)`), round, digits = 3) %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 5.1.2"
+                )
+
+  
+
+```
+
+
+### TASSO PER REGIONE E SESSO
+
+The following graphs show the evolution of the hospitalization rate in Italy by region and gender in the period 2016-2019. The horizontal blue line displays the hospitalization rates in Italy for the male gender, the red one for the female gender.
+
+```{r, echo=FALSE, include=TRUE}
+
+gender_OR <- HR_gender %>%
+  dplyr::filter(`ATTIVITÀ` == "Riabilitazione - Regime diurno") %>%
+  dplyr::group_by(ANNO) 
+
+gender_OR$`REGIONE DI RESIDENZA` <- rep(c("Pie", "VdA", "Lom", "Blz", "Trn", "Ven",
+                                      "FVG", "Lig", "EmR", "Tos", "Umb", "Mar",
+                                      "Laz", "Abr", "Mol", "Cam", "Pug", "Bas",
+                                      "Cal", "Sic", "Sar", "ITA"),4
+                                      )
+gender_OR$`REGIONE DI RESIDENZA` <- factor(gender_OR$`REGIONE DI RESIDENZA`,
+                                          c( "Pie", "VdA", "Lom", "Blz",
+                                             "Trn", "Ven", "FVG", "Lig", 
+                                             "EmR", "Tos", "Umb", "Mar",      
+                                             "Laz", "Abr", "Mol", "Cam", 
+                                             "Pug", "Bas","Cal", "Sic",
+                                             "Sar", "ITA")
+                                          )
+# reshape the dataframe in order to plot.
+
+male <- gender_OR %>%
+  dplyr::select(1, 2, 5) %>%
+  dplyr::rename(TASSO = "MASCHI") %>%
+  dplyr::mutate(GENERE = "MASCHI") 
+
+female <- gender_OR %>%
+  dplyr::select(1,3,5) %>%
+  dplyr::rename(TASSO = "FEMMINE") %>%
+  dplyr::mutate(GENERE = "FEMMINE") 
+
+
+Gend_HR_total <- dplyr::bind_rows(male, female) %>%
+  dplyr::mutate_at(vars(TASSO), as.numeric)
+
+Italy_HR <- Gend_HR_total %>%
+  dplyr::filter(`REGIONE DI RESIDENZA` == "ITA") %>%
+  dplyr::rename(tasso_it = "TASSO")
+
+Gend_HR_without_ita <- Gend_HR_total %>%
+  filter(`REGIONE DI RESIDENZA` != "ITA")
+
+
+p <- ggplot(data = Gend_HR_without_ita, aes( x = `REGIONE DI RESIDENZA`, 
+                                 y = TASSO,
+                                 fill = GENERE)) + 
+  geom_bar(stat = "identity",
+           position = "dodge") + 
+  geom_hline(data = Italy_HR %>% 
+               filter(GENERE == "MASCHI"), aes(yintercept = tasso_it), 
+             color = "blue") +
+  geom_hline(data = Italy_HR %>% 
+               filter(GENERE == "FEMMINE"), aes(yintercept = tasso_it), 
+             color = "red") +
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) +
+
+  facet_wrap(~ANNO) +
+  labs(
+    title = "Tasso di ospedalizzazione per regione e sesso (per 1000 abitanti)",
+    subtitle = "Riabilitazione - Regime diurno"
+  )
+p 
+
+
+```
+
+
+Table 5.1.3 shows the hospitalization rate for each region, by gender and year, for the activity *Riabilitazione - Regime diurno*.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_gender %>%
+  dplyr::filter(`ATTIVITÀ` == "Riabilitazione - Regime diurno") %>%
+  dplyr::group_by(ANNO)  %>%
+  dplyr::mutate_at(vars(MASCHI, FEMMINE), as.numeric) %>%
+  dplyr::mutate_at(vars(MASCHI, FEMMINE), round, digits = 3) %>% 
+  dplyr::rename(`Tasso osp. Maschi` = "MASCHI",
+                `Tasso osp. Femmine` = "FEMMINE") %>%
+  dplyr::select(1:3, 5) %>%
+  
+  DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 5.1.3"
+  )
+
+```
+
+
+
+## Lungodegenza
+
+Table 6.1.1 shows the hospitalization rates for the activity *Lungodegenza* for the 4 years of analysis and the corresponding percentage variation.
+
+```{r, echo=FALSE, include=TRUE}
+HR_summary_act %>%
+  dplyr::filter(`ATTIVITÀ` == "Lungodegenza") %>%
+  dplyr::mutate(`ATTIVITÀ` = "Lungodegenza") %>%  
+  dplyr::rename(TASSO = "Tasso complessivo") %>%
+  ungroup() %>%
+  dplyr::mutate("VARIAZIONE %" = round((TASSO / lag(TASSO) -1) * 100, 
+                                       digits   = 3)) %>%
+  DT::datatable(
+    options = list(
+    lengthChange = FALSE,
+    paging = FALSE,
+    searching = FALSE
+    
+  ),
+    caption = 'Table 6.1.1')
+  
+
+```
+
+### TASSO PER CATEGORIE DI ETÀ
+The graph below shows that the hospitalization rate is almost 0 for the earlier age categories and is much higher for the last ones. Through the years of analysis the hospitalization rates decreased for these latter categories for the activity *Lungodegenza*.
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_summary <- HR_age_cat %>%
+  dplyr::filter(`Categoria età` != "TOTALE") %>%
+  dplyr::select(`Categoria età`, `Lungodegenza`, ANNO) %>%
+  dplyr::group_by(ANNO) 
+  
+HR_summary$`Categoria età` <- factor(HR_summary$`Categoria età`,
+                                          c("Meno di 1 anno",
+                                            "Da 1 a 4 anni",
+                                            "Da 5 a 14 anni",
+                                            "Da 15 a 24 anni",
+                                            "Da 25 a 44 anni", 
+                                            "Da 45 a 64 anni", 
+                                            "Da 65 a 74 anni", 
+                                            "75 anni e oltre"))
+
+  ggplot(data = HR_summary,
+         aes(x = `Categoria età`, 
+             y = `Lungodegenza`,
+             fill = ANNO)) +
+  geom_bar( stat = "identity",
+            position = "dodge") +
+     theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) + 
+  labs(title = "TASSO DI OSPEDALIZZAZIONE (per età, per 1000 abitanti)",
+              subtitle = "Lungodegenza") +
+    ylab(" ")
+
+
+```
+
+
+Table 6.1.2 represents the data for age category in *Lungodegenza* for each year.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_summary %>%
+  dplyr::rename(`Tasso di ospedalizz. (per 1000 ab.)` = "Lungodegenza") %>%
+  dplyr::mutate_at(vars(`Tasso di ospedalizz. (per 1000 ab.)`), round, digits = 3) %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 6.1.2"
+                )
+
+  
+
+```
+
+
+### TASSO PER REGIONE E SESSO
+
+The following graphs show the evolution of the hospitalization rate in Italy by region and gender in the period 2016-2019. The horizontal blue line displays the hospitalization rates in Italy for the male gender, the red one for the female gender.
+
+```{r, echo=FALSE, include=TRUE}
+
+gender_OR <- HR_gender %>%
+  dplyr::filter(`ATTIVITÀ` == "Lungodegenza") %>%
+  dplyr::group_by(ANNO) 
+
+gender_OR$`REGIONE DI RESIDENZA` <- rep(c("Pie", "VdA", "Lom", "Blz", "Trn", "Ven",
+                                      "FVG", "Lig", "EmR", "Tos", "Umb", "Mar",
+                                      "Laz", "Abr", "Mol", "Cam", "Pug", "Bas",
+                                      "Cal", "Sic", "Sar", "ITA"),4
+                                      )
+gender_OR$`REGIONE DI RESIDENZA` <- factor(gender_OR$`REGIONE DI RESIDENZA`,
+                                          c( "Pie", "VdA", "Lom", "Blz",
+                                             "Trn", "Ven", "FVG", "Lig", 
+                                             "EmR", "Tos", "Umb", "Mar",      
+                                             "Laz", "Abr", "Mol", "Cam", 
+                                             "Pug", "Bas","Cal", "Sic",
+                                             "Sar", "ITA")
+                                          )
+# reshape the dataframe in order to plot.
+
+male <- gender_OR %>%
+  dplyr::select(1, 2, 5) %>%
+  dplyr::rename(TASSO = "MASCHI") %>%
+  dplyr::mutate(GENERE = "MASCHI") 
+
+female <- gender_OR %>%
+  dplyr::select(1,3,5) %>%
+  dplyr::rename(TASSO = "FEMMINE") %>%
+  dplyr::mutate(GENERE = "FEMMINE") 
+
+
+Gend_HR_total <- dplyr::bind_rows(male, female) %>%
+  dplyr::mutate_at(vars(TASSO), as.numeric)
+
+Italy_HR <- Gend_HR_total %>%
+  dplyr::filter(`REGIONE DI RESIDENZA` == "ITA") %>%
+  dplyr::rename(tasso_it = "TASSO")
+
+Gend_HR_without_ita <- Gend_HR_total %>%
+  filter(`REGIONE DI RESIDENZA` != "ITA")
+
+
+p <- ggplot(data = Gend_HR_without_ita, aes( x = `REGIONE DI RESIDENZA`, 
+                                 y = TASSO,
+                                 fill = GENERE)) + 
+  geom_bar(stat = "identity",
+           position = "dodge") + 
+  geom_hline(data = Italy_HR %>% 
+               filter(GENERE == "MASCHI"), aes(yintercept = tasso_it), 
+             color = "blue") +
+  geom_hline(data = Italy_HR %>% 
+               filter(GENERE == "FEMMINE"), aes(yintercept = tasso_it), 
+             color = "red") +
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) +
+
+  facet_wrap(~ANNO) +
+  labs(
+    title = "Tasso di ospedalizzazione per regione e sesso (per 1000 abitanti)",
+    subtitle = "Lungodegenza"
+  )
+p 
+
+
+```
+
+
+Table 6.1.3 shows the hospitalization rate for each region, by gender and year, for the activity *Lungodegenza*.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+HR_gender %>%
+  dplyr::filter(`ATTIVITÀ` == "Lungodegenza") %>%
+  dplyr::group_by(ANNO)  %>%
+  dplyr::mutate_at(vars(MASCHI, FEMMINE), as.numeric) %>%
+  dplyr::mutate_at(vars(MASCHI, FEMMINE), round, digits = 3) %>% 
+  dplyr::rename(`Tasso osp. Maschi` = "MASCHI",
+                `Tasso osp. Femmine` = "FEMMINE") %>%
+  dplyr::select(1:3, 5) %>%
+  
+  DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 6.1.3"
+  )
+
+```
+
+
 
 
 \pagebreak
@@ -1566,3 +2822,7 @@ Categoria diagnostica principale: il sistema DRG prevede un livello superiore di
 
 **Ricoveri di Lungodegenza**: Sono i ricoveri di pazienti dimessi da reparti appartenenti alla disciplina LUNGODEGENTI (codice 60 nei
 modelli di rilevazione del Sistema informativo sanitario). 
+
+**Tasso di ospedalizzazione**: Il tasso di ospedalizzazione fornisce una
+misura sintetica sul ricorso al ricovero ospedaliero della popolazione oggetto di studio. Si calcola come rapporto fra numero di ricoveri ospedalieri, ovunque
+effettuati, relativi a soggetti residenti in una data regione e la complessiva popolazione ivi residente
