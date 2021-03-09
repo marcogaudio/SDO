@@ -2529,10 +2529,10 @@ HR_summary %>%
 ```
 
 
-### TASSO PER REGIONE E SESSO
+### TASSO PER REGIONE E SESSO 
 
 The following graphs show the evolution of the hospitalization rate in Italy by region and gender in the period 2016-2019. The horizontal blue line displays the hospitalization rates in Italy for the male gender, the red one for the female gender.
-
+ 
 ```{r, echo=FALSE, include=TRUE}
 
 gender_OR <- HR_gender %>%
