@@ -21,7 +21,6 @@ pop_ita2019 <- pop_ita2019 %>%
                           breaks = c(0,4,seq(9, 84, 5)), right = TRUE,
                           include.lowest = TRUE)) 
 
-view(pop_ita2019)
 pop_ita2019 <- pop_ita2019 %>%  
   mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
                                           pattern = "\\(|\\]")) %>%
@@ -44,17 +43,17 @@ pop_ita2019$Categoria_età <- factor(pop_ita2019$Categoria_età,
                                "60-64","65-69", "70-74","75-79",
                                "80-84", "85+"))
 
-ggplot(data = pop_ita2019, 
-       mapping = aes(x = ifelse(test = Sesso == "maschi", yes = -Value, no = Value), 
-                     y = Categoria_età , fill = Sesso)) +
-  geom_col() +
-  scale_x_symmetric(labels = abs) +
-  labs( title = "Piramide popolazione",
-        subtitle = "Italia, 2019",
-       x = "Popolazione",
-       y = "Età"
-       )
-
+# ggplot(data = pop_ita2019, 
+#        mapping = aes(x = ifelse(test = Sesso == "maschi", yes = -Value, no = Value), 
+#                      y = Categoria_età , fill = Sesso)) +
+#   geom_col() +
+#   scale_x_symmetric(labels = abs) +
+#   labs( title = "Piramide popolazione",
+#         subtitle = "Italia, 2019",
+#        x = "Popolazione",
+#        y = "Età"
+#        )
+# 
 
 # UK population 2019
 
@@ -64,7 +63,7 @@ file_uk =  list.files( path = "./data/UK", pattern = ".xlsx",
 
 raw_uk_pop19 <- readxl::read_xlsx(path = file_uk,
                                 sheet = "2019", ski = 1)
-view(raw_uk_pop19)
+
 raw_uk2019 <- raw_uk_pop19 %>%
   dplyr::filter(variable == "UNITED KINGDOM") %>%
   dplyr::select(-c(2,3)) 
@@ -122,14 +121,14 @@ uk_pop2019$Categoria_età <- factor(uk_pop2019$Categoria_età,
                                "60-64","65-69", "70-74","75-79",
                                "80-84", "85+"))
 
-ggplot(data = uk_pop2019, 
-       mapping = aes(x = ifelse(test = Sesso == "maschi", yes = -popolazione,
-                                no = popolazione), 
-                     y = Categoria_età , fill = Sesso)) +
-  geom_col() +
-  scale_x_symmetric(labels = abs) +
-  labs( title = "Piramide popolazione",
-        subtitle = "Regno Unito, 2019",
-        x = "Popolazione",
-        y = "Età"
-  )
+# ggplot(data = uk_pop2019, 
+#        mapping = aes(x = ifelse(test = Sesso == "maschi", yes = -popolazione,
+#                                 no = popolazione), 
+#                      y = Categoria_età , fill = Sesso)) +
+#   geom_col() +
+#   scale_x_symmetric(labels = abs) +
+#   labs( title = "Piramide popolazione",
+#         subtitle = "Regno Unito, 2019",
+#         x = "Popolazione",
+#         y = "Età"
+#   )
