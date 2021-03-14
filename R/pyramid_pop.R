@@ -87,9 +87,9 @@ raw_uk2019male <- raw_uk2019 %>%
 
 
 raw_uk2019female <- raw_uk2019 %>%
-  dplyr::select(1:93) %>%
+  dplyr::select(94:185) %>%
   tidyr::gather(Età, popolazione) %>%
-  dplyr::slice(-1, -n()) %>%
+  dplyr::slice(-n()) %>%
   dplyr::mutate_at(vars(popolazione), as.numeric) %>%
   dplyr::mutate(Sesso = "femmine",
                 Età = seq(from = 0, to = 90)) %>%
@@ -132,3 +132,4 @@ uk_pop2019$Categoria_età <- factor(uk_pop2019$Categoria_età,
 #         x = "Popolazione",
 #         y = "Età"
 #   )
+
