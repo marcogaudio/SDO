@@ -1,7 +1,7 @@
 ---
-title: "SDO analysis"
-author: "Marco Gaudio"
-date: "2/3/2021"
+title: " Analisi Schede Dimissioni Ospedaliere "
+author: "| Marco Gaudio |"
+date: "`r format(Sys.Date(), '%d %B, %Y')`"
 output:
   html_document:
     code_folding: show
@@ -31,19 +31,26 @@ library(tidyverse)
 library(palmerpenguins)
 library(kableExtra)
 library(DT)
+library(lemon)
 ```
 
 
 The aim of this document is to analyze the datas related to the italian *Schede Dimissioni Ospedaliere* (SDO), in the period 2016 - 2019. 
 The data are provided by the [**Italian Ministry of Health**](http://www.salute.gov.it/portale/temi/p2_6.jsp?lingua=italiano&id=1237&area=ricoveriOspedalieri&menu=vuotolink).
 
-The document is composed by 3 sections: 
+The document is composed by 4 sections: 
 
 * **section 1** provides an analysis for each of the 5 activities (Acuti Regime ordinario;       Acuti Regime diurno, Riabilitazione Regime ordinario; Riabilitazione Regime diurno;        Lungodegenza) and considering the differences in the period studied. 
 
 * **section 2** analyses the hospitalization rates, first providing an overview for Italy as a whole, and then analysing the rates for each of the 5 activities in in the period 2016-2019, considering different region, gender and age category.
 
-* **section 3** provides a comparison between  hospitalization rates in Italy and hospitalization rates in UK.
+* **section 3** gives an overview of the Italian and English population in 2019, then an analysis in UK of the total number of surgeries (that can be compared to the total number of the italian *dimissioni*) and surgical incidences (the italian **tasso di ospedalizzazione**) is made. Lastly, It shows a comparison between the overall hospitalization rates in Italy and UK,
+thanks to the data provided by thr [**Health and Social Care Information Centre**](https://digital.nhs.uk/), now called NHS Digital. 
+
+* **section 4** proposes an analysis of the data about hospitalization discharges collected from two different sources: Istat and Italian Ministry of Health.
+ 
+ 
+ Besides, a comparison is made with the data about hospitalization rates in Italy provided by [**istat**](http://dati.istat.it/).
 
 
 ```{r}
@@ -95,7 +102,8 @@ The following graph shows the total number of hospital discharges divided by act
   p <- ggplot(summary_tab, aes(x = ANNO, y = DIMISSIONI, fill = `ATTIVITÀ`)) + 
   geom_bar(stat = "identity") +
   labs(title = "DIMISSIONI TOTALI PER ATTIVITÀ",
-  subtitle = "Italia")
+  subtitle = "Italia",
+  caption = "Source: Ministero della Salute")
 p
 ```
 
@@ -168,7 +176,9 @@ SDO_ordinario %>%
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "DIMISSIONI PER MDC",
-              subtitle = "Acuti - Regime ordinario")
+              subtitle = "Acuti - Regime ordinario",
+       caption = "Source: Ministero della Salute") + 
+  xlab("CLASSE MDC")
 
   
 ```
@@ -323,7 +333,13 @@ sdo_age_gender2 %>%
   geom_bar(stat = "identity", position = "dodge") + 
   theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
-                                    vjust = 0.5))
+                                    vjust = 0.5)) + 
+  labs(title = "DIMISSIONI PER ETÀ",
+       subtitle = "Acuti - Regime ordinario",
+       caption = "Source: Ministero della Salute"
+       ) + 
+  ylab("DIMISSIONI") + 
+  xlab("CATEGORIA ETÀ")
 
   
   
@@ -357,7 +373,10 @@ SDO_ordinario %>%
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "GIORNI DI DEGENZA",
-              subtitle = "Acuti - Regime ordinario")
+              subtitle = "Acuti - Regime ordinario",
+       caption = "Source: Ministero della Salute") + 
+  ylab("GIORNI DI DEGENZA") + 
+  xlab("CLASSE MDC")
 
 
 ```
@@ -402,6 +421,7 @@ ggplot(data = sum_deg, mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                     vjust = 0.5)) +  
   labs(title = "DEGENZA MEDIA PER OGNI MDC",
               subtitle = "Acuti - Regime ordinario",
+       caption = "Source: Ministero della Salute",
        x = "CLASSE MDC",
        y = "GIORNI DI DEGENZA") 
   
@@ -431,6 +451,7 @@ ggplot(data = sum_deg, mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                     vjust = 0.5)) +  
   labs(title = "DEGENZA MEDIA PER OGNI MDC",
               subtitle = "Acuti - Regime ordinario",
+       caption = "Source: Ministero della Salute",
        x = "CLASSE MDC",
        y = "GIORNI DI DEGENZA") 
   
@@ -459,6 +480,7 @@ ggplot(data = sum_deg, mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                     vjust = 0.5)) +  
   labs(title = "DEGENZA MEDIA PER OGNI MDC",
               subtitle = "Acuti - Regime ordinario",
+       caption = "Source: Ministero della Salute",
        x = "CLASSE MDC",
        y = "GIORNI DI DEGENZA") 
   
@@ -488,6 +510,7 @@ ggplot(data = sum_deg, mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                     vjust = 0.5)) +  
   labs(title = "DEGENZA MEDIA PER OGNI MDC",
               subtitle = "Acuti - Regime ordinario",
+       caption = "Source: Ministero della Salute",
        x = "CLASSE MDC",
        y = "GIORNI DI DEGENZA") 
   
@@ -567,7 +590,9 @@ SDO_diurno %>%
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "DIMISSIONI PER MDC",
-              subtitle = "Acuti - Regime diurno")
+              subtitle = "Acuti - Regime diurno",
+       caption = "Source: Ministero della Salute") + 
+  xlab("CLASSE MDC")
 
   
 ```
@@ -626,7 +651,12 @@ sdo_age_gender2 %>%
   geom_bar(stat = "identity", position = "dodge") + 
   theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
-                                    vjust = 0.5))
+                                    vjust = 0.5)) + 
+  labs(title = "DIMISSIONI PER ETÀ",
+       subtitle = "Acuti - Regime diurno",
+       caption = "Source: Ministero della Salute") + 
+  ylab("DIMISSIONI") + 
+  xlab("CATEGORIA ETÀ")
 
   
   
@@ -657,7 +687,10 @@ SDO_diurno %>%
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "ACCESSI",
-              subtitle = "Acuti - Regime diurno")
+              subtitle = "Acuti - Regime diurno",
+       caption = "Source: Ministero della Salute") +
+  ylab("ACCESSI") + 
+  xlab("CLASSE MDC")
 
 
 ```
@@ -684,8 +717,9 @@ ggplot(data = sum_accessi, mapping = aes(x =    forcats::fct_reorder(CLASSE_MDC,
                                     vjust = 0.5)) +  
   labs(title = "ACCESSI MEDI PER OGNI MDC",
               subtitle = "Acuti - Regime diurno",
+       caption = "Source: Ministero della Salute",
        x = "CLASSE MDC",
-       y = "Accessi") 
+       y = "ACCESSI") 
   
 
 ```
@@ -711,8 +745,9 @@ ggplot(data = sum_accessi, mapping = aes(x =    forcats::fct_reorder(CLASSE_MDC,
                                     vjust = 0.5)) +  
   labs(title = "ACCESSI MEDI PER OGNI MDC",
               subtitle = "Acuti - Regime diurno",
+       caption = "Source: Ministero della Salute",
        x = "CLASSE MDC",
-       y = "Accessi") 
+       y = "ACCESSI") 
   
 
 ```
@@ -740,7 +775,8 @@ ggplot(data = sum_accessi, mapping = aes(x =    forcats::fct_reorder(CLASSE_MDC,
   labs(title = "ACCESSI MEDI PER OGNI MDC",
               subtitle = "Acuti - Regime diurno",
        x = "CLASSE MDC",
-       y = "Accessi") 
+       caption = "Source: Ministero della Salute",
+       y = "ACCESSI") 
   
 
 ```
@@ -767,7 +803,8 @@ ggplot(data = sum_accessi, mapping = aes(x =    forcats::fct_reorder(CLASSE_MDC,
   labs(title = "ACCESSI MEDI PER OGNI MDC",
               subtitle = "Acuti - Regime diurno",
        x = "CLASSE MDC",
-       y = "Accessi") 
+       caption = "Source: Ministero della Salute",
+       y = "ACCESSI") 
   
 
 
@@ -847,7 +884,9 @@ SDO_ordinario_riab %>%
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "DIMISSIONI PER MDC",
-              subtitle = "Riabilitazione - Regime ordinario")
+              subtitle = "Riabilitazione - Regime ordinario",
+       caption = "Source: Ministero della Salute") + 
+  xlab("CLASSE MDC")
 
   
 ```
@@ -906,7 +945,12 @@ sdo_age_gender2 %>%
   geom_bar(stat = "identity", position = "dodge") + 
   theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
-                                    vjust = 0.5))
+                                    vjust = 0.5)) + 
+  labs(title = "DIMISSIONI PER ETÀ",
+       subtitle = "Riabilitazione - Regime ordinario",
+       caption = "Source: Ministero della Salute") +
+  ylab("DIMISSIONI") + 
+  xlab("CATEGORIA ETÀ")
 
   
 
@@ -937,7 +981,10 @@ SDO_ordinario_riab %>%
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "GIORNI DI DEGENZA",
-              subtitle = "Riabilitazione - Regime ordinario")
+              subtitle = "Riabilitazione - Regime ordinario",
+       caption = "Source: Ministero della Salute") + 
+  ylab("GIORNI DI DEGENZA") + 
+    xlab("CLASSE MDC")
 
 
 ```
@@ -982,7 +1029,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                     hjust = 1, 
                                     vjust = 0.5)) +  
   labs(title = "DEGENZA MEDIA PER OGNI MDC",
-              subtitle = "Riabilitazione - Regime ordinario",
+              subtitle = "Riabilitazione - Regime ordinario",caption = "Source: Ministero della Salute",
        x = "CLASSE MDC",
        y = "GIORNI DI DEGENZA") 
   
@@ -1011,7 +1058,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                     hjust = 1, 
                                     vjust = 0.5)) +  
   labs(title = "DEGENZA MEDIA PER OGNI MDC",
-              subtitle = "Riabilitazione - Regime ordinario",
+              subtitle = "Riabilitazione - Regime ordinario", caption = "Source: Ministero della Salute",
        x = "CLASSE MDC",
        y = "GIORNI DI DEGENZA") 
   
@@ -1040,7 +1087,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                     hjust = 1, 
                                     vjust = 0.5)) +  
   labs(title = "DEGENZA MEDIA PER OGNI MDC",
-              subtitle = "Riabilitazione - Regime ordinario",
+              subtitle = "Riabilitazione - Regime ordinario", caption = "Source: Ministero della Salute",
        x = "CLASSE MDC",
        y = "GIORNI DI DEGENZA") 
   
@@ -1070,7 +1117,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                     hjust = 1, 
                                     vjust = 0.5)) +  
   labs(title = "DEGENZA MEDIA PER OGNI MDC",
-              subtitle = "Riabilitazione - Regime ordinario",
+              subtitle = "Riabilitazione - Regime ordinario", caption = "Source: Ministero della Salute",
        x = "CLASSE MDC",
        y = "GIORNI DI DEGENZA") 
   
@@ -1152,7 +1199,8 @@ SDO_diurno_riab %>%
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "DIMISSIONI PER MDC",
-              subtitle = "Riabilitazione - Regime diurno")
+              subtitle = "Riabilitazione - Regime diurno", caption = "Source: Ministero della Salute") + 
+  xlab("CLASSE MDC")
 
   
 ```
@@ -1211,7 +1259,11 @@ sdo_age_gender2 %>%
   geom_bar(stat = "identity", position = "dodge") + 
   theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
-                                    vjust = 0.5))
+                                    vjust = 0.5)) + 
+  labs(title = "DIMISSIONI PER ETÀ",
+       subtitle = "Riabilitazione - Regime diurno",
+       caption = "Source: Ministero della Salute") + 
+  xlab("CATEGORIA ETÀ")
 
   
 
@@ -1242,7 +1294,10 @@ SDO_diurno_riab %>%
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "ACCESSI",
-              subtitle = "Riabilitazione - Regime diurno")
+              subtitle = "Riabilitazione - Regime diurno",
+       caption = "Source: Ministero della Salute") + 
+  ylab("ACCESSI") + 
+  xlab("CLASSE MDC")
 
 
 ```
@@ -1287,7 +1342,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                     hjust = 1, 
                                     vjust = 0.5)) +  
   labs(title = "ACCESSI MEDI PER MDC",
-              subtitle = "Riabilitazione - Regime diurno",
+              subtitle = "Riabilitazione - Regime diurno",caption = "Source: Ministero della Salute",
        x = "CLASSE MDC",
        y = "ACCESSI") 
   
@@ -1316,7 +1371,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                     hjust = 1, 
                                     vjust = 0.5)) +  
   labs(title = "ACCESSI MEDI PER MDC",
-              subtitle = "Riabilitazione - Regime diurno",
+              subtitle = "Riabilitazione - Regime diurno", caption = "Source: Ministero della Salute",
        x = "CLASSE MDC",
        y = "ACCESSI") 
   
@@ -1346,7 +1401,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                     hjust = 1, 
                                     vjust = 0.5)) +  
   labs(title = "ACCESSI MEDI PER MDC",
-              subtitle = "Riabilitazione - Regime diurno",
+              subtitle = "Riabilitazione - Regime diurno", caption = "Source: Ministero della Salute",
        x = "CLASSE MDC",
        y = "ACCESSI") 
   
@@ -1377,7 +1432,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                     hjust = 1, 
                                     vjust = 0.5)) +  
   labs(title = "ACCESSI MEDI PER MDC",
-              subtitle = "Riabilitazione - Regime diurno",
+              subtitle = "Riabilitazione - Regime diurno", caption = "Source: Ministero della Salute",
        x = "CLASSE MDC",
        y = "ACCESSI") 
   
@@ -1460,7 +1515,9 @@ SDO_lungodegenza %>%
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "DIMISSIONI PER MDC",
-              subtitle = "Lungodegenza")
+              subtitle = "Lungodegenza", 
+       caption = "Source: Ministero della Salute") + 
+  xlab("CLASSE MDC")
 
   
 ```
@@ -1517,7 +1574,11 @@ sdo_age_gender2 %>%
   geom_bar(stat = "identity", position = "dodge") + 
   theme(axis.text.x  = element_text(angle = 90, 
                                     hjust = 1, 
-                                    vjust = 0.5))
+                                    vjust = 0.5)) + 
+  labs(title = "DIMISSIONI PER ETÀ",
+       subtitle = "Lungodegenza",
+       caption = "Source: Ministero della Salute") +
+  xlab("CATEGORIA ETÀ")
 
   
 
@@ -1547,7 +1608,10 @@ SDO_lungodegenza %>%
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "GIORNI DI DEGENZA",
-              subtitle = "Lungodegenza")
+              subtitle = "Lungodegenza",
+       caption = "Source: Ministero della Salute") + 
+  ylab("GIORNI DI DEGENZA") + 
+  xlab("CLASSE MDC")
 
 
 ```
@@ -1593,7 +1657,8 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
                                     vjust = 0.5)) +  
   labs(title = "DEGENZA MEDIA PER OGNI MDC",
               subtitle = "Lungodegenza",
-       x = "CLASSE MDC",
+       x = "CLASSE MDC", 
+       caption = "Source: Ministero della Salute",
        y = "GIORNI DI DEGENZA") 
   
 
@@ -1623,6 +1688,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
   labs(title = "DEGENZA MEDIA PER OGNI MDC",
               subtitle = "Lungodegenza",
        x = "CLASSE MDC",
+       caption = "Source: Ministero della Salute",
        y = "GIORNI DI DEGENZA") 
   
 
@@ -1652,6 +1718,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
   labs(title = "DEGENZA MEDIA PER OGNI MDC",
               subtitle = "Lungodegenza",
        x = "CLASSE MDC",
+       caption = "Source: Ministero della Salute",
        y = "GIORNI DI DEGENZA") 
   
 
@@ -1682,6 +1749,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
   labs(title = "DEGENZA MEDIA PER OGNI MDC",
               subtitle = "Lungodegenza",
        x = "CLASSE MDC",
+       caption = "Source: Ministero della Salute",
        y = "GIORNI DI DEGENZA") 
   
 
@@ -1742,7 +1810,9 @@ HR_summary_act <- HR_age %>%
                                      hjust = 1, 
                                     vjust = 0.5)) + 
    labs(title = "TASSO DI OSPEDALIZZAZIONE (per 1000 abitanti)",
-              subtitle = "ITALIA")
+              subtitle = "ITALIA",
+        caption = "Source: Ministero della Salute") + 
+    xlab("TASSO")
   
 ```
 
@@ -1809,7 +1879,8 @@ Italy_HR <- Gend_HR_total %>%
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "TASSO DI OSPEDALIZZAZIONE (per genere, per 1000 abitanti)",
-              subtitle = "Italia") +
+              subtitle = "Italia",
+       caption = "Source: Ministero della Salute") +
     ylab(" ") + 
   facet_wrap(~ANNO)
   
@@ -1883,8 +1954,10 @@ HR_age_it <- dplyr::bind_rows(list_HR_age) %>%
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "TASSO DI OSPEDALIZZAZIONE (PER ETÀ, per 1000 abitanti)",
-              subtitle = "Italia") +
-    ylab(" ") + 
+              subtitle = "Italia",
+       caption = "Source: Ministero della Salute") +
+    ylab(" ") +
+    xlab("CATEGORIA ETÀ")+
   facet_wrap(~ANNO)
   
      
@@ -1963,8 +2036,10 @@ HR_summary$`Categoria età` <- factor(HR_summary$`Categoria età`,
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "TASSO DI OSPEDALIZZAZIONE (per età, per 1000 abitanti)",
-              subtitle = "Acuti - Regime ordinario") +
-    ylab(" ")
+              subtitle = "Acuti - Regime ordinario",
+       caption = "Source: Ministero della Salute") +
+    ylab(" ") + 
+    xlab("CATEGORIA ETÀ")
 
 
 ```
@@ -2056,7 +2131,8 @@ p <- ggplot(data = Gend_HR_without_ita, aes( x = `REGIONE DI RESIDENZA`,
   facet_wrap(~ANNO) +
   labs(
     title = "Tasso di ospedalizzazione per regione e sesso (per 1000 abitanti)",
-    subtitle = "Acuti - Regime ordinario"
+    subtitle = "Acuti - Regime ordinario",
+    caption = "Source: Ministero della Salute"
   )
 p 
 
@@ -2141,8 +2217,11 @@ HR_summary$`Categoria età` <- factor(HR_summary$`Categoria età`,
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "TASSO DI OSPEDALIZZAZIONE (per età, per 1000 abitanti)",
-              subtitle = "Acuti - Regime diurno") +
-    ylab(" ")
+              subtitle = "Acuti - Regime diurno",
+       caption = "Source: Ministero della Salute") +
+    ylab(" ") + 
+        xlab("CATEGORIA ETÀ")
+
 
 
 ```
@@ -2233,7 +2312,8 @@ p <- ggplot(data = Gend_HR_without_ita, aes( x = `REGIONE DI RESIDENZA`,
   facet_wrap(~ANNO) +
   labs(
     title = "Tasso di ospedalizzazione per regione e sesso (per 1000 abitanti)",
-    subtitle = "Acuti - Regime diurno"
+    subtitle = "Acuti - Regime diurno",
+    caption = "Source: Ministero della Salute"
   )
 p 
 
@@ -2323,8 +2403,11 @@ HR_summary$`Categoria età` <- factor(HR_summary$`Categoria età`,
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "TASSO DI OSPEDALIZZAZIONE (per età, per 1000 abitanti)",
-              subtitle = "Riabilitazione - Regime ordinario") +
-    ylab(" ")
+              subtitle = "Riabilitazione - Regime ordinario",
+       caption = "Source: Ministero della Salute") +
+    ylab(" ") + 
+        xlab("CATEGORIA ETÀ")
+
 
 
 ```
@@ -2415,7 +2498,8 @@ p <- ggplot(data = Gend_HR_without_ita, aes( x = `REGIONE DI RESIDENZA`,
   facet_wrap(~ANNO) +
   labs(
     title = "Tasso di ospedalizzazione per regione e sesso (per 1000 abitanti)",
-    subtitle = "Riabilitazione - Regime ordinario"
+    subtitle = "Riabilitazione - Regime ordinario",
+    caption = "Source: Ministero della Salute"
   )
 p 
 
@@ -2502,8 +2586,11 @@ HR_summary$`Categoria età` <- factor(HR_summary$`Categoria età`,
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "TASSO DI OSPEDALIZZAZIONE (per età, per 1000 abitanti)",
-              subtitle = "Riabilitazione - Regime diurno") +
-    ylab(" ")
+              subtitle = "Riabilitazione - Regime diurno",
+       caption = "Source: Ministero della Salute") +
+    ylab(" ") + 
+        xlab("CATEGORIA ETÀ")
+
 
 
 ```
@@ -2594,7 +2681,8 @@ p <- ggplot(data = Gend_HR_without_ita, aes( x = `REGIONE DI RESIDENZA`,
   facet_wrap(~ANNO) +
   labs(
     title = "Tasso di ospedalizzazione per regione e sesso (per 1000 abitanti)",
-    subtitle = "Riabilitazione - Regime diurno"
+    subtitle = "Riabilitazione - Regime diurno",
+    caption = "Source: Ministero della Salute"
   )
 p 
 
@@ -2682,8 +2770,11 @@ HR_summary$`Categoria età` <- factor(HR_summary$`Categoria età`,
                                     hjust = 1, 
                                     vjust = 0.5)) + 
   labs(title = "TASSO DI OSPEDALIZZAZIONE (per età, per 1000 abitanti)",
-              subtitle = "Lungodegenza") +
-    ylab(" ")
+              subtitle = "Lungodegenza",
+       caption = "Source: Ministero della Salute") +
+    ylab(" ") + 
+        xlab("CATEGORIA ETÀ")
+
 
 
 ```
@@ -2774,7 +2865,8 @@ p <- ggplot(data = Gend_HR_without_ita, aes( x = `REGIONE DI RESIDENZA`,
   facet_wrap(~ANNO) +
   labs(
     title = "Tasso di ospedalizzazione per regione e sesso (per 1000 abitanti)",
-    subtitle = "Lungodegenza"
+    subtitle = "Lungodegenza",
+    caption = "Source: Ministero della Salute"
   )
 p 
 
@@ -2807,22 +2899,710 @@ HR_gender %>%
 ```
 
 
+# CONFRONTO TASSI OSPEDALIZZAZIONE: ITALIA vs UNITED KINGDOM
 
+This section gives an overview of the Italian and English population in 2019, then an analysis in UK of the total number of surgeries (that can be compared to the total number of the italian *dimissioni*) and surgical incidences (the italian **tasso di ospedalizzazione**) is made. Lastly, It shows a comparison between the overall hospitalization rates in Italy and UK.
+
+## Popolazione: Italia vs Regno Unito
+
+This first part shows the difference between United Kingdom and Italian population in 2019, considering age category and gender. Data about population are provided by [**Istat**](http://dati.istat.it/Index.aspx?DataSetCode=DCIS_POPRES1) for Italy and [**UK Office for National Statistics**](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/annualmidyearpopulationestimates/latest#ageing) for United Kingdom.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+ggplot(data = pop_ita2019, 
+       mapping = aes(x = ifelse(test = Sesso == "maschi", yes = -Value, no = Value), 
+                     y = `Categoria_età` , fill = Sesso)) +
+  geom_col() +
+  scale_x_symmetric(labels = abs) +  #from lemon package
+  labs( title = "Piramide popolazione",
+        subtitle = "Italia, 2019",
+       x = "POPOLAZIONE",
+       y = "ETÀ",
+       caption = "Source: Istat"
+       )
+
+
+```
+
+Table 3.1.1 summarises the data about the italian population in 2019, by age category and gender. The total population is 59.816.673, where 29.131.195 are male and 30.685.478 female.
+```{r, echo=FALSE, include=TRUE}
+
+pop_ita2019 %>%
+  dplyr::select(-stato_civile) %>%
+  dplyr::rename(Popolazione = "Value") %>%
+  dplyr::relocate(`Età`, Popolazione, Sesso, `Categoria_età`, Anno) %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+    caption = 'Table 3.1.1')
+
+```
+
+
+```{r, echo=FALSE, include=TRUE}
+
+ggplot(data = uk_pop2019, 
+       mapping = aes(x = ifelse(test = Sesso == "maschi", 
+                                yes = -popolazione,
+                                no = popolazione), 
+                     y = `Categoria_età` , fill = Sesso)) +
+  geom_col() +
+  scale_x_symmetric(labels = abs) +
+  labs( title = "Piramide popolazione",
+        subtitle = "Regno Unito, 2019",
+        x = "POPOLAZIONE",
+        y = "ETÀ",
+        caption = "Source: UK Office for National Statistics"
+  )
+
+
+
+```
+
+
+Table 3.1.2 summarises the data about the United Kingdom population in 2019, by age category and gender. The total population is 66.796.807, where 32.978.229 are male and 33.818.578 female.
+```{r, echo=FALSE, include=TRUE}
+
+uk_pop2019 %>%
+  dplyr::mutate(Anno = "2019") %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+    caption = 'Table 3.1.2')
+
+```
+
+
+## Numero di interventi e tassi di ospedalizzazione UK per categoria di età.
+
+The data collected for UK about hospitalization rate consider two main activities, **In-patient surgeries** and **Out-patient surgeries**. The difference between the two is that the first one requires overnight hospitalization, while patients receiving out-patient care don’t need to spend a night in a hospital. These two activities can be compared respectively to the italian [**Ricovero Ordinario**](#glossario) and [**Day-hospital**](#glossario).
+
+
+The following graph shows the total number of surgeries in England (In-patient Out-patient) by age category and gender.
+```{r, echo=FALSE, include=TRUE}
+
+UK_surgery_M <- UK_surgery %>%
+  dplyr::select(1,2) %>%
+  dplyr::rename(`Number of Surgeries` = "MALE") %>%
+  dplyr::mutate_at(vars(`Number of Surgeries`), as.numeric) %>%
+  dplyr::mutate_at(vars(`Number of Surgeries`), round) %>%
+  dplyr::mutate(GENDER = "Male")
+
+
+UK_surgery_F <- UK_surgery %>%
+  dplyr::select(1,3) %>%
+  dplyr::rename(`Number of Surgeries` = "FEMALE") %>%
+  dplyr::mutate_at(vars(`Number of Surgeries`), as.numeric) %>%
+  dplyr::mutate_at(vars(`Number of Surgeries`), round) %>%
+  dplyr::mutate(GENDER = "Female")
+
+UK_sur_tot <- dplyr::bind_rows(UK_surgery_M, UK_surgery_F) %>%
+   dplyr::filter(`AGE CATEGORY` != "Total") %>%
+  dplyr::mutate_at(vars(`AGE CATEGORY`), factor)
+
+UK_sur_tot$`AGE CATEGORY` <- factor(UK_sur_tot$`AGE CATEGORY`,
+                                           c("0 - 4 Years", "5 - 9 Years",
+                                           "10 - 14 Years", "15 - 19 Years", 
+                                           "20 - 24 Years","25 - 29 Years",
+                                           "30 - 34 Years", "35 - 39 Years",
+                                           "40 - 44 Years", "45 - 49 Years", 
+                                           "50 - 54 Years", "55 - 59 Years",
+                                           "60 - 64 Years","65 - 69 Years", 
+                                           "70 - 74 Years","75 - 79 Years",
+                                           "80 - 84 Years", "85  &  over"))
+
+UK_sur_tot %>%
+  ggplot(aes(x = `AGE CATEGORY`, y = `Number of Surgeries`, fill = GENDER)) + 
+  
+  geom_bar(stat = "identity", position = "dodge") +
+  
+ theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) + 
+  labs(title = "NUMBER OF SURGERIES (by age and gender)",
+              subtitle = "England, 2019",
+       caption = "Source: UK Office for National Statistics") +
+    ylab(" ") + 
+        xlab("AGE CATEGORY")
+
+
+```
+
+
+Table 3.1.3 summarises the data of the graph above. 
+
+```{r, echo=FALSE, include=TRUE}
+
+UK_sur_tot %>%
+   DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 3.1.3"
+  )
+
+
+```
+
+
+
+
+
+The following graph shows the the hospitalization rate in UK for age category and gender, considering both In-patients and out-patients surgeries.
+
+```{r, echo=FALSE, include=TRUE}
+
+Eng_sur_inc_M <- England_sur_incidence %>%
+  dplyr::select(1,2) %>%
+  dplyr::rename(Incidence = "MALE") %>%
+  dplyr::mutate(GENDER = "Male")
+
+Eng_sur_inc_F <- England_sur_incidence %>%
+  dplyr::select(1,3) %>%
+  dplyr::rename(Incidence = "FEMALE") %>%
+  dplyr::mutate(GENDER = "Female")
+
+
+England_incidence <- dplyr::bind_rows(Eng_sur_inc_M, Eng_sur_inc_F) %>%
+  dplyr::filter(`AGE CATEGORY` != "Total") %>%
+  dplyr::mutate_at(vars(`AGE CATEGORY`), factor)
+
+England_incidence$`AGE CATEGORY` <- factor(England_incidence$`AGE CATEGORY`,
+                                           c("0 - 4 Years", "5 - 9 Years",
+                                           "10 - 14 Years", "15 - 19 Years", 
+                                           "20 - 24 Years","25 - 29 Years",
+                                           "30 - 34 Years", "35 - 39 Years",
+                                           "40 - 44 Years", "45 - 49 Years", 
+                                           "50 - 54 Years", "55 - 59 Years",
+                                           "60 - 64 Years","65 - 69 Years", 
+                                           "70 - 74 Years","75 - 79 Years",
+                                           "80 - 84 Years", "85  &  over"))
+
+
+
+
+
+
+England_incidence %>%  
+  ggplot(aes(x = `AGE CATEGORY`, y = Incidence, fill = GENDER)) + 
+  
+  geom_bar(stat = "identity", position = "dodge") + 
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) + 
+  labs(title = "SURGICAL INCIDENCES (by age and gender)",
+              subtitle = "England, 2019",
+       caption = "Source: UK Office for National Statistics") +
+    ylab(" ") + 
+        xlab("AGE CATEGORY")
+
+```
+
+Table 3.1.4 shows the data about surgical incidences represented in the graph above
+
+```{r, echo=FALSE, include=TRUE}
+
+England_incidence %>%
+  dplyr::mutate_at(vars(Incidence), round, digits = 3) %>%
+  DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 3.1.4"
+  )
+
+```
+
+
+## Tassi di ospedalizzazione: Regno Unito vs Italia
+
+The following graph provides an overview of the differences in between the hospitalization rate in England and in Italy by age. The first thing noticed is that the female hospitalization rate is higher in both England and Italy.
+In addition, the incidence is higher in England for both gender, especially for female.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+ita2019_M<- pop_ita2019  %>%
+  filter(Sesso == "maschi") %>%
+  pull(Value) %>%
+  sum()
+
+ita2019_F <- pop_ita2019  %>%
+  filter(Sesso == "femmine") %>%
+  pull(Value) %>%
+  sum()
+
+dimissioni_M_19 <- sdo_age_gender %>%
+  filter(ANNO == "2019")  %>%
+  pull(MASCHI) %>%
+  sum()
+
+dimissioni_F_19 <- sdo_age_gender %>%
+  filter(ANNO == "2019")  %>%
+  pull(FEMMINE) %>%
+  sum()
+
+incidence_England_tot <- England_sur_incidence %>%
+  dplyr::filter(`AGE CATEGORY` == "Total")
+
+incidence_it_en <- tibble(Incidence = c(dimissioni_M_19/ita2019_M,
+                                        dimissioni_F_19/ita2019_F,
+                                        incidence_England_tot$MALE,
+                                        incidence_England_tot$FEMALE),
+                          Gender = c("Male", "Female",
+                                     "Male", "Female"),
+                          Country = c("Italy", "Italy",
+                                      "England", "England"))
+
+incidence_it_en %>%
+  ggplot(aes(x = Country, y = Incidence, fill = Gender)) +
+geom_bar(stat = "identity", position = "dodge")
+
+
+
+
+```
+ 
+Table 3.1.3 shows the data about hospitalization rate represented in the bar chart above.
+
+```{r, echo=FALSE, include=TRUE}
+
+incidence_it_en %>%
+  dplyr::mutate_at(vars(Incidence), round, digits = 3) %>%
+   DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 3.1.3"
+  )
+
+
+
+```
+
+
+
+# CONFRONTO DATI DIMISSIONI OSPEDALIERE: ISTAT VS MINISTERO DELLA SALUTE
+
+The following section provides a comparison between the data about hospitalization discharges collected from two different sources: Istat and Italian Ministry of Health.
+
+Istat provided data just for the activity *Acuti*, distinguishing between *"Ordinario"* and *"Day-Hospital"*, that are respectively given by *Acuti - Regime ordinario* and *Acuti - Regime diurno* from Ministry of Health.
+
+```{r, echo=FALSE, include=TRUE}
+
+istat_tot_dism <- istat_discharge %>% 
+  dplyr::filter(`REGIME DI RICOVERO` != "totale",
+         GENERE == "totale",
+         `AREA DI CITTADINANZA` == "Mondo",
+         `CLASSE DI ETÀ` != "totale") %>%
+  dplyr::group_by(`REGIME DI RICOVERO`) %>%
+  dplyr::rename(`attività` = `REGIME DI RICOVERO`) %>%
+  dplyr::summarise(DIMISSIONI = sum(DIMISSIONI)) %>%
+  dplyr::mutate(`attività` = c("Acuti - Regime diurno",
+                                         "Acuti - Regime ordinario")) %>%
+  dplyr::mutate(Source = "Istat")
+
+sum_ordinario_19 <- summary_ordinario %>%
+  dplyr::filter(ANNO == "2019") %>%
+  dplyr::mutate(`attività` = "Acuti - Regime ordinario") %>%
+  dplyr::select(-`VARIAZIONE %`)
+
+sum_diurno_19 <- summary_diurno %>%
+  dplyr::filter(ANNO == "2019") %>%
+  dplyr::select(-(3)) %>% 
+  mutate(`attività` = "Acuti - Regime diurno")
+
+summary_tot <- dplyr::bind_rows(sum_ordinario_19, sum_diurno_19) %>%
+  dplyr::select(-ANNO) %>%
+  dplyr::mutate(Source = "Ministero della Salute") %>%
+  dplyr::relocate(`attività`, DIMISSIONI, Source)
+
+summary_plotted <- dplyr::bind_rows(summary_tot, istat_tot_dism) 
+
+summary_plotted %>%
+  DT::datatable( options = list(
+    lengthChange = FALSE,
+    paging = FALSE,
+    searching = FALSE
+    
+  ),
+    caption = 'Table 3.1.3')
+
+```
+As shown by the table above, there is a slight difference in the data provided by the two sources for both *Regime ordinario* and *Regime diurno*.
+
+
+## Istat, Acuti - Regime ordinario
+
+This part focuses on the analysis of hospitalization discharges for the activity *"Acuti - Regime ordinario"* considering data provided by istat.
+In the data provided by istat, the age categories are a very limited number compared to the ones of Italian Ministry. This is shown in the graph below.
+
+```{r, echo=FALSE, include=TRUE}
+
+istat_byage <- istat_discharge %>% 
+  filter(`REGIME DI RICOVERO` == "ordinario",
+         GENERE == "totale",
+         `AREA DI CITTADINANZA` == "Mondo",
+         `CLASSE DI ETÀ` != "totale" ) %>%
+  dplyr::mutate_at(vars(`CLASSE DI ETÀ`), factor)
+
+istat_byage$`CLASSE DI ETÀ` <- factor(istat_byage$`CLASSE DI ETÀ`,
+                                          c("fino a 17 anni",
+                                            "18-24 anni",
+                                            "25-44 anni",
+                                            "45-64 anni",
+                                            "65 anni e più",
+                                            "non indicato"
+                                            ))
+istat_byage %>%
+ 
+  ggplot(., aes(x = `CLASSE DI ETÀ`,y = DIMISSIONI, fill = `CLASSE DI ETÀ` )) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) + 
+  labs(title = "DIMISSIONI PER ETÀ (Acuti - Regime ordinario)",
+       subtitle = "Italia, 2019",
+       caption = "Source: Istat")
+
+  
+
+
+```
+
+Table 3.1.4 provides a summary of the hospitalization discharges by age category in 2019 in Italy. 
+
+```{r, echo=FALSE, include=TRUE}
+
+istat_byage %>%
+  dplyr::select(-c(2,4,5)) %>%
+  dplyr::mutate(`REGIME DI RICOVERO` = "Acuti - Regime ordinario") %>%
+  DT::datatable( options = list(
+    lengthChange = FALSE,
+    paging = FALSE,
+    searching = FALSE
+    
+  ),
+    caption = 'Table 3.1.4')
+
+
+```
+
+
+
+Data provided by Istat consider the distinction between hospitalization discharges by gender, as well as data provided by Italian Ministry of Health.
+As shown by the graph below, the numbers are slightly different due to the fact that the Italian Ministry data, in distinguishing between male and female, does not consider discharges where age or gender were not well specified
+
+
+```{r, echo=FALSE, include=TRUE}
+
+istat_gender <- istat_discharge %>% 
+  filter(`REGIME DI RICOVERO` == "ordinario",
+         GENERE != "totale",
+         `AREA DI CITTADINANZA` == "Mondo",
+         `CLASSE DI ETÀ` != "totale" & `CLASSE DI ETÀ` != "non indicato") %>%
+  group_by(GENERE) %>%
+  summarise(DIMISSIONI = sum(DIMISSIONI)) %>%
+  dplyr::mutate(Source = "Istat")
+   
+
+MM <- sdo_age_gender %>%
+  filter(`ATTIVITÀ` == "Acuti - Regime ordinario",
+         ANNO == "2019") %>%
+  pull(MASCHI) %>%
+  sum()
+
+FF <- sdo_age_gender %>%
+  filter(`ATTIVITÀ` == "Acuti - Regime ordinario",
+         ANNO == "2019") %>%
+  pull(FEMMINE) %>%
+  sum()
+
+sdo_gen <- tibble(GENERE = c("maschi", "femmine"), DIMISSIONI = c(MM,FF)) %>%
+  dplyr::mutate(Source = "Ministero della Salute")
+
+
+gender_plot <- dplyr::bind_rows(sdo_gen, istat_gender)
+
+gender_plot %>%
+  ggplot( aes(x = GENERE, 
+             y = DIMISSIONI,
+             fill = Source)) +
+  geom_bar( stat = "identity",
+            position = "dodge") + 
+  labs(title = "DIMISSIONI PER GENERE",
+       subtitle = "Istat vs Ministero della Salute, Italia 2019")
+
+
+```
+
+An important difference in data provided by istat is the distinction between country of origin of the patient, as shown in the graph below.
+
+```{r, echo=FALSE, include=TRUE}
+
+istat_country<- istat_discharge %>% 
+  dplyr::filter(`REGIME DI RICOVERO` == "ordinario",
+         GENERE == "totale",
+         `AREA DI CITTADINANZA` %in% c("Europa", "Asia", "Africa", "America", 
+                                       "Oceania", "Apolide", "Unknown")) %>%
+  dplyr::filter(`CLASSE DI ETÀ` != "totale" 
+                & `CLASSE DI ETÀ` != "non indicato") %>%
+  dplyr::mutate(`REGIME DI RICOVERO` = "Acuti - Regime ordinario")
+
+p <- ggplot(istat_country,
+            aes(x = `CLASSE DI ETÀ`,
+                y = DIMISSIONI,
+                fill = `AREA DI CITTADINANZA`)) + 
+  geom_bar(stat = "identity", position = "fill") +
+  labs(title = "DIMISSIONI REGIME ORDINARIO PER AREA ED ETÀ",
+  subtitle = "Italia, 2019",
+  caption = "Source: Istat")
+p
+```
+
+
+The pie chart below shows the geographical area of the patient without discriminate by age category. As shown, the discharges of people from *Oceania* and people that are stateless (*Apolide*) are negligible. The most important proportion of the table is, of course, by patients of Europe. This is due to the fact that the number of discharges of Italian people is the highest, namely 5.615.223.
+
+```{r, echo=FALSE, include=TRUE}
+
+istat_country_pie<- istat_discharge %>% 
+  dplyr::filter(`REGIME DI RICOVERO` == "ordinario",
+         GENERE == "totale",
+         `AREA DI CITTADINANZA` %in% c("Europa", "Asia", "Africa", "America", 
+                                       "Oceania", "Apolide", "Unknown")) %>%
+  dplyr::filter(`CLASSE DI ETÀ` == "totale" 
+                & `CLASSE DI ETÀ` != "non indicato") %>%
+  dplyr::mutate(`REGIME DI RICOVERO` = "Acuti - Regime ordinario") %>%
+  dplyr::mutate(PERCENTUALE = DIMISSIONI / sum(DIMISSIONI))
+
+p <- ggplot(istat_country_pie, aes(x = " ", y = PERCENTUALE,
+                                   fill = `AREA DI CITTADINANZA`)) + 
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y", start=0)
+p
+```
+
+
+
+
+The following table summarises the data shown in the graphs above.
+```{r, echo=FALSE, include=TRUE}
+istat_country %>%
+  DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 3.1.5"
+  )
+
+```
+
+## Istat, Acuti - Regime diurno
+This second part is concerned to the analysis of hospitalization discharges for the activity *"Acuti - Regime diurno"* considering data provided by istat.
+
+This first graph shows the hospitalization discharges taking into account the different age category.
+
+```{r, echo=FALSE, include=TRUE}
+
+istat_byage_d <- istat_discharge %>% 
+  filter(`REGIME DI RICOVERO` == "day-hospital",
+         GENERE == "totale",
+         `AREA DI CITTADINANZA` == "Mondo",
+         `CLASSE DI ETÀ` != "totale" ) %>%
+  dplyr::mutate_at(vars(`CLASSE DI ETÀ`), factor)
+
+istat_byage$`CLASSE DI ETÀ` <- factor(istat_byage$`CLASSE DI ETÀ`,
+                                          c("fino a 17 anni",
+                                            "18-24 anni",
+                                            "25-44 anni",
+                                            "45-64 anni",
+                                            "65 anni e più",
+                                            "non indicato"
+                                            ))
+istat_byage_d %>%
+ 
+  ggplot(., aes(x = `CLASSE DI ETÀ`,y = DIMISSIONI, fill = `CLASSE DI ETÀ` )) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  theme(axis.text.x  = element_text(angle = 90, 
+                                    hjust = 1, 
+                                    vjust = 0.5)) + 
+  labs(title = "DIMISSIONI PER ETÀ (Acuti - Regime diurno)",
+       subtitle = "Italia, 2019",
+       caption = "Source: Istat")
+
+  
+
+
+```
+
+Table 3.1.6 provides a summary of the hospitalization discharges by age category in 2019 in Italy. 
+
+```{r, echo=FALSE, include=TRUE}
+
+istat_byage_d %>%
+  dplyr::select(-c(2,4,5)) %>%
+  dplyr::mutate(`REGIME DI RICOVERO` = "Acuti - Regime diurno") %>%
+  DT::datatable( options = list(
+    lengthChange = FALSE,
+    paging = FALSE,
+    searching = FALSE
+    
+  ),
+    caption = 'Table 3.1.6')
+
+
+```
+
+Data provided by Istat consider the distinction between hospitalization discharges by gender, as well as data provided by Italian Ministry of Health.
+Even in the case of *Acuti - Regime diurno* the numbers are slightly different due to the fact that the Italian Ministry data, in distinguishing between male and female, does not consider discharges where age or gender were not well specified.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+istat_gender_d <- istat_discharge %>% 
+  filter(`REGIME DI RICOVERO` == "day-hospital",
+         GENERE != "totale",
+         `AREA DI CITTADINANZA` == "Mondo",
+         `CLASSE DI ETÀ` != "totale" & `CLASSE DI ETÀ` != "non indicato") %>%
+  group_by(GENERE) %>%
+  summarise(DIMISSIONI = sum(DIMISSIONI)) %>%
+  dplyr::mutate(Source = "Istat")
+   
+
+MM <- sdo_age_gender %>%
+  filter(`ATTIVITÀ` == "Acuti - Regime diurno",
+         ANNO == "2019") %>%
+  pull(MASCHI) %>%
+  sum()
+
+FF <- sdo_age_gender %>%
+  filter(`ATTIVITÀ` == "Acuti - Regime diurno",
+         ANNO == "2019") %>%
+  pull(FEMMINE) %>%
+  sum()
+
+sdo_gen <- tibble(GENERE = c("maschi", "femmine"), DIMISSIONI = c(MM,FF)) %>%
+  dplyr::mutate(Source = "Ministero della Salute")
+
+
+gender_plot <- dplyr::bind_rows(sdo_gen, istat_gender_d)
+
+gender_plot %>%
+  ggplot( aes(x = GENERE, 
+             y = DIMISSIONI,
+             fill = Source)) +
+  geom_bar( stat = "identity",
+            position = "dodge") + 
+  labs(title = "DIMISSIONI PER GENERE",
+       subtitle = "Istat vs Ministero della Salute, Italia 2019")
+
+
+```
+
+An important difference in data provided by istat is the distinction between country of origin of the patient, as shown in the graph below.
+
+```{r, echo=FALSE, include=TRUE}
+
+istat_country_d<- istat_discharge %>% 
+  dplyr::filter(`REGIME DI RICOVERO` == "day-hospital",
+         GENERE == "totale",
+         `AREA DI CITTADINANZA` %in% c("Europa", "Asia", "Africa", "America", 
+                                       "Oceania", "Apolide", "Unknown")) %>%
+  dplyr::filter(`CLASSE DI ETÀ` != "totale" 
+                & `CLASSE DI ETÀ` != "non indicato") %>%
+  dplyr::mutate(`REGIME DI RICOVERO` = "Acuti - Regime diurno")
+
+p <- ggplot(istat_country_d,
+            aes(x = `CLASSE DI ETÀ`,
+                y = DIMISSIONI,
+                fill = `AREA DI CITTADINANZA`)) + 
+  geom_bar(stat = "identity", position = "fill") +
+  labs(title = "DIMISSIONI REGIME DIURNO, PER AREA ED ETÀ",
+  subtitle = "Italia, 2019",
+  caption = "Source: Istat")
+p
+```
+
+
+The pie chart below shows the geographical area of the patient without discriminate by age category for *Acuti - Regime diurno*. Even in this case, the discharges of people from *Oceania* and people that are stateless (*Apolide*) are negligible. The most important proportion of the table is, of course, by patients of Europe. This is due to the fact that the number of discharges of Italian people is the highest, that is 1.647.029.
+
+```{r, echo=FALSE, include=TRUE}
+
+istat_country_pie_d<- istat_discharge %>% 
+  dplyr::filter(`REGIME DI RICOVERO` == "day-hospital",
+         GENERE == "totale",
+         `AREA DI CITTADINANZA` %in% c("Europa", "Asia", "Africa", "America", 
+                                       "Oceania", "Apolide", "Unknown")) %>%
+  dplyr::filter(`CLASSE DI ETÀ` == "totale" 
+                & `CLASSE DI ETÀ` != "non indicato") %>%
+  dplyr::mutate(`REGIME DI RICOVERO` = "Acuti - Regime diurno") %>%
+  dplyr::mutate(PERCENTUALE = DIMISSIONI / sum(DIMISSIONI))
+
+p <- ggplot(istat_country_pie_d, aes(x = " ", y = PERCENTUALE,
+                                   fill = `AREA DI CITTADINANZA`)) + 
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y", start=0)
+p
+```
+
+
+
+
+The following table summarises the data shown in the graphs above.
+```{r, echo=FALSE, include=TRUE}
+istat_country_d %>%
+  DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 3.1.7"
+  )
+
+```
 
 \pagebreak
 
 # GLOSSARIO {-}
 
-**MDC**: MAJOR DIAGNOSTIC CATEGORY (MDC)
-Categoria diagnostica principale: il sistema DRG prevede un livello superiore di raggruppamento basato su un criterio di rilevanza clinica (anatomico o eziologico): in base alla diagnosi principale riportata nella Scheda di Dimissione Ospedaliera viene assegnata la categoria MDC; successivamente, viene attribuito uno specifico DRG fra quelli appartenenti alla MDC selezionata. 
+**Accessi**: Presenza in ospedale senza pernottamento, per l’erogazione di prestazioni in regime di day hospital.
+
+**Attività**: Tipologia di assistenza ospedaliera; comprende i ricoveri per acuti, quelli di riabilitazione e la lungodegenza.
+
+
+**Day Hospital (diurno)**: caratterizzato dalle seguenti condizioni: si tratta di un ricovero o di un ciclo di ricoveri programmato; è limitato ad una sola parte della giornata e non prevede il pernottamento nella struttura; fornisce prestazioni multiprofessionali o plurispecialistiche che necessitano di un tempo di esecuzione che si discosta in modo netto da quello necessario
+per una normale prestazione ambulatoriale.
+
 
 **Giorno di Degenza**: Periodo di 24 ore durante il quale un posto letto è occupato.  
 
-**Accessi**: Presenza in ospedale senza pernottamento, per l’erogazione di prestazioni in regime di day hospital.
+**MDC**: MAJOR DIAGNOSTIC CATEGORY (MDC),
+Categoria diagnostica principale: il sistema DRG prevede un livello superiore di raggruppamento basato su un criterio di rilevanza clinica (anatomico o eziologico): in base alla diagnosi principale riportata nella Scheda di Dimissione Ospedaliera viene assegnata la categoria MDC; successivamente, viene attribuito uno specifico DRG fra quelli appartenenti alla MDC selezionata. 
 
 **Ricoveri di Lungodegenza**: Sono i ricoveri di pazienti dimessi da reparti appartenenti alla disciplina LUNGODEGENTI (codice 60 nei
 modelli di rilevazione del Sistema informativo sanitario). 
 
+**Regime di ricovero**: Distingue tra il “RICOVERO ORDINARIO”, che prevede il pernottamento nella struttura ospedaliera, ed il “RICOVERO IN DAY HOSPITAL”, caratterizzato al contrario dalla presenza in ospedale solo per una 
+parte della giornata.
+
+**Ricoveri per Acuti**: Sono tutti i casi dimessi da reparti diversi da quelli classificati come riabilitativi o di lungodegenza; sono esclusi, inoltre, i neonati sani. 
+
+**Ricoveri di Riabilitazione**: Sono identificati come ricoveri di riabilitazione sia i ricoveri di pazienti dimessi da reparti appartenenti alle discipline UNITA’ SPINALE (codice 28 nei modelli di rilevazione del Sistema informativo sanitario),RECUPERO E RIABILITAZIONE FUNZIONALE (codice 56), NEURORIABILITAZIONE (codice 75), sia i ricoveri effettuati in istituti di sola riabilitazione (esclusa la LUNGODEGENZA, codice disciplina 60). 
+
+**Ricoveri di Lungodegenza**: Sono i ricoveri di pazienti dimessi da reparti appartenenti alla disciplina LUNGODEGENTI (codice 60 nei modelli di rilevazione del Sistema informativo sanitario). 
+
+**Ricovero Ordinario**: prevede l’assegnazione di un posto letto e la permanenza del paziente continuativa con pernottamento nella struttura ospedaliera.
+
+
 **Tasso di ospedalizzazione**: Il tasso di ospedalizzazione fornisce una
 misura sintetica sul ricorso al ricovero ospedaliero della popolazione oggetto di studio. Si calcola come rapporto fra numero di ricoveri ospedalieri, ovunque
-effettuati, relativi a soggetti residenti in una data regione e la complessiva popolazione ivi residente
+effettuati, relativi a soggetti residenti in una data regione e la complessiva popolazione ivi residente.
+
+
