@@ -17,18 +17,18 @@ pop_ita2019 <- pop2019_raw %>%
   dplyr::slice(1:(n()-2)) 
 
 pop_ita2019 <- pop_ita2019 %>%
-  add_column(Categoria_età = cut(as.numeric(pop_ita2019$Età), 
+  tibble::add_column(Categoria_età = cut(as.numeric(pop_ita2019$Età), 
                           breaks = c(0,4,seq(9, 84, 5)), right = TRUE,
                           include.lowest = TRUE)) 
 
 pop_ita2019 <- pop_ita2019 %>%  
-  mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
+  dplyr::mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
                                           pattern = "\\(|\\]")) %>%
-  mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
+  dplyr::mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
                                            pattern = "\\,", replacement = "-")) %>%
-  mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
-  mutate_at(vars(Categoria_età), factor) %>%
-  mutate(Categoria_età = c(rep("0-4",10), rep("5-9",10), rep("10-14",10),
+  dplyr::mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
+  dplyr::mutate_at(vars(Categoria_età), factor) %>%
+  dplyr::mutate(Categoria_età = c(rep("0-4",10), rep("5-9",10), rep("10-14",10),
                     rep("15-19",10), rep("20-24",10), rep("25-29",10),
                     rep("30-34",10), rep("35-39",10), rep("40-44",10),
                     rep("45-49",10), rep("50-54",10), 
@@ -74,16 +74,18 @@ raw_uk2019male <- raw_uk2019 %>%
   dplyr::slice(-1, -n()) %>%
   dplyr::mutate_at(vars(popolazione), as.numeric) %>%
   dplyr::mutate(Sesso = "maschi",
-                Età = seq(from = 0, to = 90)) %>%
-  add_column(Categoria_età = cut(raw_uk2019male$Età, 
+                Età = seq(from = 0, to = 90)) 
+
+raw_uk2019male <- raw_uk2019male %>%
+  tibble::add_column(Categoria_età = cut(raw_uk2019male$Età, 
                           breaks = c(0,4,seq(9, 84, 5)), right = TRUE,
                           include.lowest = TRUE)) %>%
-  mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
+  dplyr::mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
                                           pattern = "\\(|\\]|\\[")) %>%
-  mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
+  dplyr::mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
                                            pattern = "\\,", replacement = "-")) %>%
-  mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
-  mutate_at(vars(Categoria_età), factor)
+  dplyr::mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
+  dplyr::mutate_at(vars(Categoria_età), factor)
 
 
 raw_uk2019female <- raw_uk2019 %>%
@@ -93,15 +95,15 @@ raw_uk2019female <- raw_uk2019 %>%
   dplyr::mutate_at(vars(popolazione), as.numeric) %>%
   dplyr::mutate(Sesso = "femmine",
                 Età = seq(from = 0, to = 90)) %>%
-  add_column(Categoria_età = cut(raw_uk2019male$Età, 
+  tibble::add_column(Categoria_età = cut(raw_uk2019male$Età, 
                           breaks = c(0,4,seq(9, 84, 5)), right = TRUE,
                           include.lowest = TRUE)) %>%
-  mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
+  dplyr::mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
                                           pattern = "\\(|\\]|\\[")) %>%
-  mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
+  dplyr::mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
                                            pattern = "\\,", replacement = "-")) %>%
-  mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
-  mutate_at(vars(Categoria_età), factor)
+  dplyr::mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
+  dplyr::mutate_at(vars(Categoria_età), factor)
 
 
 uk_pop2019 <- dplyr::bind_rows(raw_uk2019male, raw_uk2019female) %>%
@@ -149,16 +151,18 @@ raw_uk2012male <- raw_uk2012 %>%
   dplyr::slice(-1, -n()) %>%
   dplyr::mutate_at(vars(popolazione), as.numeric) %>%
   dplyr::mutate(Sesso = "maschi",
-                Età = seq(from = 0, to = 90)) %>%
-  add_column(Categoria_età = cut(raw_uk2012male$Età, 
+                Età = seq(from = 0, to = 90)) 
+
+raw_uk2012male <- raw_uk2012male %>%
+  tibble::add_column(Categoria_età = cut(raw_uk2012male$Età, 
                                  breaks = c(0,4,seq(9, 84, 5)), right = TRUE,
                                  include.lowest = TRUE)) %>%
-  mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
+  dplyr::mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
                                                  pattern = "\\(|\\]|\\[")) %>%
-  mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
+  dplyr::mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
                                                   pattern = "\\,", replacement = "-")) %>%
-  mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
-  mutate_at(vars(Categoria_età), factor)
+  dplyr::mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
+  dplyr::mutate_at(vars(Categoria_età), factor)
 
 
 raw_uk2012female <- raw_uk2012 %>%
@@ -168,15 +172,15 @@ raw_uk2012female <- raw_uk2012 %>%
   dplyr::mutate_at(vars(popolazione), as.numeric) %>%
   dplyr::mutate(Sesso = "femmine",
                 Età = seq(from = 0, to = 90)) %>%
-  add_column(Categoria_età = cut(raw_uk2012male$Età, 
+  tibble::add_column(Categoria_età = cut(raw_uk2012male$Età, 
                                  breaks = c(0,4,seq(9, 84, 5)), right = TRUE,
                                  include.lowest = TRUE)) %>%
-  mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
+  dplyr::mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
                                                  pattern = "\\(|\\]|\\[")) %>%
-  mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
+  dplyr::mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
                                                   pattern = "\\,", replacement = "-")) %>%
-  mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
-  mutate_at(vars(Categoria_età), factor)
+  dplyr::mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
+  dplyr::mutate_at(vars(Categoria_età), factor)
 
 
 uk_pop2012 <- dplyr::bind_rows(raw_uk2012male, raw_uk2012female) %>%
@@ -197,6 +201,73 @@ uk_pop2012$Categoria_età <- factor(uk_pop2012$Categoria_età,
                                      "80-84", "85+"))
 
 #ENGLAND population 2019
+raw_eng_pop19 <- readxl::read_xlsx(path = file_uk,
+                                   sheet = "2019", skip = 1)
+
+raw_eng2019 <- raw_eng_pop19 %>%
+  dplyr::filter(variable == "ENGLAND") %>%
+  dplyr::select(-c(2,3)) 
+
+raw_eng2019male <- raw_eng2019 %>%
+  dplyr::select(1:93) %>%
+  tidyr::gather(Età, popolazione) %>%
+  dplyr::slice(-1, -n()) %>%
+  dplyr::mutate_at(vars(popolazione), as.numeric) %>%
+  dplyr::mutate(Sesso = "maschi",
+                Età = seq(from = 0, to = 90))
+
+raw_eng2019male <-raw_eng2019male %>%
+  add_column(Categoria_età = cut(raw_eng2019male$Età, 
+                                 breaks = c(0,4,seq(9, 84, 5)), right = TRUE,
+                                 include.lowest = TRUE)) %>%
+  mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
+                                                 pattern = "\\(|\\]|\\[")) %>%
+  mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
+                                                  pattern = "\\,", replacement = "-")) %>%
+  mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
+  mutate_at(vars(Categoria_età), factor)
+
+
+raw_eng2019female <- raw_eng2019 %>%
+  dplyr::select(94:185) %>%
+  tidyr::gather(Età, popolazione) %>%
+  dplyr::slice(-n()) %>%
+  dplyr::mutate_at(vars(popolazione), as.numeric) %>%
+  dplyr::mutate(Sesso = "femmine",
+                Età = seq(from = 0, to = 90)) %>%
+  tibble::add_column(Categoria_età = cut(raw_eng2019male$Età, 
+                                 breaks = c(0,4,seq(9, 84, 5)), right = TRUE,
+                                 include.lowest = TRUE)) %>%
+  dplyr::mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
+                                                 pattern = "\\(|\\]|\\[")) %>%
+  dplyr::mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
+                                                  pattern = "\\,", replacement = "-")) %>%
+  dplyr::mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
+  dplyr::mutate_at(vars(Categoria_età), factor)
+
+
+eng_pop2019 <- dplyr::bind_rows(raw_eng2019male, raw_eng2019female) %>%
+  dplyr::arrange(Età) %>%
+  dplyr::mutate(Categoria_età = c(rep("0-4",10), rep("5-9",10), rep("10-14",10),
+                                  rep("15-19",10), rep("20-24",10), rep("25-29",10),
+                                  rep("30-34",10), rep("35-39",10), rep("40-44",10),
+                                  rep("45-49",10), rep("50-54",10), 
+                                  rep("55-59",10), rep("60-64",10), 
+                                  rep("65-69",10), rep("70-74",10),
+                                  rep("75-79",10), rep("80-84",10), rep("85+",12)))
+
+eng_pop2019$Categoria_età <- factor(eng_pop2019$Categoria_età,
+                                    c("0-4", "5-9", "10-14", "15-19", 
+                                      "20-24","25-29","30-34", "35-39",
+                                      "40-44", "45-49", "50-54", "55-59",
+                                      "60-64","65-69", "70-74","75-79",
+                                      "80-84", "85+"))
+
+
+
+
+
+#ENGLAND population 2012 (the one used for computing hospitalization rates)
 raw_eng_pop12 <- readxl::read_xlsx(path = file_uk,
                                   sheet = "2012")
 
@@ -210,16 +281,18 @@ raw_eng2012male <- raw_eng2012 %>%
   dplyr::slice(-1, -n()) %>%
   dplyr::mutate_at(vars(popolazione), as.numeric) %>%
   dplyr::mutate(Sesso = "maschi",
-                Età = seq(from = 0, to = 90)) %>%
-  add_column(Categoria_età = cut(raw_eng2012male$Età, 
+                Età = seq(from = 0, to = 90)) 
+
+raw_eng2012male <- raw_eng2012male %>%
+  tibble::add_column(Categoria_età = cut(raw_eng2012male$Età, 
                                  breaks = c(0,4,seq(9, 84, 5)), right = TRUE,
                                  include.lowest = TRUE)) %>%
-  mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
+  dplyr::mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
                                                  pattern = "\\(|\\]|\\[")) %>%
-  mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
+  dplyr::mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
                                                   pattern = "\\,", replacement = "-")) %>%
-  mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
-  mutate_at(vars(Categoria_età), factor)
+  dplyr::mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
+  dplyr::mutate_at(vars(Categoria_età), factor)
 
 
 raw_eng2012female <- raw_eng2012 %>%
@@ -229,15 +302,15 @@ raw_eng2012female <- raw_eng2012 %>%
   dplyr::mutate_at(vars(popolazione), as.numeric) %>%
   dplyr::mutate(Sesso = "femmine",
                 Età = seq(from = 0, to = 90)) %>%
-  add_column(Categoria_età = cut(raw_eng2012male$Età, 
+  tibble::add_column(Categoria_età = cut(raw_eng2012male$Età, 
                                  breaks = c(0,4,seq(9, 84, 5)), right = TRUE,
                                  include.lowest = TRUE)) %>%
-  mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
+  dplyr::mutate(Categoria_età = stringr::str_remove_all(string = Categoria_età,
                                                  pattern = "\\(|\\]|\\[")) %>%
-  mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
+  dplyr::mutate(Categoria_età = stringr::str_replace_all(string = Categoria_età,
                                                   pattern = "\\,", replacement = "-")) %>%
-  mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
-  mutate_at(vars(Categoria_età), factor)
+  dplyr::mutate(Categoria_età = replace_na(Categoria_età, "85+")) %>%
+  dplyr::mutate_at(vars(Categoria_età), factor)
 
 
 eng_pop2012 <- dplyr::bind_rows(raw_eng2012male, raw_eng2012female) %>%
@@ -258,28 +331,23 @@ eng_pop2012$Categoria_età <- factor(eng_pop2012$Categoria_età,
                                      "80-84", "85+"))
 
 
-eng_pop2012 %>%
-  filter(Sesso == "femmine",
-         Categoria_età == "60-64") %>%
-  pull(popolazione) %>%
-  sum()
 
 # the surgical incidence is computed with the English population of the year
 # 2012, so in order to obtain the total incidence for both male e female: 
 
 pop2012_eng_m <- eng_pop2012 %>%
   dplyr::filter(Sesso == "maschi") %>%
-  pull(popolazione) %>%
+  dplyr::pull(popolazione) %>%
   sum()
 
 
 pop2012_eng_f <- eng_pop2012 %>%
   dplyr::filter(Sesso == "femmine") %>%
-  pull(popolazione) %>%
+  dplyr::pull(popolazione) %>%
   sum()
 
 
-England_sur_incidence <- UK_surgery_incidence %>%
+England_sur_incidence <- eng_surgery_incidence %>%
   dplyr::mutate_at(vars(MALE,FEMALE), as.numeric) %>%
   dplyr::add_row(`AGE CATEGORY` = "Total",
                  MALE = sum(as.numeric(UK_surgery$MALE)) / pop2012_eng_m ,
