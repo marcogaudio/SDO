@@ -16,7 +16,7 @@ matching_tables_2.2.11 <-
 
 cleaned_2.12 <- dplyr::left_join(x = merged_data_2.12, y = merged_data, 
                                  by = c("DRG", "CODICE", "TIPO", "ANNO"), all.y = FALSE) %>% 
-  dplyr::select(DRG:ATTIVITÀ.x, CLASSE_MDC, TAVOLA.x) %>%
+  dplyr::select(TIPO:ATTIVITÀ.x, CLASSE_MDC, TAVOLA.x) %>%
   dplyr::rename(DIMISSIONI = "Dimissioni",
                 ATTIVITÀ = "ATTIVITÀ.x",
                 TAVOLA = "TAVOLA.x")
