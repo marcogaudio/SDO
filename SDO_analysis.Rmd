@@ -44,7 +44,7 @@ The document is composed by 4 sections:
 
 * **section 2** analyses the hospitalization rates, first providing an overview for Italy as a whole, and then analysing the rates for each of the 5 activities in in the period 2016-2019, considering different regions, gender and age categories.
 
-* **section 3** gives an overview of the Italian and English population in 2019, then an analysis of England's total number of surgeries (that can be compared to the total number of the italian **"dimissioni"**) and surgical incidences (the italian **"tasso di ospedalizzazione"**) is made. Lastly, It shows a comparison between the overall hospitalization rates in Italy and England, thanks to the data provided by the [**Health and Social Care Information Centre**](https://digital.nhs.uk/), now called NHS Digital. 
+* **section 3** gives an overview of the Italian and English population in 2019, then an analysis of England's total number of surgeries (that can be compared to the total number of the italian **"dimissioni"**) and surgical incidences (the italian **"tasso di ospedalizzazione"**) is made. Lastly, it shows a comparison between the overall hospitalization rates in Italy and England, thanks to the data provided by the [**Health and Social Care Information Centre**](https://digital.nhs.uk/), now called NHS Digital. 
 
 * **section 4** proposes an analysis of the data about hospitalization discharges collected from two different sources: [**Istat**](http://dati.istat.it/) and Italian Ministry of Health.
 
@@ -79,7 +79,7 @@ summary_lungodegenza <- SDO_lungodegenza %>%
   group_by(ANNO) %>%
   summarise(DIMISSIONI = sum(DIMISSIONI)) %>%
   mutate("VARIAZIONE %" = round((DIMISSIONI / lag(DIMISSIONI) -1) * 100, digits = 3)) %>%
-  mutate(`ATTIVITÀ` = "Riabilitazione - Regime diurno")
+  mutate(`ATTIVITÀ` = "Lungodegenza")
 
 summary_tab <- dplyr::bind_rows(summary_ordinario,
                                 summary_diurno,
@@ -103,7 +103,7 @@ The following graph shows the total number of hospital discharges divided by act
 p
 ```
 
-Table 1.1.1 shows the total number of discharges for all the activities and its percentage variation through the period of analysis. As shown here, the total number of hospital discharges is decreased from 2016 to 2019. In particular, from 2018 to 2019 the number has dropped from 8.522.456 to 8.356.874, with a decrease of 1.733%.
+Table 1.1.1 shows the total number of discharges for all the activities and its percentage variation through the period of analysis. As shown here, the total number of hospital discharges is decreased from 2016 to 2019. In particular, from 2018 to 2019 the number has dropped from 8.356.874 to 8.212.031, with a decrease of 1.733%.
 
 ```{r, echo=FALSE, include=TRUE}
 
@@ -200,7 +200,7 @@ overall_ordinario %>%
 
 ### PERCENTUALE GIORNI DIMISSIONI PER MDC.
 
-The following pie charts show the number of days before discharge in percentage for the 4 years analysed. As shown, the highest percentage of discharges for the activity *Acuti - Regime ordinario* is *DIMISSIONI TRA 4 GIORNI E VALORE SOGLIA*, with 55.6%. This means that 55.6% of the hospitalization discharges in this activity lasts between 4 days and the treshold value ([**Valore Soglia**](#glossario))
+The following pie charts show the number of days before discharge in percentage for the 4 years analysed. As shown, the highest percentage of discharges for the activity *Acuti - Regime ordinario* is *DIMISSIONI TRA 4 GIORNI E VALORE SOGLIA*, with 55.6%. This means that 55.6% of the hospitalization discharges in this activity lasts between 4 days and the treshold value ([**Valore Soglia**](#glossario)).
 
 
 ```{r, echo=FALSE, include=TRUE}
@@ -322,6 +322,21 @@ sdo_age_gender2 %>%
 
 ```
 
+The following table provides a summary of the data presented about hospitalization discharges
+by age category.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+sdo_age_gender2 %>%
+  dplyr::select(-TAVOLA) %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+    caption = 'Table 1.1.4')
+
+```
 
 
 
@@ -355,7 +370,7 @@ SDO_ordinario %>%
 ```
 
 
-Table 1.1.4 provides a summary for *Giorni di Degenza* by MDC for each year.
+Table 1.1.5 provides a summary for *Giorni di Degenza* by MDC for each year.
 
 ```{r, echo=FALSE, include=TRUE}
 overall_ordinario_degenza <- matching_tables %>%
@@ -366,7 +381,7 @@ overall_ordinario_degenza %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-                caption = "Table 1.1.4"
+                caption = "Table 1.1.5"
                 )
 
 ```
@@ -493,7 +508,7 @@ ggplot(data = sum_deg, mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
 
 ### {-}
 
-Table 1.1.5 provides a summary of Max, Min and Mean values for *"Giorni di Degenza"* for each MDC.
+Table 1.1.6 provides a summary of Max, Min and Mean values for *"Giorni di Degenza"* for each MDC.
 ```{r, echo=FALSE, include=TRUE}
 
 SDO_ordinario %>%
@@ -508,7 +523,7 @@ SDO_ordinario %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-    caption = 'Table 1.1.5'
+    caption = 'Table 1.1.6'
     
   )
 
@@ -639,6 +654,24 @@ sdo_age_gender2 %>%
 
 
 ```
+
+The following table provides a summary of the data presented about hospitalization discharges
+by age category.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+sdo_age_gender2 %>%
+  dplyr::select(-TAVOLA) %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+    caption = 'Table 1.2.3')
+
+```
+
+
 
 ### ACCESSI {.tabset}
 
@@ -789,7 +822,7 @@ ggplot(data = sum_accessi, mapping = aes(x =    forcats::fct_reorder(CLASSE_MDC,
 
 ### {-}
 
-Table 1.2.3 provides a summary of Max, Min and Mean values for *"Accessi"* for each MDC.
+Table 1.2.4 provides a summary of Max, Min and Mean values for *"Accessi"* for each MDC.
 
 ```{r, echo=FALSE, include=TRUE}
 
@@ -805,7 +838,7 @@ SDO_diurno %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-    caption = 'Table 1.2.3'
+    caption = 'Table 1.2.4'
     
   )
 ```
@@ -933,6 +966,22 @@ sdo_age_gender2 %>%
 ```
 
 
+The following table provides a summary of the data presented about hospitalization discharges
+by age category.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+sdo_age_gender2 %>%
+  dplyr::select(-TAVOLA) %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+    caption = 'Table 1.3.3')
+
+```
+
 ### GIORNATE DI DEGENZA {.tabset}
 
 The following graph shows the *Giorni di Degenza* for each MDC and over the years of analysis.
@@ -967,7 +1016,7 @@ SDO_ordinario_riab %>%
 ```
 
 
-Table 1.3.3 provides a summary for *Giorni di Degenza* by MDC for each year.
+Table 1.3.4 provides a summary for *Giorni di Degenza* by MDC for each year.
 
 ```{r, echo=FALSE, include=TRUE}
 overall_ordinario_degenza_riab <- SDO_ordinario_riab %>%
@@ -978,7 +1027,7 @@ overall_ordinario_degenza_riab %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-                caption = "Table 1.3.3"
+                caption = "Table 1.3.4"
                 )
 
 ```
@@ -1110,7 +1159,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
 
 ### {-}
 
-Table 1.3.4 provides a summary for the mean value for *"Giorni di Degenza"*, for each MDC.
+Table 1.3.5 provides a summary for the mean value for *"Giorni di Degenza"*, for each MDC.
 
 ```{r, echo=FALSE, include=TRUE}
 
@@ -1122,7 +1171,7 @@ SDO_ordinario_riab %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-    caption = 'Table 1.3.4'
+    caption = 'Table 1.3.5'
     
   )
   
@@ -1254,6 +1303,22 @@ sdo_age_gender2 %>%
 
 ```
 
+The following table provides a summary of the data presented about hospitalization discharges
+by age category.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+sdo_age_gender2 %>%
+  dplyr::select(-TAVOLA) %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+    caption = 'Table 1.4.3')
+
+```
+
 
 ### ACCESSI {.tabset}
 
@@ -1289,7 +1354,7 @@ SDO_diurno_riab %>%
 ```
 
 
-Table 1.4.3 provides a summary for *Accessi* by MDC for each year.
+Table 1.4.4 provides a summary for *Accessi* by MDC for each year.
 
 ```{r, echo=FALSE, include=TRUE}
 overall_diurno_accessi_riab <- SDO_diurno_riab %>%
@@ -1300,7 +1365,7 @@ overall_diurno_accessi_riab %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-                caption = "Table 1.4.3"
+                caption = "Table 1.4.4"
                 )
 
 ```
@@ -1436,7 +1501,7 @@ ggplot(mapping = aes(x = forcats::fct_reorder(CLASSE_MDC,
 ### {-}
 
 
-Table 1.4.4 provides a summary for the mean value for *Accessi* for each MDC.
+Table 1.4.5 provides a summary for the mean value for *Accessi* for each MDC.
 
 ```{r, echo=FALSE, include=TRUE}
 
@@ -1448,7 +1513,7 @@ SDO_diurno_riab %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-    caption = 'Table 1.4.4'
+    caption = 'Table 1.4.5'
     
   )
   
@@ -1476,7 +1541,7 @@ summary_ordinario_riab %>%
     searching = FALSE
     
   ),
-    caption = 'Table 5.1')
+    caption = 'Table 1.5.1')
 
 
 
@@ -1580,6 +1645,22 @@ sdo_age_gender2 %>%
 
 ```
 
+
+The following table provides a summary of the data presented about hospitalization discharges
+by age category.
+
+
+```{r, echo=FALSE, include=TRUE}
+
+sdo_age_gender2 %>%
+  dplyr::select(-TAVOLA) %>%
+  DT::datatable(extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+    caption = 'Table 1.5.3')
+
+```
 ### GIORNATE DI DEGENZA {.tabset}
 
 The following graph shows the *Giorni di Degenza* for each MDC and over the years of analysis.
@@ -1614,7 +1695,7 @@ SDO_lungodegenza %>%
 ```
 
 
-Table 1.5.3 provides a summary for *Giorni di Degenza* by MDC for each year.
+Table 1.5.4 provides a summary for *Giorni di Degenza* by MDC for each year.
 
 ```{r, echo=FALSE, include=TRUE}
 overall_lungod <- SDO_lungodegenza %>%
@@ -1625,7 +1706,7 @@ overall_lungod %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-                caption = "Table 1.5.3"
+                caption = "Table 1.5.4"
                 )
 
 ```
@@ -1769,7 +1850,7 @@ SDO_lungodegenza %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-    caption = 'Table 1.5.4'
+    caption = 'Table 1.5.5'
     
   )
   
@@ -2178,6 +2259,79 @@ HR_gender %>%
 ```
 
 
+### TASSO PER TIPO DRG
+
+The following section shows the evolution of the hospitalization rates per 1000 inhabitants for the activity *Acuti - Regime ordinario* by [**DRG**](#glossario) type. Indeed, the type of DRG could be *"C"*, that stands for **"CHIRURGICI"**, or *"M"*, that means **"MEDICI O NON CLASSIFICABILI"**. The distiction between the two is that the first DRG is characterised by the presence of surgery or other "significant" procedure, while the second one considers DRG with diagnostic or therapeutic procedures with no need of operating room.
+As shown by the graph, the incidence of DRG type "M" is higher. For example, in 2019 there has been around 56 discharges per 1000 inhabitants for DRG with diagnostic or therapeutic procedures with no need of operating room(type "M"), while the incidence for the discharges characterized by DRG that required surgery(type "C") is around 44 discharges per 1000 inhabitants in the same year.
+
+
+```{r,echo=FALSE, include=TRUE}
+tipo_c <- SDO_ordinario %>%
+  dplyr::group_by(ANNO) %>%
+  dplyr::filter(TIPO == "C") %>%
+  summarise(DIMISSIONI_TOT = sum(DIMISSIONI)) %>%
+  pull(DIMISSIONI_TOT)
+
+tipo_m <- SDO_ordinario %>%
+  dplyr::group_by(ANNO) %>%
+  dplyr::filter(TIPO == "M") %>%
+  summarise(DIMISSIONI_TOT = sum(DIMISSIONI)) %>%
+  pull(DIMISSIONI_TOT)
+
+# tot_dim <- SDO_ordinario %>%
+#   dplyr::group_by(ANNO) %>%
+#   summarise(DIMISSIONI_TOT = sum(DIMISSIONI))
+
+pop2019 <- 59816673
+pop2018 <- 60483973
+pop2017 <- 60589445
+pop2016 <- 60665551
+
+list_ita_pop <- c(pop2016, pop2017, pop2018, pop2019)
+
+
+DRG_type = tibble(Tasso = c((tipo_c/list_ita_pop * 1000),
+                            tipo_m/list_ita_pop * 1000), 
+                  `TIPO DRG` = c(rep("C",4),rep("M", 4)),
+                  Anno = rep(c("2016", "2017", "2018", "2019"),2))
+   
+
+
+DRG_type %>%
+  ggplot(aes(x = Anno, y = Tasso, fill = `TIPO DRG`)) + 
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Tasso di ospedalizzazione per tipo DRG ( per 1000 abitanti)",
+       subtitle = "Acuti - Regime ordinario",
+       caption = "Data source : Ministero della Salute") + 
+  xlab(" ") + 
+  ylab("Tasso di osp. per 1000 abitanti")
+
+
+```
+
+The table below shows in detail the hospitalization rates previously discusssed and represented.
+
+```{r, echo=FALSE, include=TRUE}
+
+DRG_type %>%
+  dplyr::mutate_at(vars(Tasso), round, digits = 4) %>%
+  dplyr::rename(`Tasso di osp. per 1000 abitanti` = "Tasso") %>%
+  DT::datatable(options = list(
+    lengthChange = FALSE,
+    paging = FALSE,
+    searching = FALSE
+    
+  ),
+    caption = 'Table 2.2.4')
+  
+
+
+
+```
+
+
+
+
 ## Acuti - Regime diurno
 
 Table 3.1.1 shows the hospitalization rates for the activity *Acuti - Regime diurno* for the 4 years of analysis and the corresponding percentage variation. An important decrease occurred in between 2016 and 2017 (-6.588%). The rate is decreasing over the 4 years of analysis.
@@ -2356,6 +2510,77 @@ HR_gender %>%
                                ),
                 caption = "Table 3.1.3"
   )
+
+```
+
+
+### TASSO PER TIPO DRG
+
+The following section shows the evolution of the hospitalization rates per 1000 inhabitants for the activity *Acuti - Regime diurno* by DRG type. 
+In this activity, the incidence of DRG type "C" is higher. For example, in 2019 there has been around 17 discharges per 1000 inhabitants for DRG that required surgery (type "C") while dischages of DRG with diagnostic or therapeutic procedures with no need of operating room(type "M") have been around 12 per 1000 inhabitants in the same year.
+
+
+```{r, echo=FALSE, include=TRUE}
+tipo_c <- SDO_diurno %>%
+  dplyr::group_by(ANNO) %>%
+  dplyr::filter(TIPO == "C") %>%
+  summarise(DIMISSIONI_TOT = sum(DIMISSIONI)) %>%
+  pull(DIMISSIONI_TOT)
+
+tipo_m <- SDO_diurno %>%
+  dplyr::group_by(ANNO) %>%
+  dplyr::filter(TIPO == "M") %>%
+  summarise(DIMISSIONI_TOT = sum(DIMISSIONI)) %>%
+  pull(DIMISSIONI_TOT)
+
+# tot_dim <- SDO_ordinario %>%
+#   dplyr::group_by(ANNO) %>%
+#   summarise(DIMISSIONI_TOT = sum(DIMISSIONI))
+
+pop2019 <- 59816673
+pop2018 <- 60483973
+pop2017 <- 60589445
+pop2016 <- 60665551
+
+list_ita_pop <- c(pop2016, pop2017, pop2018, pop2019)
+
+
+DRG_type = tibble(Tasso = c((tipo_c/list_ita_pop * 1000),
+                            tipo_m/list_ita_pop * 1000), 
+                  `TIPO DRG` = c(rep("C",4),rep("M", 4)),
+                  Anno = rep(c("2016", "2017", "2018", "2019"),2))
+   
+
+
+DRG_type %>%
+  ggplot(aes(x = Anno, y = Tasso, fill = `TIPO DRG`)) + 
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Tasso di ospedalizzazione per tipo DRG ( per 1000 abitanti)",
+       subtitle = "Acuti - Regime diurno",
+       caption = "Data source : Ministero della Salute") + 
+  xlab(" ") +
+  ylab("Tasso di osp. per 1000 abitanti")
+
+
+```
+
+The table below shows in detail the hospitalization rates previously discusssed and represented.
+
+```{r, echo=FALSE, include=TRUE}
+
+DRG_type %>%
+  dplyr::mutate_at(vars(Tasso), round, digits = 4) %>%
+  dplyr::rename(`Tasso di osp. per 1000 abitanti` = "Tasso") %>%
+  DT::datatable(options = list(
+    lengthChange = FALSE,
+    paging = FALSE,
+    searching = FALSE
+    
+  ),
+    caption = 'Table 2.2.4')
+  
+
+
 
 ```
 
@@ -2918,37 +3143,52 @@ HR_gender %>%
 
 # CONFRONTO TASSI OSPEDALIZZAZIONE: ITALIA vs INGHILTERRA
 
-This section gives an overview of the Italian and English population in 2019, then an analysis in England of the total number of surgeries (that can be compared to the total number of the italian **"dimissioni"**) and surgical incidences (the italian **"tasso di ospedalizzazione"**) in 2012 is made. Lastly, It shows a comparison between the overall hospitalization rates in Italy (2019) and England (2012).
+This section gives an overview of the Italian and English population in 2019, then an analysis in England of the total number of surgeries (that can be compared to the total number of the italian **"dimissioni"**) and surgical incidences (the italian **"tasso di ospedalizzazione"**) in 2012 is made. Lastly, it shows a comparison between the overall hospitalization rates in Italy (2019) and England (2012).
 
 ## Popolazione: Italia vs Inghilterra
 
 This first part shows the differences between English and Italian population in 2019, considering age category and gender. Data about population are provided by [**Istat**](http://dati.istat.it/Index.aspx?DataSetCode=DCIS_POPRES1) for Italy and [**UK Office for National Statistics**](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/annualmidyearpopulationestimates/latest#ageing) for England. Note that for this latter, the population used in computing the surgical incidences is the one of 2012.
 
 
-```{r, echo=FALSE, include=TRUE}
+```{r, echo=FALSE,  include=TRUE, fig.width=10, fig.height=6}
 
-ggplot(data = pop_ita2019, 
-       mapping = aes(x = ifelse(test = Sesso == "maschi", yes = -Value, no = Value), 
+pop_itaplot <- pop_ita2019 %>%
+  dplyr::mutate(Country = "Italy") %>%
+  dplyr::select(-c(stato_civile, Anno)) %>%
+  dplyr::rename(popolazione = "Value") %>%
+  dplyr::relocate(`Età`, popolazione, Sesso, `Categoria_età`)
+
+eng_popplot <- eng_pop2019 %>%
+  dplyr::mutate(Country = "England") %>%
+  dplyr::mutate_at(vars(`Età`), as.character)
+
+pop_to_plot <- dplyr::bind_rows(pop_itaplot, eng_popplot)
+
+ggplot(data = pop_to_plot, 
+       mapping = aes(x = ifelse(test = Sesso == "maschi", yes = -popolazione,
+                                no = popolazione), 
                      y = `Categoria_età` , fill = Sesso)) +
   geom_col() +
   scale_x_symmetric(labels = abs) +  #from lemon package
   labs( title = "Piramide popolazione",
-        subtitle = "Italia, 2019",
+        subtitle = "Italia vs Inghilterra, 2019",
        x = "POPOLAZIONE",
        y = "ETÀ",
        caption = "Data Source: Istat"
-       )
+       ) + 
+  facet_wrap(~Country)
 
 
 ```
 
-Table 3.1.1 summarises the data about the italian population in 2019, by age category and gender. The total population is 59.816.673, where 29.131.195 are male and 30.685.478 female.
+
+
+Table 3.1.1 summarises the data about the italian and english population in 2019, by age category and gender. The total population is 59.816.673, where 29.131.195 are male and 30.685.478 female.
+In England the total population in 2019 is 56.286.961, where 27.827.831 are male and 28.459.130 female.
+
 ```{r, echo=FALSE, include=TRUE}
 
-pop_ita2019 %>%
-  dplyr::select(-stato_civile) %>%
-  dplyr::rename(Popolazione = "Value") %>%
-  dplyr::relocate(`Età`, Popolazione, Sesso, `Categoria_età`, Anno) %>%
+pop_to_plot %>%
   DT::datatable(extensions = 'Buttons', 
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
@@ -2958,39 +3198,6 @@ pop_ita2019 %>%
 ```
 
 
-```{r, echo=FALSE, include=TRUE}
-
-ggplot(data = eng_pop2019, 
-       mapping = aes(x = ifelse(test = Sesso == "maschi", 
-                                yes = -popolazione,
-                                no = popolazione), 
-                     y = `Categoria_età` , fill = Sesso)) +
-  geom_col() +
-  scale_x_symmetric(labels = abs) +
-  labs( title = "Piramide popolazione",
-        subtitle = "Inghilterra, 2019",
-        x = "POPOLAZIONE",
-        y = "ETÀ",
-        caption = "Data Source: UK Office for National Statistics"
-  )
-
-
-
-```
-
-
-Table 3.1.2 summarises the data about the England population in 2019, by age category and gender. The total population is 56.286.961, where 27.827.831 are male and 28.459.130 female.
-```{r, echo=FALSE, include=TRUE}
-
-eng_pop2019 %>%
-  dplyr::mutate(Anno = "2019") %>%
-  DT::datatable(extensions = 'Buttons', 
-                options = list(dom = 'Bfrtip',
-                               buttons = c('excel', "csv")
-                               ),
-    caption = 'Table 3.1.2')
-
-```
 
 
 ## Numero di interventi e tassi di ospedalizzazione in Inghilterra per categoria di età.
@@ -3049,7 +3256,7 @@ eng_sur_tot %>%
 ```
 
 
-Table 3.1.3 summarises the data of the graph above. 
+Table 3.1.2 summarises the data of the graph above. 
 
 ```{r, echo=FALSE, include=TRUE}
 
@@ -3059,7 +3266,7 @@ eng_sur_tot %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-                caption = "Table 3.1.3"
+                caption = "Table 3.1.2"
   )
 
 
@@ -3120,7 +3327,7 @@ England_incidence %>%
 
 ```
 
-Table 3.1.4 shows the data about surgical incidences represented in the graph above
+Table 3.1.3 shows the data about surgical incidences represented in the graph above
 
 ```{r, echo=FALSE, include=TRUE}
 
@@ -3132,7 +3339,7 @@ England_incidence %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-                caption = "Table 3.1.4"
+                caption = "Table 3.1.3"
   )
 
 ```
@@ -3189,7 +3396,7 @@ geom_bar(stat = "identity", position = "dodge") +
 
 ```
  
-Table 3.1.3 shows the data about hospitalization rate represented in the bar chart above.
+Table 3.1.4 shows the data about hospitalization rate represented in the bar chart above.
 
 ```{r, echo=FALSE, include=TRUE}
 
@@ -3200,7 +3407,7 @@ incidence_it_en %>%
                 options = list(dom = 'Bfrtip',
                                buttons = c('excel', "csv")
                                ),
-                caption = "Table 3.1.3"
+                caption = "Table 3.1.4"
   )
 
 
@@ -3300,7 +3507,9 @@ istat_byage %>%
 
 ```
 
+
 Table 4.1.2 provides a summary of the hospitalization discharges by age category in 2019 in Italy. 
+
 
 ```{r, echo=FALSE, include=TRUE}
 
@@ -3321,7 +3530,7 @@ istat_byage %>%
 
 
 Data provided by Istat consider the distinction between hospitalization discharges by gender, as well as data provided by Italian Ministry of Health.
-As shown by the graph below, the numbers are slightly different due to the fact that the Italian Ministry data, in distinguishing between male and female, does not consider discharges where age or gender were not well specified
+As shown by the graph below, the numbers are slightly different due to the fact that the Italian Ministry data, in distinguishing between male and female, does not consider discharges where age or gender were not well specified.
 
 
 ```{r, echo=FALSE, include=TRUE}
@@ -3378,6 +3587,14 @@ istat_country<- istat_discharge %>%
   dplyr::filter(`CLASSE DI ETÀ` != "totale" 
                 & `CLASSE DI ETÀ` != "non indicato") %>%
   dplyr::mutate(`REGIME DI RICOVERO` = "Acuti - Regime ordinario")
+
+istat_country$`CLASSE DI ETÀ` <- factor(istat_country$`CLASSE DI ETÀ`,
+                                          c("fino a 17 anni",
+                                            "18-24 anni",
+                                            "25-44 anni",
+                                            "45-64 anni",
+                                            "65 anni e più"
+                                            ))
 
 p <- ggplot(istat_country,
             aes(x = `CLASSE DI ETÀ`,
@@ -3545,6 +3762,14 @@ istat_country_d<- istat_discharge %>%
                 & `CLASSE DI ETÀ` != "non indicato") %>%
   dplyr::mutate(`REGIME DI RICOVERO` = "Acuti - Regime diurno")
 
+istat_country_d$`CLASSE DI ETÀ` <- factor(istat_country_d$`CLASSE DI ETÀ`,
+                                          c("fino a 17 anni",
+                                            "18-24 anni",
+                                            "25-44 anni",
+                                            "45-64 anni",
+                                            "65 anni e più"
+                                            ))
+
 p <- ggplot(istat_country_d,
             aes(x = `CLASSE DI ETÀ`,
                 y = DIMISSIONI,
@@ -3596,6 +3821,69 @@ istat_country_d %>%
 
 ```
 
+
+
+
+## Tasso di ospedalizzazione per l'attività Acuti: dati Istat vs Ministero della Salute
+
+The following paragraph focuses on the differences in the overall hospitalization rate considering the two different data sources (Istat and Ministero della Salute) in Italy in 2019 for the activity *Acuti*, so, considering the sum of discharges in *Regime ordinario* and *Regime diurno*.
+
+
+This table shows the hospitalization rates per 1000 inhabitants(Italy, 2019), considering the two different data sources, for the activity *Acuti* (taking into account of the discharges in *Regime ordinario* and *Regime diurno*). As shown, the difference is particularly small. Indeed, the number of disharges is almost the same in considering the two sources.
+
+```{r, echo=FALSE, include=TRUE}
+# consider the sum of discharges for ACUTI for ordinario and diurno (SDO data) 
+
+SDO_dim_acuti <- summary_tab %>%
+  dplyr::filter(ANNO == "2019",
+                `ATTIVITÀ` == "Acuti - Regime ordinario" |
+                  `ATTIVITÀ` == "Acuti - Regime diurno") %>%
+  dplyr::pull(DIMISSIONI) %>%
+  sum()
+
+istat_dim_acuti <- istat_discharge %>%
+  dplyr::filter(GENERE == "totale",
+                `AREA DI CITTADINANZA` == "Mondo",
+                `REGIME DI RICOVERO` != "totale",
+                `CLASSE DI ETÀ` != "totale") %>%
+  dplyr::pull(DIMISSIONI) %>%
+  sum()
+
+
+
+comp_table <- dplyr::tibble(Source = c("Istat", "Ministero della Salute"),
+                            Dimissioni_Acuti = c((SDO_dim_acuti/sum(pop_ita2019$Value)) 
+                                                 * 1000,
+                                                 (istat_dim_acuti/sum(pop_ita2019$Value))
+                                                 * 1000)) 
+comp_table %>% 
+  dplyr::mutate_at(vars(Dimissioni_Acuti), round, digits = 4) %>%
+  dplyr::rename("Tasso osp. per 1000 abitanti" = "Dimissioni_Acuti") %>%
+  dplyr::mutate("Numero di dimissioni" = c(istat_dim_acuti, SDO_dim_acuti)) %>%
+  DT::datatable(
+    extensions = 'Buttons', 
+                options = list(dom = 'Bfrtip',
+                               buttons = c('excel', "csv")
+                               ),
+                caption = "Table 4.1.6"
+  )
+  
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
 \pagebreak
 
 # GLOSSARIO {-}
@@ -3613,7 +3901,7 @@ category of hospital admissions defined in such a way that they have similar cli
 **Giorno di Degenza**: period of 24 hours during which a bed is occupied.  
 
 **MDC - MAJOR DIAGNOSTIC CATEGORY (MDC)**:
-the DRG system provides a higher level of grouping based on a criterion of clinical relevance (anatomical or etiological): Based on the main diagnosis reported in the *Scheda di Dimissione Ospedaliera*, the MDC category is assigned; subsequently, a specific DRG is assigned among those belonging to the selected MDC. 
+the DRG system provides a higher level of grouping based on a criterion of clinical relevance (anatomical or etiological): based on the main diagnosis reported in the *Scheda di Dimissione Ospedaliera*, the MDC category is assigned; subsequently, a specific DRG is assigned among those belonging to the selected MDC. 
 
 **Ricoveri di Lungodegenza**: these are the admissions of patients discharged from departments belonging to the *LUNGODEGENTI* discipline.
 
