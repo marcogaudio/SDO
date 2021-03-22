@@ -153,6 +153,7 @@ summary_ordinario %>%
 ```
 
 This bar chart shows the hospital discharges by [MDC](#glossario) for each year of the analysis.
+
 ```{r, echo=FALSE, include=TRUE}
 
 SDO_ordinario %>%
@@ -675,7 +676,8 @@ sdo_age_gender2 %>%
 
 ### ACCESSI {.tabset}
 
-The following graph shows the [*Accessi*](#glossario) for each MDC and over the years of analysis.
+The following graph shows the [*Accessi*](#glossario) for each MDC and over the years of analysis. 
+
 ```{r, echo=FALSE, include=TRUE}
 SDO_diurno %>%
   dplyr::group_by(CLASSE_MDC, ANNO) %>%
@@ -3888,7 +3890,7 @@ comp_table %>%
 
 # GLOSSARIO {-}
 
-**Accessi**: presence in hospital without overnight stay, for the provision of day-hospital benefits.
+**Accessi**: presence in hospital without overnight stay, for the provision of day-hospital benefits. The number of Accessi refers to the number of days where the patient went to the facility to receive the service. Indeed, in case of day-hospital regime, every single daily access for the entire treatment period is counted as *giornata di degenza* and the date of discharge corresponds to the date of the last contact with the institution.
 
 **Attività**: type of hospital care; it includes: *ricoveri per acuti*, *riabilitazione* and *lungodegenza*.
 
