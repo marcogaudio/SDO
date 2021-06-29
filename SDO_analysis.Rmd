@@ -3278,7 +3278,7 @@ eng_sur_tot %>%
 
 
 
-The following graph shows the the hospitalization rate in England for age category and gender, considering both In-patients and out-patients surgeries.
+The following graph shows the the hospitalization rate in England for age category and gender, considering both In-patients and out-patients surgeries. It has to be noticed that these hospitalization rates take into account only of hospitalizations discharges that involved a surgical procedure.
 
 ```{r, echo=FALSE, include=TRUE}
 
@@ -3349,8 +3349,7 @@ England_incidence %>%
 
 ## Tassi di ospedalizzazione: Inghilterra vs Italia
 
-The following graph provides an overview of the differences between the hospitalization rate in England (2012) and in Italy (2019) by age. The first thing noticed is that the female hospitalization rate is higher in both England and Italy.
-In addition, the incidence is higher in England for both gender.
+The following graph provides an overview of the differences between the hospitalization rate in England (2012) and in Italy (2019) by age. As previously mentioned, the rates of England are surgical incidences, so they refer to hospitalization discharges that involved surgery. For this reason, to make a comparison with Italy, it is needed to take for this latter the hospitalization discharges with "C" as type of DRG.
 
 
 ```{r, echo=FALSE, include=TRUE}
@@ -3365,30 +3364,49 @@ ita2019_F <- pop_ita2019  %>%
   pull(Value) %>%
   sum()
 
-dimissioni_M_19 <- sdo_age_gender %>%
-  filter(ANNO == "2019")  %>%
-  pull(MASCHI) %>%
+# dimissioni_M_19 <- sdo_age_gender %>%
+#   filter(ANNO == "2019")  %>%
+#   pull(MASCHI) %>%
+#   sum()
+# 
+# dimissioni_F_19 <- sdo_age_gender %>%
+#   filter(ANNO == "2019")  %>%
+#   pull(FEMMINE) %>%
+#   sum()
+
+ordinario_tot_C <- SDO_ordinario %>% 
+  dplyr::filter(TIPO == "C",
+                ANNO == 2019) %>% 
+  dplyr::pull(DIMISSIONI) %>% 
   sum()
 
-dimissioni_F_19 <- sdo_age_gender %>%
-  filter(ANNO == "2019")  %>%
-  pull(FEMMINE) %>%
+diurno_tot_C <- SDO_diurno %>% 
+  dplyr::filter(TIPO == "C",
+                ANNO == 2019) %>% 
+  dplyr::pull(DIMISSIONI) %>% 
   sum()
+  
 
 incidence_England_tot <- England_sur_incidence %>%
   dplyr::filter(`AGE CATEGORY` == "Total")
 
-incidence_it_en <- tibble(Incidence = c(dimissioni_M_19/ita2019_M * 1000,
-                                        dimissioni_F_19/ita2019_F * 1000,
-                                        incidence_England_tot$MALE * 1000,
-                                        incidence_England_tot$FEMALE * 1000),
-                          Gender = c("Male", "Female",
-                                     "Male", "Female"),
-                          Country = c("Italy", "Italy",
-                                      "England", "England"))
+# incidence_it_en <- tibble(Incidence = c(dimissioni_M_19/ita2019_M * 1000,
+#                                         dimissioni_F_19/ita2019_F * 1000,
+#                                         incidence_England_tot$MALE * 1000,
+#                                         incidence_England_tot$FEMALE * 1000),
+#                           Gender = c("Male", "Female",
+#                                      "Male", "Female"),
+#                           Country = c("Italy", "Italy",
+#                                       "England", "England"))
+
+surgical_ita <- (diurno_tot_C + ordinario_tot_C) / (ita2019_M + ita2019_F) * 1000
+surgical_eng <- (incidence_England_tot$MALE + incidence_England_tot$FEMALE) *  1000
+incidence_it_en <- tibble(Incidence = c(surgical_ita, surgical_eng),
+                          Country = c("Italy", "England"))
+
 
 incidence_it_en %>%
-  ggplot(aes(x = Country, y = Incidence, fill = Gender)) +
+  ggplot(aes(x = Country, y = Incidence)) +
 geom_bar(stat = "identity", position = "dodge") + 
   labs(xlab = " ",
        title = "SURGICAL INCIDENCE, ITALY vs ENGLAND")
